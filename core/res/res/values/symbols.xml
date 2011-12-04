@@ -1925,4 +1925,6 @@
   <!-- Lock screen always show battery -->
   <java-symbol type="string" name="lockscreen_discharging" />
 
+  <java-symbol type="string" name="config_legacyUmsLunFile" />
+
 </resources>
