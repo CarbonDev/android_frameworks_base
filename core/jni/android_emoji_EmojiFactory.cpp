@@ -124,7 +124,9 @@ static jobject android_emoji_EmojiFactory_newInstance(
     return NULL;
   }
 
-  ScopedUtfChars nameUtf(env, name);
+  const jchar* jchars = (const jchar*)env->GetStringChars(name, NULL);
+  jsize len = env->GetStringLength(name);
+  String8 str(String16((const char16_t*)jchars, len));
 
   EmojiFactory *factory = gCaller->TryCallGetImplementation(nameUtf.c_str());
   // EmojiFactory *factory = EmojiFactory::GetImplementation(str.string());
@@ -148,7 +150,8 @@ static jobject android_emoji_EmojiFactory_newAvailableInstance(
     return NULL;
   }
 
-  jstring jname = env->NewStringUTF(factory->Name());
+  String16 name_16(String8(factory->Name()));
+  jstring jname = env->NewString((const jchar*)name_16.string(), name_16.size());
   if (NULL == jname) {
     return NULL;
   }
