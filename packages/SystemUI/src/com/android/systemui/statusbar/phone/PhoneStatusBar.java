@@ -229,6 +229,13 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private boolean mShowCarrierInPanel = false;
 
+    // clock
+    private boolean mShowClock;
+
+    // drag bar
+    CloseDragHandle mCloseView;
+    private int mCloseViewHeight;
+
     // position
     int[] mPositionTmp = new int[2];
     boolean mExpandedVisible;
@@ -588,6 +595,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mLocationController = new LocationController(mContext); // will post a notification
         mBatteryController = new BatteryController(mContext);
         mBatteryController.addIconView((ImageView)mStatusBarView.findViewById(R.id.battery));
+        mBatteryController.addLabelView((TextView)mStatusBarView.findViewById(R.id.battery_text));
         mNetworkController = new NetworkController(mContext);
         mBluetoothController = new BluetoothController(mContext);
         final SignalClusterView signalCluster =
@@ -1307,9 +1315,12 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     public void showClock(boolean show) {
         if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
         View clock = mStatusBarView.findViewById(R.id.clock);
+        mShowClock = (Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CLOCK, 1) == 1);
         if (clock != null) {
-            clock.setVisibility(show ? View.VISIBLE : View.GONE);
+            clock.setVisibility(show ? (mShowClock ? View.VISIBLE : View.GONE) : View.GONE);
         }
     }
 
