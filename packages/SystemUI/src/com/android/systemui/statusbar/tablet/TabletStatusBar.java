@@ -93,6 +93,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+
 public class TabletStatusBar extends BaseStatusBar implements
         InputMethodsPanel.OnHardKeyboardEnabledChangeListener {
     public static final boolean DEBUG = false;
@@ -104,6 +105,10 @@ public class TabletStatusBar extends BaseStatusBar implements
     public static final int MSG_CLOSE_NOTIFICATION_PANEL = 1001;
     public static final int MSG_OPEN_NOTIFICATION_PEEK = 1002;
     public static final int MSG_CLOSE_NOTIFICATION_PEEK = 1003;
+    public static final int MSG_OPEN_QUICKNAVBAR_PANEL = 1004;
+    public static final int MSG_CLOSE_QUICKNAVBAR_PANEL = 1005;
+    public static final int MSG_TOGGLE_RECENTS_PANEL = 1006;
+    public static final int MSG_OPEN_SETTINGS_PANEL = 1007;
     // 1020-1029 reserved for BaseStatusBar
     public static final int MSG_SHOW_CHROME = 1030;
     public static final int MSG_HIDE_CHROME = 1031;
@@ -148,6 +153,12 @@ public class TabletStatusBar extends BaseStatusBar implements
     boolean mLandscape = false;
     private int mMaxNotificationIcons = 5;
 
+    boolean mIsSlidingDrawer = false;
+    static SlidingDrawer mSlider = null;
+    static boolean mAutoHide = false;
+    static long mAutoHideTime = 10000;
+    static boolean mIsDrawerOpen = true;
+
     TabletStatusBarView mStatusBarView;
     View mNotificationArea;
     View mNotificationTrigger;
@@ -176,6 +187,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     int mNotificationPeekTapDuration;
     int mNotificationFlingVelocity;
+
+    QuickNavbarPanel mQuickNavbarPanel;
+    View mQuickNavbarTrigger;
 
     BluetoothController mBluetoothController;
     LocationController mLocationController;
@@ -218,6 +232,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     private boolean mClockDoubleClicked;
     private CarbonTarget mCarbonTarget;
     private View mDateTimeView;
+    private int mShowSearchHoldoff = 0;
 
     public Context getContext() { return mContext; }
 
@@ -370,6 +385,35 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         mWindowManager.addView(mCompatModePanel, lp);
 
+        mRecentButton.setOnTouchListener(mRecentsPreloadOnTouchListener);
+
+        mQuickNavbarPanel = (QuickNavbarPanel)View.inflate(context,
+                R.layout.system_bar_navigation_panel, null);
+        lp = new WindowManager.LayoutParams(
+                200,
+                200,
+                20,
+                0,
+                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
+                    | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                PixelFormat.TRANSLUCENT);
+        //lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        lp.setTitle("QuickNavbarPanel");
+        lp.windowAnimations = android.R.style.Animation;
+
+        WindowManagerImpl.getDefault().addView(mQuickNavbarPanel, lp);
+        mQuickNavbarPanel.setBar(this);
+        mQuickNavbarPanel.show(false, false);
+        mQuickNavbarPanel.setOnTouchListener(
+                new TouchOutsideListener(MSG_CLOSE_QUICKNAVBAR_PANEL, mQuickNavbarPanel));
+        if (mQuickNavbarTrigger != null) {
+            mStatusBarView.setIgnoreChildren(4, mQuickNavbarTrigger, mQuickNavbarPanel);
+        }
+        mQuickNavbarPanel.setHandler(mHandler);
+
         mPile = (NotificationRowLayout)mNotificationPanel.findViewById(R.id.content);
         mPile.removeAllViews();
         mPile.setLongPressListener(getNotificationLongClicker());
@@ -489,6 +533,18 @@ public class TabletStatusBar extends BaseStatusBar implements
         mWindowManager.updateViewLayout(mNotificationPanel,
                 mNotificationPanelParams);
         updateSearchPanel();
+
+        mHeightReceiver.updateHeight(); // display size may have changed
+        loadDimens();
+        mNotificationPanelParams.height = getNotificationPanelHeight();
+        WindowManagerImpl.getDefault().updateViewLayout(mNotificationPanel,
+                mNotificationPanelParams);
+        mRecentsPanel.updateValuesFromResources();
+        // if the sliding drawer was open before, make sure to open it back up
+        if (mSlider != null && mIsDrawerOpen == true) {
+            mHeightReceiver.updateHeight(false);
+            mSlider.open();
+        }
     }
 
     protected void loadDimens() {
@@ -531,11 +587,42 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         loadDimens();
 
+        mIsSlidingDrawer = Settings.System.getInt(context.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_USE_SLIDER, 0) == 1;
+        int layout = mIsSlidingDrawer
+                    ? R.layout.system_bar_slider_popup : R.layout.system_bar;
         final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
                 context, R.layout.system_bar, null);
         mStatusBarView = sb;
 
         sb.setHandler(mHandler);
+
+        mHeightReceiver = new HeightReceiver(mContext);
+        mHeightReceiver.registerReceiver();
+
+        mSlider = (SlidingDrawer)sb.findViewById(R.id.slidingDrawer1);
+        if (mSlider != null) {
+            mSlider.setOnDrawerCloseListener(mSliderCloseListener);
+            mSlider.setOnDrawerOpenListener(mSliderOpenListener);
+            mSlider.setOnDrawerScrollListener(mSliderScrollListener);
+            mQuickNavbarTrigger = (View)sb.findViewById(R.id.popup_area1);
+            //quicknavArea.setOnTouchListener(mQuickNavbartouchListener);
+            //quicknavArea = (ImageView)sb.findViewById(R.id.popup_area2);
+            //quicknavArea.setOnTouchListener(mQuickNavbartouchListener);
+            mQuickNavbarTrigger.setOnTouchListener(new QuickNavbarTouchListener());
+        }
+
+        try {
+            // Sanity-check that someone hasn't set up the config wrong and asked for a navigation
+            // bar on a tablet that has only the system bar
+            if (mWindowManagerService.hasNavigationBar()) {
+                Slog.e(TAG, "Tablet device cannot show navigation bar and system bar");
+            }
+        } catch (RemoteException ex) {
+        }
+
+        // set recents activity navigation bar view
+        RecentsActivity.setNavigationCallback(this);
 
         mBarContents = (ViewGroup) sb.findViewById(R.id.bar_contents);
 
@@ -961,6 +1048,35 @@ public class TabletStatusBar extends BaseStatusBar implements
                     if (mNotificationPanel.isShowing()) {
                         mNotificationPanel.show(false, true);
                         mNotificationArea.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                case MSG_OPEN_SETTINGS_PANEL:
+                    if (DEBUG) Slog.d(TAG, "opening notifications panel");
+                    if (!mNotificationPanel.isShowing()) {
+                        mNotificationPanel.show(true, true);
+                        mNotificationArea.setVisibility(View.INVISIBLE);
+                        mTicker.halt();
+                        mNotificationPanel.swapPanels();
+                    }
+                    break;
+                case MSG_OPEN_QUICKNAVBAR_PANEL:
+                    if (DEBUG) Slog.d(TAG, "opening quicknavbar panel");
+                    if (!mQuickNavbarPanel.isShowing()) {
+                        mQuickNavbarPanel.show(true, true);
+                    }
+                    break;
+                case MSG_CLOSE_QUICKNAVBAR_PANEL:
+                    if (DEBUG) Slog.d(TAG, "closing quicknavbar panel");
+                   //if (mQuickNavbarPanel.isShowing()) {
+                        mQuickNavbarPanel.show(false, true);
+                    //}
+                    break;
+                case MSG_TOGGLE_RECENTS_PANEL:
+                    if ((mDisabled & StatusBarManager.DISABLE_EXPAND) == 0) {
+                        int msg = (mRecentsPanel.getVisibility() == View.VISIBLE)
+                            ? MSG_CLOSE_RECENTS_PANEL : MSG_OPEN_RECENTS_PANEL;
+                        mHandler.removeMessages(msg);
+                        mHandler.sendEmptyMessage(msg);
                     }
                     break;
                 case MSG_OPEN_INPUT_METHODS_PANEL:
@@ -1480,6 +1596,152 @@ public class TabletStatusBar extends BaseStatusBar implements
                 NOTIFICATION_PEEK_FADE_DELAY);
     }
 
+    private class NotificationIconTouchListener implements View.OnTouchListener {
+        VelocityTracker mVT;
+        int mPeekIndex;
+        float mInitialTouchX, mInitialTouchY;
+        int mTouchSlop;
+
+        public NotificationIconTouchListener() {
+            mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        }
+
+        public boolean onTouch(View v, MotionEvent event) {
+            boolean peeking = mNotificationPeekWindow.getVisibility() != View.GONE;
+            boolean panelShowing = mNotificationPanel.isShowing();
+            if (panelShowing) return false;
+
+            int numIcons = mIconLayout.getChildCount();
+            int newPeekIndex = (int)(event.getX() * numIcons / mIconLayout.getWidth());
+            if (newPeekIndex > numIcons - 1) newPeekIndex = numIcons - 1;
+            else if (newPeekIndex < 0) newPeekIndex = 0;
+
+            final int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    mVT = VelocityTracker.obtain();
+                    mInitialTouchX = event.getX();
+                    mInitialTouchY = event.getY();
+                    mPeekIndex = -1;
+
+                    // fall through
+                case MotionEvent.ACTION_OUTSIDE:
+                case MotionEvent.ACTION_MOVE:
+                    // peek and switch icons if necessary
+
+                    if (newPeekIndex != mPeekIndex) {
+                        mPeekIndex = newPeekIndex;
+
+                        if (DEBUG) Slog.d(TAG, "will peek at notification #" + mPeekIndex);
+                        Message peekMsg = mHandler.obtainMessage(MSG_OPEN_NOTIFICATION_PEEK);
+                        peekMsg.arg1 = mPeekIndex;
+
+                        mHandler.removeMessages(MSG_OPEN_NOTIFICATION_PEEK);
+
+                        if (peeking) {
+                            // no delay if we're scrubbing left-right
+                            mHandler.sendMessage(peekMsg);
+                        } else {
+                            // wait for fling
+                            mHandler.sendMessageDelayed(peekMsg, NOTIFICATION_PEEK_HOLD_THRESH);
+                        }
+                    }
+
+                    // check for fling
+                    if (mVT != null) {
+                        mVT.addMovement(event);
+                        mVT.computeCurrentVelocity(1000); // pixels per second
+                        // require a little more oomph once we're already in peekaboo mode
+                        if (!panelShowing && (
+                               (peeking && mVT.getYVelocity() < -mNotificationFlingVelocity*3)
+                            || (mVT.getYVelocity() < -mNotificationFlingVelocity))) {
+                            mHandler.removeMessages(MSG_OPEN_NOTIFICATION_PEEK);
+                            mHandler.removeMessages(MSG_OPEN_NOTIFICATION_PANEL);
+                            mHandler.sendEmptyMessage(MSG_CLOSE_NOTIFICATION_PEEK);
+                            mHandler.sendEmptyMessage(MSG_OPEN_NOTIFICATION_PANEL);
+                        }
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    mHandler.removeMessages(MSG_OPEN_NOTIFICATION_PEEK);
+                    if (!peeking) {
+                        if (action == MotionEvent.ACTION_UP
+                                // was this a sloppy tap?
+                                && Math.abs(event.getX() - mInitialTouchX) < mTouchSlop
+                                && Math.abs(event.getY() - mInitialTouchY) < (mTouchSlop / 3)
+                                // dragging off the bottom doesn't count
+                                && (int)event.getY() < v.getBottom()) {
+                            Message peekMsg = mHandler.obtainMessage(MSG_OPEN_NOTIFICATION_PEEK);
+                            peekMsg.arg1 = mPeekIndex;
+                            mHandler.removeMessages(MSG_OPEN_NOTIFICATION_PEEK);
+                            mHandler.sendMessage(peekMsg);
+
+                            v.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
+                            v.playSoundEffect(SoundEffectConstants.CLICK);
+
+                            peeking = true; // not technically true yet, but the next line will run
+                        }
+                    }
+
+                    if (peeking) {
+                        resetNotificationPeekFadeTimer();
+                    }
+
+                    mVT.recycle();
+                    mVT = null;
+                    return true;
+            }
+            return false;
+        }
+    }
+
+    private class QuickNavbarTouchListener implements View.OnTouchListener {
+        VelocityTracker mVT;
+        int mPeekIndex;
+        float mInitialTouchX, mInitialTouchY;
+        int mTouchSlop;
+
+        public QuickNavbarTouchListener() {
+            mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        }
+
+        public boolean onTouch(View v, MotionEvent event) {
+            boolean panelShowing = mQuickNavbarPanel.isShowing();
+            //if (panelShowing) return false;
+
+            final int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                            300,
+                            150,
+                            (int)event.getX() - 150,
+                            0,
+                            WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                                | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
+                                | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                            PixelFormat.TRANSLUCENT);
+                    lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+                    lp.setTitle("QuickNavbarPanel");
+                    lp.windowAnimations = android.R.style.Animation;
+                    final WindowManager wm = WindowManagerImpl.getDefault();
+                    wm.updateViewLayout(mQuickNavbarPanel, lp);
+
+                    Message peekMsg = mHandler.obtainMessage(MSG_OPEN_QUICKNAVBAR_PANEL);
+                    mHandler.sendMessage(peekMsg);
+                    if(DEBUG) Slog.d(TAG, "Sending MSG_OPEN_QUICKNAVBAR_PANEL");
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    break;
+            }
+            return false;
+        }
+    }
+
     private void reloadAllNotificationIcons() {
         if (mIconLayout == null) return;
         mIconLayout.removeAllViews();
@@ -1677,6 +1939,126 @@ public class TabletStatusBar extends BaseStatusBar implements
     @Override
     protected boolean shouldDisableNavbarGestures() {
         return mNotificationPanel.getVisibility() == View.VISIBLE;
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            // resolver.registerContentObserver(
+            // Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS),
+            // false,
+            // this);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_USE_SLIDER), false,
+                    this);
+
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_AUTOHIDE_SLIDER), false,
+                    this);
+
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_AUTOHIDE_TIME), false,
+                    this);
+
+            updateSettings();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    protected void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        boolean hide = Settings.System.getInt(resolver,
+                    Settings.System.NAVIGATION_BAR_AUTOHIDE_SLIDER, 0) == 1;
+
+        if (hide != mAutoHide) {
+            mAutoHide = hide;
+            if (hide)
+                updateAutoHideTimer();
+            else
+                cancelAutoHideTimer();
+        }
+
+        mAutoHideTime = (long)Settings.System.getInt(resolver,
+                    Settings.System.NAVIGATION_BAR_AUTOHIDE_TIME, 10) * 1000;
+    }
+
+    OnDrawerScrollListener mSliderScrollListener = new OnDrawerScrollListener() {
+        @Override
+        public void onScrollStarted() {
+            // if the drawer is not opened then the user is most likely attempting
+            // to expand it so adjust the TabletStatusBarView height to match the   
+            // tablet status bar height plus the height of the drawer handle
+            if (mSlider.isOpened() == false) {
+                mHeightReceiver.updateHeight(false);
+            }
+        }
+			
+        @Override
+        public void onScrollEnded() {
+        }
+    };
+
+    OnDrawerCloseListener mSliderCloseListener = new OnDrawerCloseListener() {
+        @Override
+        public void onDrawerClosed() {
+            // Drawer is now closed so change the height of the TabletStatusBarView
+            // to match the height of the sliding drawer handle
+            mHeightReceiver.updateHeight(true);
+            mIsDrawerOpen = false;
+        }
+    };
+
+    OnDrawerOpenListener mSliderOpenListener = new OnDrawerOpenListener() {
+        @Override
+        public void onDrawerOpened() {
+            // Drawer is now open so start the auto-hide timer if enabled
+            if (mAutoHide)
+                updateAutoHideTimer();
+                mIsDrawerOpen = true;
+        }
+    };
+
+    public void updateAutoHideTimer() {
+        if (mSlider == null || mAutoHide == false)
+            return;
+        AlarmManager am = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(mContext, AutoHideReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            am.cancel(pi);
+        } catch (Exception e) {
+        }
+        Calendar time = Calendar.getInstance();
+        time.setTimeInMillis(System.currentTimeMillis() + mAutoHideTime);
+        am.set(AlarmManager.RTC, time.getTimeInMillis(), pi);
+    }
+
+    public void cancelAutoHideTimer() {
+        AlarmManager am = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(mContext, AutoHideReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            am.cancel(pi);
+        } catch (Exception e) {
+        }
+    }
+
+    public static class AutoHideReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mAutoHide && mSlider != null) {
+                mSlider.close();
+            }
+        }
     }
 
     private boolean isLandscape () {

@@ -244,4 +244,14 @@
     <!-- Constant for hidden navbar drag handle -->
     <dimen name="drag_handle_height">10dp</dimen>
 
+    <!-- Quick Nav Panel -->
+    <dimen name="qc_radius_start">65dip</dimen>
+    <dimen name="qc_radius_increment">80dip</dimen>
+    <dimen name="qc_slop">10dip</dimen>
+    <dimen name="qc_touch_offset">15dip</dimen>
+    <dimen name="qc_tab_title_height">24dip</dimen>
+    <dimen name="qc_thumb_width">150dip</dimen>
+    <dimen name="qc_thumb_height">100dip</dimen>
+    <dimen name="qc_item_size">40dip</dimen>
+
 </resources>
