@@ -23,6 +23,6 @@
   public void setHaloY(int);
   public void setHaloContentY(int);
   public void setHaloContentAlpha(float);
-} 
+}
 
 -keep class com.android.systemui.statusbar.tv.TvStatusBar
