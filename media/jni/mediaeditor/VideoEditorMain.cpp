@@ -1032,6 +1032,10 @@ static int videoEditor_renderMediaItemPreviewFrame(JNIEnv* pEnv,
         "videoEditor_renderMediaItemPreviewFrame() timeMs=%d", timeMs);
     /* get thumbnail*/
     result = ThumbnailOpen(&tnContext,(const M4OSA_Char*)pString, M4OSA_TRUE);
+    if (pString != NULL) {
+        pEnv->ReleaseStringUTFChars(filePath, pString);
+    }
+
     if (result != M4NO_ERROR || tnContext  == M4OSA_NULL) {
         return timeMs;
     }
@@ -1126,10 +1130,6 @@ static int videoEditor_renderMediaItemPreviewFrame(JNIEnv* pEnv,
     free(yuvPlane[0].pac_data);
 
     ThumbnailClose(tnContext);
-
-    if (pString != NULL) {
-        pEnv->ReleaseStringUTFChars(filePath, pString);
-    }
 
     return timeMs;
 }
@@ -2209,10 +2209,11 @@ static int videoEditor_getPixels(
     }
 
     err = ThumbnailOpen(&mContext,(const M4OSA_Char*)pString, M4OSA_FALSE);
+    if (pString != NULL) {
+        env->ReleaseStringUTFChars(path, pString);
+    }
+
     if (err != M4NO_ERROR || mContext == M4OSA_NULL) {
-        if (pString != NULL) {
-            env->ReleaseStringUTFChars(path, pString);
-        }
         if (env != NULL) {
             jniThrowException(env, "java/lang/RuntimeException", "ThumbnailOpen failed");
         }
@@ -2230,9 +2231,6 @@ static int videoEditor_getPixels(
     env->ReleaseIntArrayElements(pixelArray, m_dst32, 0);
 
     ThumbnailClose(mContext);
-    if (pString != NULL) {
-        env->ReleaseStringUTFChars(path, pString);
-    }
 
     return timeMS;
 }
@@ -2261,11 +2259,12 @@ static int videoEditor_getPixelsList(
     }
 
     err = ThumbnailOpen(&mContext,(const M4OSA_Char*)pString, M4OSA_FALSE);
+    if (pString != NULL) {
+        env->ReleaseStringUTFChars(path, pString);
+    }
+
     if (err != M4NO_ERROR || mContext == M4OSA_NULL) {
         jniThrowException(env, "java/lang/RuntimeException", "ThumbnailOpen failed");
-        if (pString != NULL) {
-            env->ReleaseStringUTFChars(path, pString);
-        }
         return err;
     }
 
@@ -2298,9 +2297,6 @@ static int videoEditor_getPixelsList(
     env->ReleaseIntArrayElements(indexArray, indices, 0);
 
     ThumbnailClose(mContext);
-    if (pString != NULL) {
-        env->ReleaseStringUTFChars(path, pString);
-    }
 
     if (err != M4NO_ERROR && !env->ExceptionCheck()) {
         jniThrowException(env, "java/lang/RuntimeException",\
