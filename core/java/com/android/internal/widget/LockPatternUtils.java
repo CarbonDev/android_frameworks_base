@@ -980,6 +980,22 @@ public class LockPatternUtils {
                 Settings.System.HAPTIC_FEEDBACK_ENABLED, 1, UserHandle.USER_CURRENT) != 0;
     }
 
+    public void setVisibleDotsEnabled(boolean enabled) {
+        setBoolean(Settings.Secure.LOCK_DOTS_VISIBLE, enabled);
+    }
+
+    public boolean isVisibleDotsEnabled() {
+        return getBoolean(Settings.Secure.LOCK_DOTS_VISIBLE, true);
+    }
+
+    public void setShowErrorPath(boolean enabled) {
+        setBoolean(Settings.Secure.LOCK_SHOW_ERROR_PATH, enabled);
+    }
+
+    public boolean isShowErrorPath() {
+        return getBoolean(Settings.Secure.LOCK_SHOW_ERROR_PATH, true);
+    }
+
     /**
      * Set and store the lockout deadline, meaning the user can't attempt his/her unlock
      * pattern until the deadline has passed.
