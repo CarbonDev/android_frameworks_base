@@ -2732,7 +2732,13 @@ public final class Settings {
         * Notification Power Widget - Custom Network Mode
         * @hide
         */
-        public static final String EXPANDED_NETWORK_MODE = "expanded_network_mode";
+         public static final String EXPANDED_NETWORK_MODE = "expanded_network_mode";
+
+        /**
+         * whether to hide the kill-all-button on recent switcher
+         * @hide
+         */
+        public static final String RECENT_KILL_ALL_BUTTON = "recent_kill_all_button";
 
         /**
          * Notification Power Widget - Custom LTE Toggle
