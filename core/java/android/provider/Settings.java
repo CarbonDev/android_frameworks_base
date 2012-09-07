@@ -2898,6 +2898,12 @@ public final class Settings {
          */
         public static final String STATUSBAR_CLOCK_AM_PM_STYLE = "statusbar_clock_am_pm_style";
 
+       /**
+        * Status Bar notification icon opacity
+        * @hide
+        */
+        public static final String STATUS_BAR_NOTIF_ICON_OPACITY = "status_bar_notif_icon_opacity";
+
         /**
          * Style of clock
          * 0 - Hide Clock
