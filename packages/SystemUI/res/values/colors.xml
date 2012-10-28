@@ -46,4 +46,8 @@
    <color name="halo_ping_color">#ff33b5e5</color>
    <color name="halo_text_color">#ffffffff</color>
 
+    <!-- Notification Shortcuts -->
+    <drawable name="notification_shortcut_background_color">#00000000</drawable>
+    <drawable name="notification_item_background_color">#ff111111</drawable>
+    <drawable name="notification_item_background_color_pressed">#ff257390</drawable>
 </resources>
