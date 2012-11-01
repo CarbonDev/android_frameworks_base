@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.telephony.MSimTelephonyManager;
 import android.view.View;
 
 import com.android.systemui.R;
@@ -47,7 +48,11 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     public void init() {
         mLeftSide = mView.findViewById(R.id.notification_icon_area);
         mStatusIcons = mView.findViewById(R.id.statusIcons);
-        mSignalCluster = mView.findViewById(R.id.signal_cluster);
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            mSignalCluster = mView.findViewById(R.id.msim_signal_cluster);
+        } else {
+            mSignalCluster = mView.findViewById(R.id.signal_cluster);
+        }
         mBattery = mView.findViewById(R.id.battery);
         mCircleBattery = mView.findViewById(R.id.circle_battery);
         mCenterClock = mView.findViewById(R.id.center_clock);
