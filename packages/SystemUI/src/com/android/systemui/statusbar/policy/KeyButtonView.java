@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+ * This code has been modified. Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +17,27 @@
 
 package com.android.systemui.statusbar.policy;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.database.ContentObserver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
-import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.hardware.input.InputManager;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.HapticFeedbackConstants;
@@ -45,13 +50,15 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
+import java.math.BigInteger;
+
 import com.android.systemui.R;
 
 public class KeyButtonView extends ImageView {
     private static final String TAG = "StatusBar.KeyButtonView";
 
     final float GLOW_MAX_SCALE_FACTOR = 1.8f;
-    float BUTTON_QUIESCENT_ALPHA = 0.70f;
+    float BUTTON_QUIESCENT_ALPHA = 1.0f;
 
     long mDownTime;
     int mCode;
@@ -61,12 +68,13 @@ public class KeyButtonView extends ImageView {
     int mGlowWidth, mGlowHeight;
     int mDurationSpeedOn = 500;
     int mDurationSpeedOff = 50;
-    float mGlowAlpha = 0f, mGlowScale = 1f, mDrawingAlpha = 1f;
+    float mGlowAlpha = 0f, mGlowScale = 1f, mDrawingAlpha = 1f, mOldDrawingAlpha = 1f;
     boolean mSupportsLongpress = true;
     boolean mShouldTintIcons = true;
     protected boolean mHandlingLongpress = false;
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
+    Context mContext;
 
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -93,6 +101,8 @@ public class KeyButtonView extends ImageView {
     public KeyButtonView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
 
+        mContext = context;
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyle, 0);
 
@@ -111,6 +121,47 @@ public class KeyButtonView extends ImageView {
 
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BUTTON_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateButtonColor(false);
+                }});
+
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_GLOW_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateGlowColor();
+                }});
+
+        updateButtonColor(true);
+    }
+
+    private void updateButtonColor(boolean defaults) {
+        if (defaults) {
+            setColorFilter(0);
+            BUTTON_QUIESCENT_ALPHA = 0.70f;
+            setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
+            return;
+        }
+
+        String setting = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.NAV_BUTTON_COLOR);
+
+        String[] buttonColors = (setting == null || setting.equals("") ?
+                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBUTTON] : setting).split(
+                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String currentColor = buttonColors[Integer.parseInt(buttonColors[2])];
+
+        setColorFilter(new BigInteger("FF" + currentColor.substring(2), 16).intValue(),
+                PorterDuff.Mode.SRC_ATOP);
+
+        BUTTON_QUIESCENT_ALPHA = (float)new BigInteger(currentColor.substring(0, 2), 16).intValue() / 255f;
+        setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
+
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
     }
@@ -147,6 +198,20 @@ public class KeyButtonView extends ImageView {
             }
         }
     }
+
+    private void updateGlowColor() {
+        String setting = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.NAV_GLOW_COLOR);
+
+        String[] glowColors = (setting == null || setting.equals("") ?
+                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVGLOW] : setting).split(
+                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String currentColor = glowColors[Integer.parseInt(glowColors[2])];
+
+        mGlowBG.setColorFilter(new BigInteger(currentColor, 16).intValue(),
+                PorterDuff.Mode.SRC_ATOP);
+     }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -255,11 +320,23 @@ public class KeyButtonView extends ImageView {
                     );
                     as.setDuration(mDurationSpeedOff);
                 } else {
+                    mOldDrawingAlpha = BUTTON_QUIESCENT_ALPHA;
                     as.playTogether(
                         ObjectAnimator.ofFloat(this, "glowAlpha", 0f),
                         ObjectAnimator.ofFloat(this, "glowScale", 1f),
                         ObjectAnimator.ofFloat(this, "drawingAlpha", BUTTON_QUIESCENT_ALPHA)
                     );
+                    as.addListener( new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) { }
+                        @Override
+                        public void onAnimationCancel(Animator animation) { }
+                        @Override
+                        public void onAnimationRepeat(Animator animation) { }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
+                        }});
                     as.setDuration(mDurationSpeedOn);
                 }
                 as.start();
