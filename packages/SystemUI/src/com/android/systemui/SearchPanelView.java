@@ -190,7 +190,7 @@ public class SearchPanelView extends FrameLayout implements
                 mHandler.removeCallbacks(SetLongPress);
                 mLongPress = false;
             } else {
-                if (longList.get(target) == null || longList.get(target).equals("") || longList.get(target).equals("none")) {
+                if (longList.get(target) == null || longList.get(target).equals("") || longList.get(target).equals("**null**")) {
                 //pretend like nothing happened
                 } else {
                     mTarget = target;
@@ -331,7 +331,7 @@ public class SearchPanelView extends FrameLayout implements
         TargetDrawable cDrawable = new TargetDrawable(mResources, mResources.getDrawable(com.android.internal.R.drawable.ic_lockscreen_camera));
         cDrawable.setEnabled(false);
 
-        if (action == null || action.equals("") || action.equals("none"))
+        if (action == null || action.equals("") || action.equals("**null**"))
             return cDrawable;
         if (action.equals("**screenshot**"))
             return new TargetDrawable(mResources, mResources.getDrawable(R.drawable.ic_action_screenshot));
