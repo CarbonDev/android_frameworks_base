@@ -227,6 +227,14 @@ public class PhoneStatusBar extends BaseStatusBar {
     View mClearButton;
     ImageView mSettingsButton, mNotificationButton;
 
+    private int shortClick = 0;
+    private int longClick = 1;
+    private int doubleClick = 2;
+    private int doubleClickCounter = 0;
+
+    public String[] mClockActions = new String[3];
+    private boolean mClockDoubleClicked;
+
     // carrier/wifi label
     private TextView mCarrierLabel;
     private boolean mCarrierLabelVisible = false;
@@ -511,6 +519,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mDateTimeView = mNotificationPanelHeader.findViewById(R.id.datetime);
         if (mDateTimeView != null) {
             mDateTimeView.setOnClickListener(mClockClickListener);
+            mDateTimeView.setOnLongClickListener(mClockLongClickListener);
             mDateTimeView.setEnabled(true);
         }
 
@@ -2394,10 +2403,49 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     };
 
+       final Runnable DelayShortPress = new Runnable () {
+            public void run() {
+                    doubleClickCounter = 0;
+                    animateCollapsePanels();
+                    mAokpTarget.launchAction(mClockActions[shortClick]);
+            }
+        };
+
+       final Runnable ResetDoubleClickCounter = new Runnable () {
+            public void run() {
+                    doubleClickCounter = 0;
+            }
+        };
+
     private View.OnClickListener mClockClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            startActivityDismissingKeyguard(
-                    new Intent(Intent.ACTION_QUICK_CLOCK), true); // have fun, everyone
+            if (mClockDoubleClicked) {
+                if (doubleClickCounter > 0) {
+                    mHandler.removeCallbacks(DelayShortPress);
+                    vibrate();
+                    animateCollapsePanels();
+                    mAokpTarget.launchAction(mClockActions[doubleClick]);
+                    mHandler.postDelayed(ResetDoubleClickCounter, 50);
+                } else {
+                    doubleClickCounter = doubleClickCounter + 1;
+                    vibrate();
+                    mHandler.postDelayed(DelayShortPress, 400);
+                }
+            } else {
+                vibrate();
+                animateCollapsePanels();
+                mAokpTarget.launchAction(mClockActions[shortClick]);
+            }
+
+        }
+    };
+
+    private View.OnLongClickListener mClockLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            animateCollapsePanels();
+            mAokpTarget.launchAction(mClockActions[longClick]);
+            return true;
         }
     };
 
@@ -2643,7 +2691,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     void vibrate() {
         android.os.Vibrator vib = (android.os.Vibrator)mContext.getSystemService(
                 Context.VIBRATOR_SERVICE);
-        vib.vibrate(250);
+        vib.vibrate(50);
     }
 
     Runnable mStartTracing = new Runnable() {
@@ -2718,6 +2766,12 @@ public class PhoneStatusBar extends BaseStatusBar {
 		void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[shortClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[longClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[doubleClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.CURRENT_UI_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
@@ -2730,9 +2784,31 @@ public class PhoneStatusBar extends BaseStatusBar {
             updateSettings();
         }
     }
-
-   protected void updateSettings() {
+    protected void updateSettings() {
         ContentResolver cr = mContext.getContentResolver();
+
+        mClockActions[shortClick] = Settings.System.getString(cr,
+                Settings.System.NOTIFICATION_CLOCK[shortClick]);
+
+        mClockActions[longClick] = Settings.System.getString(cr,
+                Settings.System.NOTIFICATION_CLOCK[longClick]);
+
+        mClockActions[doubleClick] = Settings.System.getString(cr,
+                Settings.System.NOTIFICATION_CLOCK[doubleClick]);
+
+        if (mClockActions[shortClick]  == null ||mClockActions[shortClick].equals("")) {
+            mClockActions[shortClick] = "**clockoptions**";
+        }
+        if (mClockActions[longClick]  == null || mClockActions[longClick].equals("")) {
+            mClockActions[longClick] = "**null**";
+        }
+        if (mClockActions[doubleClick] == null || mClockActions[doubleClick].equals("") || mClockActions[doubleClick].equals("**null**")) {
+            mClockActions[doubleClick] = "**null**";
+            mClockDoubleClicked = false;
+        } else {
+            mClockDoubleClicked = true;
+        }
+
         boolean autoBrightness = Settings.System.getInt(
                     cr, Settings.System.SCREEN_BRIGHTNESS_MODE, 0) ==
                     Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
@@ -2742,5 +2818,4 @@ public class PhoneStatusBar extends BaseStatusBar {
         mCurrentUIMode = Settings.System.getInt(cr,
                 Settings.System.CURRENT_UI_MODE, 0);
     }
-
 }
