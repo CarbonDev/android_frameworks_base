@@ -28,6 +28,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -52,7 +53,8 @@
     <uses-permission android:name="android.permission.START_ANY_ACTIVITY" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
     <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO" />
-    
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+
     <!-- WindowManager -->
     <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -67,8 +69,13 @@
 
     <!-- Power widget -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+
+    <!-- Carbon extra permissions -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:persistent="true"
@@ -207,7 +214,45 @@
 <!--            <category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>
-
+        <activity
+            android:name="com.android.systemui.carbon.RingVibToggle"
+            android:label="@string/toggle_ring_vib"
+            android:icon="@drawable/ic_lockscreen_vib"
+            android:theme="@android:style/Theme.Holo.Panel"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="com.android.systemui.INTENT_RING_VIB_TOGGLE" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.systemui.carbon.RingSilentToggle"
+            android:label="@string/toggle_ring_silent"
+            android:icon="@drawable/ic_lockscreen_silent"
+            android:theme="@android:style/Theme.Holo.Panel"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="com.android.systemui.INTENT_RING_SILENT_TOGGLE" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.systemui.carbon.RingVibSilentToggle"
+            android:label="@string/toggle_ring_vib_silent"
+            android:icon="@drawable/ic_lockscreen_soundon"
+            android:theme="@android:style/Theme.Holo.Panel"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="com.android.systemui.INTENT_RING_VIB_SILENT_TOGGLE" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+            </intent-filter>
+        </activity>
         <!-- Beans in space -->
         <service
             android:name=".BeanBagDream"
