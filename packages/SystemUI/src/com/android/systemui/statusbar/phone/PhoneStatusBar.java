@@ -587,6 +587,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : setting).split(
                 ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
         String currentColor = colors[Integer.parseInt(colors[2])];
+        int speed = colors.length < 4 ? 1000 : Integer.parseInt(colors[3]);
 
         Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
         Canvas cnv = new Canvas(bm);
@@ -596,7 +597,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mStatusBarView.getBackground(), new BitmapDrawable(bm)});
         transition.setCrossFadeEnabled(true);
         mStatusBarView.setBackground(transition);
-        transition.startTransition(1000);
+        transition.startTransition(speed);
     }
 
     // ================================================================================
