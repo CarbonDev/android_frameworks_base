@@ -1848,6 +1848,7 @@
 
   <!-- Config.xml entries -->
   <java-symbol type="bool" name="config_samsung_stk" />
+  <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
 
   <!-- Privacy Guard -->
   <java-symbol type="string" name="privacy_guard_notification" />
