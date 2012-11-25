@@ -3495,6 +3495,13 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_USE_WIDGET_CONTAINER_CAROUSEL = "lockscreen_use_widget_container_carousel";
+        
+        /**
+         * enabled and order of quick toggles
+         * 
+         * @hide
+         */
+        public static final String QUICK_TOGGLES = "quick_toggles";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -3823,6 +3830,7 @@ public final class Settings {
         public static final String WIFI_WATCHDOG_PING_TIMEOUT_MS =
             Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
 
+<<<<<<< HEAD
         /**
          * Navigation bar alpha while in homescreen and lockscreen.
          *
@@ -3856,6 +3864,9 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_ALPHA_CONFIG = "status_bar_alpha_config";
+=======
+
+>>>>>>> bfd34bc... QuickSettings: allow custom ordering and what toggles are visible/hidden
     }
 
     /**
