@@ -150,6 +150,13 @@ public class CarbonTarget {
         } else if (action.equals(ACTION_SCREENSHOT)) {
             takeScreenshot();
             return true;
+        } else if (action.equals(ACTION_TORCH)) {
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.setComponent(ComponentName.unflattenFromString("com.settings.Torch/.TorchActivity"));
+            intent.addCategory("android.intent.category.LAUNCHER");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
         } else if (action.equals(ACTION_TODAY)) {
             long startMillis = System.currentTimeMillis();
             Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
