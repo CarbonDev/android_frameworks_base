@@ -3230,6 +3230,7 @@ final class ActivityStack {
                         } catch (InterruptedException e) {
                         }
                     } while (!outResult.timeout && outResult.who == null);
+                    mWaitingActivityLaunched.remove(outResult);
                 } else if (res == ActivityManager.START_TASK_TO_FRONT) {
                     ActivityRecord r = this.topRunningActivityLocked(null);
                     if (r.nowVisible) {
@@ -3246,6 +3247,7 @@ final class ActivityStack {
                             } catch (InterruptedException e) {
                             }
                         } while (!outResult.timeout && outResult.who == null);
+                        mWaitingActivityVisible.remove(outResult);
                     }
                 }
             }
