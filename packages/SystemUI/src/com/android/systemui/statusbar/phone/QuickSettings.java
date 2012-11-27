@@ -70,6 +70,8 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Profile;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -82,6 +84,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.internal.telephony.PhoneConstants;
 import com.android.systemui.aokp.AokpTarget;
 
 import java.io.BufferedReader;
@@ -122,7 +125,9 @@ class QuickSettings {
     private static final int TORCH_TILE = 17;
     private static final int WIFI_TETHER_TILE = 18;
     private static final int USB_TETHER_TILE = 19;
-   // private static final int BT_TETHER_TILE = 20;
+    private static final int TWOG_TILE = 20;
+    private static final int LTE_TILE = 21;
+   // private static final int BT_TETHER_TILE = 22;
 
     public static final String USER_TOGGLE = "USER";
     public static final String BRIGHTNESS_TOGGLE = "BRIGHTNESS";
@@ -145,6 +150,8 @@ class QuickSettings {
     public static final String WIFI_TETHER_TOGGLE = "WIFITETHER";
    // public static final String BT_TETHER_TOGGLE = "BTTETHER";
     public static final String USB_TETHER_TOGGLE = "USBTETHER";
+    public static final String TWOG_TOGGLE = "2G";
+    public static final String LTE_TOGGLE = "LTE";
 
     private static final String DEFAULT_TOGGLES = "default";
 
@@ -152,6 +159,8 @@ class QuickSettings {
     public static final String FAST_CHARGE_FILE = "force_fast_charge";
 
     private int mWifiApState = WifiManager.WIFI_AP_STATE_DISABLED;
+
+    private int mDataState = -1;
 
     private boolean usbTethered;
 
@@ -173,7 +182,7 @@ class QuickSettings {
     private LocationManager locationManager;
     private PhoneStatusBar mStatusBarService;
     private BluetoothState mBluetoothState;
-    private NfcAdapter mNfcAdapter;
+    private TelephonyManager tm;
     private ConnectivityManager mConnService;
 
     private AokpTarget mAokpTarget;
@@ -222,6 +231,8 @@ class QuickSettings {
             toggleMap.put(TORCH_TOGGLE, TORCH_TILE);
             toggleMap.put(WIFI_TETHER_TOGGLE, WIFI_TETHER_TILE);
             toggleMap.put(USB_TETHER_TOGGLE, USB_TETHER_TILE);
+            toggleMap.put(TWOG_TOGGLE, TWOG_TILE);
+            toggleMap.put(LTE_TOGGLE, LTE_TILE);
             //toggleMap.put(BT_TETHER_TOGGLE, BT_TETHER_TILE);
         }
         return toggleMap;
@@ -247,8 +258,8 @@ class QuickSettings {
         mContainerView = container;
         mModel = new QuickSettingsModel(context);
         mWifiDisplayStatus = new WifiDisplayStatus();
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(context);
         wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
         connManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         mBluetoothState = new QuickSettingsModel.BluetoothState();
@@ -619,6 +630,80 @@ class QuickSettings {
                     }
                 });
                 break;
+
+            case TWOG_TILE:
+                quick = (QuickSettingsTileView)
+                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                quick.setContent(R.layout.quick_settings_tile_twog, inflater);
+                quick.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            mDataState = Settings.Global.getInt(mContext.getContentResolver(), Settings.Global.PREFERRED_NETWORK_MODE);
+                        } catch (SettingNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        if (mDataState == PhoneConstants.NT_MODE_GSM_ONLY) {
+                            tm.toggle2G(false);
+                        } else {
+                            tm.toggle2G(true);
+                        }
+                        mModel.refresh2gTile();
+                    }
+                });
+                quick.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        startSettingsActivity(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+                        return true;
+                    }
+                });
+                mModel.add2gTile(quick, new QuickSettingsModel.RefreshCallback() {
+                    @Override
+                    public void refreshView(QuickSettingsTileView view, State state) {
+                        TextView tv = (TextView) view.findViewById(R.id.twog_textview);
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
+                        tv.setText(state.label);
+                    }
+                });
+                break;
+
+            case LTE_TILE:
+                quick = (QuickSettingsTileView)
+                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                quick.setContent(R.layout.quick_settings_tile_lte, inflater);
+                quick.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            mDataState = Settings.Global.getInt(mContext.getContentResolver(), Settings.Global.PREFERRED_NETWORK_MODE);
+                        } catch (SettingNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        if (mDataState == PhoneConstants.NT_MODE_LTE_CDMA_EVDO || mDataState == PhoneConstants.NT_MODE_GLOBAL) {
+                            tm.toggleLTE(false);
+                        } else {
+                            tm.toggleLTE(true);
+                        }
+                        mModel.refreshLTETile();
+                    }
+                });
+                quick.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        startSettingsActivity(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+                        return true;
+                    }
+                });
+                mModel.addLTETile(quick, new QuickSettingsModel.RefreshCallback() {
+                    @Override
+                    public void refreshView(QuickSettingsTileView view, State state) {
+                        TextView tv = (TextView) view.findViewById(R.id.lte_textview);
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
+                        tv.setText(state.label);
+                    }
+                });
+                break;
             case VIBRATE_TILE:
                 quick = (QuickSettingsTileView)
                         inflater.inflate(R.layout.quick_settings_tile, parent, false);
@@ -681,7 +766,7 @@ class QuickSettings {
                     @Override
                     public void onClick(View v) {
                         mAokpTarget.launchAction(mAokpTarget.ACTION_TORCH);
-                        mHandler.postDelayed(delayedRefresh, 2000);
+                        mHandler.postDelayed(delayedRefresh, 1000);
                     }
                 });
                 quick.setOnLongClickListener(new View.OnLongClickListener() {
@@ -740,7 +825,7 @@ class QuickSettings {
                         } else {
                             changeWifiState(false);
                         }
-                        mHandler.postDelayed(delayedRefresh, 2000);  
+                        mHandler.postDelayed(delayedRefresh, 1000);  
                     }
                 });
                 quick.setOnLongClickListener(new View.OnLongClickListener() {
@@ -768,7 +853,7 @@ class QuickSettings {
                     public void onClick(View v) {
                         boolean enabled = updateUsbState() ? false : true;
                         if (connManager.setUsbTethering(enabled) == ConnectivityManager.TETHER_ERROR_NO_ERROR) {
-                            mHandler.postDelayed(delayedRefresh, 2000);  
+                            mHandler.postDelayed(delayedRefresh, 1000);  
                         }
                     }
                 });
@@ -823,12 +908,14 @@ class QuickSettings {
                 quick.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mNfcAdapter.isEnabled()) {
+                        NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
+                        boolean enabled = mNfcAdapter.isEnabled();
+                        if (enabled) {
                             mNfcAdapter.disable();
                         } else {
                             mNfcAdapter.enable();
                         }
-                        mHandler.postDelayed(delayedRefresh, 2000);  
+                        mHandler.postDelayed(delayedRefresh, 1000);  
                     }
                 });
                 quick.setOnLongClickListener(new View.OnLongClickListener() {
