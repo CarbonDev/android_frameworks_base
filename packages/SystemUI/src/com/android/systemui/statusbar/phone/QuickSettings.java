@@ -498,6 +498,8 @@ class QuickSettings {
                 mModel.addTimeTile(quick, new QuickSettingsModel.RefreshCallback() {
                      @Override
                     public void refreshView(QuickSettingsTileView view, State alarmState) {
+                         TextView tv = (TextView) view.findViewById(R.id.clock_textview);
+                         tv.setTextSize(1, mTileTextSize);
                     }
                 });
                 mDynamicSpannedTiles.add(quick);
