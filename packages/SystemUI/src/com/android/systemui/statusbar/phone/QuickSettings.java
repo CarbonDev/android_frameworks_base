@@ -164,12 +164,6 @@ class QuickSettings {
 
     private boolean usbTethered;
 
-   // at some point we need to move these to string for translation.... dont let me forget
-    public String strGPSoff = "GPS Off";
-    public String strGPSon = "GPS On";
-    public String strDataoff = "Mobile Data Off";
-    public String strDataon = "Mobile Data On";
-
     private Context mContext;
     private PanelBar mBar;
     private QuickSettingsModel mModel;
@@ -433,6 +427,7 @@ class QuickSettings {
     }
 
     private QuickSettingsTileView getTile(int tile, ViewGroup parent, LayoutInflater inflater) {
+        final Resources r = mContext.getResources();
         QuickSettingsTileView quick = null;
         switch (tile) {
             case USER_TILE:
@@ -514,7 +509,9 @@ class QuickSettings {
                          @Override
                         public void onClick(View v) {
                             connManager.setMobileDataEnabled(connManager.getMobileDataEnabled() ? false : true);
-                            String strData = connManager.getMobileDataEnabled() ? strDataoff : strDataon;
+                            String strData = connManager.getMobileDataEnabled() ?
+                                    r.getString(R.string.quick_settings_data_on_label)
+                                    : r.getString(R.string.quick_settings_data_off_label);
                             Toast.makeText(mContext, strData, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -1099,7 +1096,8 @@ class QuickSettings {
                         Settings.Secure.setLocationProviderEnabled(mContext.getContentResolver(),
                                 LocationManager.GPS_PROVIDER, gpsEnabled ? false : true);
                         TextView tv = (TextView) v.findViewById(R.id.location_textview);
-                        tv.setText(gpsEnabled ? strGPSoff : strGPSon);
+                        tv.setText(gpsEnabled ? R.string.quick_settings_gps_on_label
+                                : R.string.quick_settings_gps_off_label);
                         tv.setTextSize(1, mTileTextSize);
                     }
                 });
@@ -1116,9 +1114,11 @@ class QuickSettings {
                         boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(
                                 mContext.getContentResolver(), LocationManager.GPS_PROVIDER);
                         TextView tv = (TextView) view.findViewById(R.id.location_textview);
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                         String newString = state.label;
                         if ((newString == null) || (newString.equals(""))) {
-                            tv.setText(gpsEnabled ? strGPSon : strGPSoff);
+                            tv.setText(gpsEnabled ? R.string.quick_settings_gps_on_label
+                                    : R.string.quick_settings_gps_off_label);
                         } else {
                             tv.setText(state.label);
                         }
