@@ -55,6 +55,7 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.util.EventLog;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -4677,6 +4678,9 @@ public class Activity extends ContextThemeWrapper
      * @see android.view.Window#getLayoutInflater
      */
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+
+        Log.d("PARANOID:onCreateView", "Name="+ExtendedPropertiesUtils.mGlobalHook.name);
+
         if (!"fragment".equals(name)) {
             return onCreateView(name, context, attrs);
         }
