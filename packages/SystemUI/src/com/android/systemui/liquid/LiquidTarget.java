@@ -278,8 +278,9 @@ public class LiquidTarget {
     }
 
 
-//not using yet and dont want to take time to get drawables... yes lazy dev.
-  /*  public Drawable getIconImage(String uri) {
+    //not using yet and dont want to take time to get drawables... yes lazy dev.
+    // Yes Steve, You are a lazy Dev.  I need this :)  - Zaphod 12-01-12
+    public Drawable getIconImage(String uri) {
 
         if (uri == null)
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
@@ -309,7 +310,7 @@ public class LiquidTarget {
                 e.printStackTrace();
             }
         return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
-    } */
+    } 
 
     public String getProperSummary(String uri) {
         if (uri.equals(ACTION_HOME))
