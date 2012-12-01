@@ -1841,6 +1841,14 @@
   <java-symbol type="attr" name="actionModeWebSearchDrawable" />
   <java-symbol type="string" name="websearch" />
 
+<!-- ===============================================================
+   Resources added in Carbon
+   =============================================================== -->
+  <eat-comment />
+
+  <!-- Config.xml entries -->
+  <java-symbol type="bool" name="config_samsung_stk" />
+
   <!-- Privacy Guard -->
   <java-symbol type="string" name="privacy_guard_notification" />
   <java-symbol type="string" name="privacy_guard_notification_detail" />
