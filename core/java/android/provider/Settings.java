@@ -3497,6 +3497,12 @@ public final class Settings {
         };
 
         /**
+         * Whether to use keyguard or homescreen widgets
+         * @hide
+         */
+        public static final String LOCKSCREEN_ALL_WIDGETS = "lockscreen_all_widgets";
+
+        /**
          * Clock Actions 0 = single, 1 = long, 2 = double click
          *
          * @hide
