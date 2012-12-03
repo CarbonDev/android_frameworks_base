@@ -25,6 +25,7 @@ import android.app.ActivityManagerNative;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.Intent.ShortcutIconResource;
@@ -39,6 +40,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.net.Uri;
 import android.os.Vibrator;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,7 +51,11 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InputDevice;
@@ -82,6 +88,13 @@ public class AokpTarget {
     public final static String ACTION_SILENT = "**ring_silent**";
     public final static String ACTION_VIB = "**ring_vib**";
     public final static String ACTION_SILENT_VIB = "**ring_vib_silent**";
+    public final static String ACTION_EVENT = "**event**";
+    public final static String ACTION_ALARM = "**alarm**";
+    public final static String ACTION_TODAY = "**today**";
+    public final static String ACTION_CLOCKOPTIONS = "**clockoptions**";
+    public final static String ACTION_VOICEASSIST = "**voiceassist**";
+    public final static String ACTION_TORCH = "**torch**";
+    public final static String ACTION_SEARCH = "**search**";
     public final static String ACTION_NULL = "**null**";
 
     private int mInjectKeyCode;
@@ -128,6 +141,50 @@ public class AokpTarget {
         }
         if (action.equals(ACTION_SCREENSHOT)) {
             takeScreenshot();
+            return true;
+        }
+        if (action.equals(ACTION_TORCH)) {
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
+            intent.addCategory("android.intent.category.LAUNCHER");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
+        }
+        if (action.equals(ACTION_TODAY)) {
+            long startMillis = System.currentTimeMillis();
+            Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+            builder.appendPath("time");
+            ContentUris.appendId(builder, startMillis);
+            Intent intent = new Intent(Intent.ACTION_VIEW)
+                      .setData(builder.build());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
+        }
+        if (action.equals(ACTION_CLOCKOPTIONS)) {
+            Intent intent = new Intent(Intent.ACTION_QUICK_CLOCK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
+        }
+        if (action.equals(ACTION_EVENT)) {
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                      .setData(Events.CONTENT_URI);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
+        }
+        if (action.equals(ACTION_VOICEASSIST)) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
+        }
+        if (action.equals(ACTION_ALARM)) {
+            Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
             return true;
         }
         if (action.equals(ACTION_ASSIST)) {
@@ -253,6 +310,8 @@ public class AokpTarget {
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_killtask);
         if (uri.equals(ACTION_POWER))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_power);
+        if (uri.equals(ACTION_SEARCH))
+            return mContext.getResources().getDrawable(R.drawable.ic_sysbar_search);
         if (uri.equals(ACTION_NOTIFICATIONS))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_notifications);
         try {
@@ -263,7 +322,7 @@ public class AokpTarget {
                 e.printStackTrace();
             }
         return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
-    }
+    } 
 
     public String getProperSummary(String uri) {
         if (uri.equals(ACTION_HOME))
@@ -282,6 +341,8 @@ public class AokpTarget {
             return mContext.getResources().getString(R.string.action_kill);
         if (uri.equals(ACTION_POWER))
             return mContext.getResources().getString(R.string.action_power);
+        if (uri.equals(ACTION_SEARCH))
+            return mContext.getResources().getString(R.string.action_search);
         if (uri.equals(ACTION_NOTIFICATIONS))
             return mContext.getResources().getString(R.string.action_notifications);
         if (uri.equals(ACTION_NULL))
