@@ -201,6 +201,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mUserCallback;
     private UserState mUserState = new UserState();
 
+    private QuickSettingsTileView mFavContactTile;
+    private RefreshCallback mFavContactCallback;
+    private UserState mFavContactState = new UserState();
+
     private QuickSettingsTileView mTimeTile;
     private RefreshCallback mTimeCallback;
     private State mTimeState = new State();
@@ -408,6 +412,21 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         mUserState.label = name;
         mUserState.avatar = avatar;
         mUserCallback.refreshView(mUserTile, mUserState);
+    }
+
+    // Favorite Contact
+    void addFavContactTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mFavContactTile = view;
+        mFavContactCallback = cb;
+        mFavContactCallback.refreshView(mFavContactTile, mFavContactState);
+    }
+
+    void setFavContactTileInfo(String name, Drawable avatar) {
+        if (mFavContactCallback != null) {
+            mFavContactState.label = name;
+            mFavContactState.avatar = avatar;
+            mFavContactCallback.refreshView(mFavContactTile, mFavContactState);
+        }
     }
 
     // Time
