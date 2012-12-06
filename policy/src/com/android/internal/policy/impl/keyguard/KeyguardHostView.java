@@ -68,7 +68,7 @@ public class KeyguardHostView extends KeyguardViewBase {
     // Found in KeyguardAppWidgetPickActivity.java
     static final int APPWIDGET_HOST_ID = 0x4B455947;
 
-    private final int MAX_WIDGETS = 5;
+    private int MAX_WIDGETS;
 
     private AppWidgetHost mAppWidgetHost;
     private AppWidgetManager mAppWidgetManager;
@@ -231,6 +231,7 @@ public class KeyguardHostView extends KeyguardViewBase {
         addDefaultWidgets();
 
         addWidgetsFromSettings();
+        MAX_WIDGETS = numWidgets() + 1;
         if (numWidgets() >= MAX_WIDGETS) {
             setAddWidgetEnabled(false);
         }
@@ -325,6 +326,7 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         @Override
         public void onAddView(View v) {
+            MAX_WIDGETS = numWidgets() + 1;
             if (numWidgets() >= MAX_WIDGETS) {
                 setAddWidgetEnabled(false);
             }
@@ -332,6 +334,7 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         @Override
         public void onRemoveView(View v) {
+            MAX_WIDGETS = numWidgets() + 1;
             if (numWidgets() < MAX_WIDGETS) {
                 setAddWidgetEnabled(true);
             }
