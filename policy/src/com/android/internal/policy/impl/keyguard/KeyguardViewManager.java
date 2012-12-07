@@ -160,6 +160,8 @@ public class KeyguardViewManager {
                 // Always process media keys, regardless of focus
                 if (mKeyguardView.dispatchKeyEvent(event)) {
                     return true;
+                } else if (keyCode == KeyEvent.KEYCODE_HOME && mKeyguardView.handleHomeKey()) {
+                    return true;
                 }
             }
             return super.dispatchKeyEvent(event);
