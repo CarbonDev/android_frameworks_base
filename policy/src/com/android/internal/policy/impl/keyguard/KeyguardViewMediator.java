@@ -243,8 +243,6 @@ public class KeyguardViewMediator {
     private int mUnlockSoundId;
     private int mLockSoundStreamId;
 
-    private ProfileManager mProfileManager;
-
     private int mSlideLockDelay;
 
     /**
