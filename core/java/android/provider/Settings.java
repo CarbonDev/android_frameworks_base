@@ -3041,7 +3041,7 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_BACKGROUND = "lockscreen_background";
 
-         /**
+        /**
          * Action for long-pressing back button on lock screen
          * @hide
          */
