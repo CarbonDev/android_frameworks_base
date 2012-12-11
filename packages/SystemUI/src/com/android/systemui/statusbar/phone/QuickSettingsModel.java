@@ -406,9 +406,11 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     }
 
     void setUserTileInfo(String name, Drawable avatar) {
-        mUserState.label = name;
-        mUserState.avatar = avatar;
-        mUserCallback.refreshView(mUserTile, mUserState);
+        if (mUserCallback != null) {
+            mUserState.label = name;
+            mUserState.avatar = avatar;
+            mUserCallback.refreshView(mUserTile, mUserState);
+        }
     }
 
     // Time
@@ -1027,8 +1029,11 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     }
 
     void onNFCChanged() {
-        NfcAdapter adapter = NfcAdapter.getDefaultAdapter();
-        boolean enabled = adapter.isEnabled();
+        NfcAdapter adapter = NfcAdapter.getDefaultAdapter(mContext);
+        boolean enabled = false;
+        if (adapter != null) {
+            enabled = adapter.isEnabled();
+        }
         mNFCState.enabled = enabled;
         mNFCState.iconId = enabled
                 ? R.drawable.ic_qs_nfc_on

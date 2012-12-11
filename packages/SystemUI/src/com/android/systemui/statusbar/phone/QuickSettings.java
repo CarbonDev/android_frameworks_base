@@ -498,6 +498,7 @@ class QuickSettings {
                 mModel.addTimeTile(quick, new QuickSettingsModel.RefreshCallback() {
                     @Override
                     public void refreshView(QuickSettingsTileView view, State alarmState) {
+
                     }
                 });
                 mDynamicSpannedTiles.add(quick);
@@ -645,7 +646,7 @@ class QuickSettings {
                 quick.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        startSettingsActivity(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+                        startSettingsActivity(android.provider.Settings.ACTION_DATA_ROAMING_SETTINGS);
                         return true;
                     }
                 });
@@ -901,7 +902,10 @@ class QuickSettings {
                     @Override
                     public void onClick(View v) {
                         NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
-                        boolean enabled = mNfcAdapter.isEnabled();
+                        boolean enabled = false;
+                        if (mNfcAdapter != null) {
+                            enabled = mNfcAdapter.isEnabled();
+                        }
                         if (enabled) {
                             mNfcAdapter.disable();
                         } else {
