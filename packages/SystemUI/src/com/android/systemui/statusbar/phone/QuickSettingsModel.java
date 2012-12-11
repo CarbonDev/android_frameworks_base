@@ -29,17 +29,23 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.hardware.display.WifiDisplayStatus;
+import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
+import android.nfc.NfcAdapter;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.internal.view.RotationPolicy;
+import com.android.internal.telephony.PhoneConstants;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChangeCallback;
 import com.android.systemui.statusbar.policy.BrightnessController.BrightnessStateChangeCallback;
@@ -47,6 +53,12 @@ import com.android.systemui.statusbar.policy.CurrentUserTracker;
 import com.android.systemui.statusbar.policy.LocationController.LocationGpsStateChangeCallback;
 import com.android.systemui.statusbar.policy.NetworkController.NetworkSignalChangedCallback;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +70,13 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
 
     // Sett InputMethoManagerService
     private static final String TAG_TRY_SUPPRESSING_IME_SWITCHER = "TrySuppressingImeSwitcher";
+
+    public static final String FAST_CHARGE_DIR = "/sys/kernel/fast_charge";
+    public static final String FAST_CHARGE_FILE = "force_fast_charge";
+
+    private int dataState = -1;
+
+    private WifiManager wifiManager;
 
     /** Represents the state of a given attribute. */
     static class State {
@@ -227,6 +246,50 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mRotationLockCallback;
     private State mRotationLockState = new State();
 
+    private QuickSettingsTileView mVibrateTile;
+    private RefreshCallback mVibrateCallback;
+    private State mVibrateState = new State();
+
+    private QuickSettingsTileView mSilentTile;
+    private RefreshCallback mSilentCallback;
+    private State mSilentState = new State();
+
+    private QuickSettingsTileView mFChargeTile;
+    private RefreshCallback mFChargeCallback;
+    private State mFChargeState = new State();
+
+    private QuickSettingsTileView mNFCTile;
+    private RefreshCallback mNFCCallback;
+    private State mNFCState = new State();
+
+    private QuickSettingsTileView m2gTile;
+    private RefreshCallback m2gCallback;
+    private State m2gState = new State();
+
+    private QuickSettingsTileView mLTETile;
+    private RefreshCallback mLTECallback;
+    private State mLTEState = new State(); 
+    
+    private QuickSettingsTileView mSyncTile;
+    private RefreshCallback mSyncCallback;
+    private State mSyncState = new State();
+
+    private QuickSettingsTileView mTorchTile;
+    private RefreshCallback mTorchCallback;
+    private State mTorchState = new State();
+
+    private QuickSettingsTileView mWifiTetherTile;
+    private RefreshCallback mWifiTetherCallback;
+    private State mWifiTetherState = new State();
+
+ /*   private QuickSettingsTileView mBTTetherTile;
+    private RefreshCallback mBTTetherCallback;
+    private State mBTTetherState = new State(); */
+
+    private QuickSettingsTileView mUSBTetherTile;
+    private RefreshCallback mUSBTetherCallback;
+    private State mUSBTetherState = new State();
+
     private QuickSettingsTileView mBrightnessTile;
     private RefreshCallback mBrightnessCallback;
     private BrightnessState mBrightnessState = new BrightnessState();
@@ -260,7 +323,22 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         IntentFilter alarmIntentFilter = new IntentFilter();
         alarmIntentFilter.addAction(Intent.ACTION_ALARM_CHANGED);
         context.registerReceiver(mAlarmIntentReceiver, alarmIntentFilter);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED);
+        context.registerReceiver(mBroadcastReceiver, filter);
     }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(context);
+            if (NfcAdapter.ACTION_ADAPTER_STATE_CHANGED.equals(intent.getAction())) {
+                refreshNFCTile();
+            }
+        }
+    };
 
     void updateResources(ArrayList<String> toggles) {
         for (String toggle : toggles) {
@@ -274,6 +352,28 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
                 refreshBrightnessTile();
             if (toggle.equals(QuickSettings.ROTATE_TOGGLE))
                 refreshRotationLockTile();
+	        if (toggle.equals(QuickSettings.VIBRATE_TOGGLE))
+                refreshVibrateTile();
+            if (toggle.equals(QuickSettings.SILENT_TOGGLE))
+                refreshSilentTile();
+            if (toggle.equals(QuickSettings.NFC_TOGGLE))
+                refreshNFCTile();
+            if (toggle.equals(QuickSettings.SYNC_TOGGLE))
+                refreshSyncTile();
+            if (toggle.equals(QuickSettings.TORCH_TOGGLE))
+                refreshTorchTile();
+            if (toggle.equals(QuickSettings.WIFI_TETHER_TOGGLE))
+                refreshWifiTetherTile();
+            if (toggle.equals(QuickSettings.USB_TETHER_TOGGLE))
+                refreshUSBTetherTile();
+           /* if (toggle.equals(QuickSettings.BT_TETHER_TOGGLE))
+                refreshBTTetherTile();  */
+            if (toggle.equals(QuickSettings.FCHARGE_TOGGLE))
+                refreshFChargeTile();
+            if (toggle.equals(QuickSettings.TWOG_TOGGLE))
+                refresh2gTile();
+            if (toggle.equals(QuickSettings.LTE_TOGGLE))
+                refreshLTETile();
         }
 
     }
@@ -728,6 +828,329 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         }
     }
 
+    // Vibrate
+    void addVibrateTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mVibrateTile = view;
+        mVibrateCallback = cb;
+        onVibrateChanged();
+    }
+
+    void onVibrateChanged() {
+        AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        boolean enabled = am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE;
+        mVibrateState.enabled = enabled;
+        mVibrateState.iconId = enabled
+                ? R.drawable.ic_qs_vibrate_on
+                : R.drawable.ic_qs_vibrate_off;
+        mVibrateState.label = enabled
+                ? mContext.getString(R.string.quick_settings_vibrate_on_label)
+                : mContext.getString(R.string.quick_settings_vibrate_off_label);
+
+        if (mVibrateTile != null && mVibrateCallback != null) {
+            mVibrateCallback.refreshView(mVibrateTile, mVibrateState);
+        }
+    }
+
+    void refreshVibrateTile() {
+        if (mVibrateTile != null) {
+            onVibrateChanged();
+        }
+    }
+
+    // Silent
+    void addSilentTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mSilentTile = view;
+        mSilentCallback = cb;
+        onSilentChanged();
+    }
+
+    void onSilentChanged() {
+        AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        boolean enabled = am.getRingerMode() == AudioManager.RINGER_MODE_SILENT;
+        mSilentState.enabled = enabled;
+        mSilentState.iconId = enabled
+                ? R.drawable.ic_qs_silence_on
+                : R.drawable.ic_qs_silence_off;
+        mSilentState.label = enabled
+                ? mContext.getString(R.string.quick_settings_silent_on_label)
+                : mContext.getString(R.string.quick_settings_silent_off_label);
+
+        if (mSilentTile != null && mSilentCallback != null) {
+            mSilentCallback.refreshView(mSilentTile, mSilentState);
+        }
+    }
+
+    void refreshSilentTile() {
+        if (mSilentTile != null) {
+            onSilentChanged();
+        }
+    }
+
+    // Fcharge
+    void addFChargeTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mFChargeTile = view;
+        mFChargeCallback = cb;
+        onFChargeChanged();
+    }
+
+    void onFChargeChanged() {
+        boolean enabled = isFastChargeOn();
+        mFChargeState.enabled = enabled;
+        mFChargeState.iconId = enabled
+                ? R.drawable.ic_qs_fcharge_on
+                : R.drawable.ic_qs_fcharge_off;
+        mFChargeState.label = enabled
+                ? mContext.getString(R.string.quick_settings_fcharge_on_label)
+                : mContext.getString(R.string.quick_settings_fcharge_off_label);
+
+        if (mFChargeTile != null && mFChargeCallback != null) {
+            mFChargeCallback.refreshView(mFChargeTile, mFChargeState);
+        }
+    }
+
+    void refreshFChargeTile() {
+        if (mFChargeTile != null) {
+            onFChargeChanged();
+        }
+    }
+
+    public boolean isFastChargeOn() {
+        try {
+            File fastcharge = new File(FAST_CHARGE_DIR, FAST_CHARGE_FILE);
+            FileReader reader = new FileReader(fastcharge);
+            BufferedReader breader = new BufferedReader(reader);
+            return (breader.readLine().equals("1"));
+        } catch (IOException e) {
+            Log.e("FChargeToggle", "Couldn't read fast_charge file");
+            return false;
+        }
+    }
+
+    // Sync
+    void addSyncTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mSyncTile = view;
+        mSyncCallback = cb;
+        onSyncChanged();
+    }
+
+    void onSyncChanged() {
+        boolean enabled = ContentResolver.getMasterSyncAutomatically();
+        mSyncState.enabled = enabled;
+        mSyncState.iconId = enabled
+                ? R.drawable.ic_qs_sync_on
+                : R.drawable.ic_qs_sync_off;
+        mSyncState.label = enabled
+                ? mContext.getString(R.string.quick_settings_sync_on_label)
+                : mContext.getString(R.string.quick_settings_sync_off_label);
+
+        if (mSyncTile != null && mSyncCallback != null) {
+            mSyncCallback.refreshView(mSyncTile, mSyncState);
+        }
+    }
+
+    void refreshSyncTile() {
+        if (mSyncTile != null) {
+            onSyncChanged();
+        }
+    }
+
+    // LTE
+    void addLTETile(QuickSettingsTileView view, RefreshCallback cb) {
+        mLTETile = view;
+        mLTECallback = cb;
+        onLTEChanged();
+    }
+
+    void onLTEChanged() {
+        try {
+            dataState = Settings.Global.getInt(mContext.getContentResolver(), Settings.Global.PREFERRED_NETWORK_MODE);
+        } catch (SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        boolean enabled = (dataState == PhoneConstants.NT_MODE_LTE_CDMA_EVDO) || (dataState == PhoneConstants.NT_MODE_GLOBAL);
+        mLTEState.enabled = enabled;
+        mLTEState.iconId = enabled
+                ? R.drawable.ic_qs_lte_on
+                : R.drawable.ic_qs_lte_off;
+        mLTEState.label = enabled
+                ? mContext.getString(R.string.quick_settings_lte_on_label)
+                : mContext.getString(R.string.quick_settings_lte_off_label);
+
+        if (mLTETile != null && mLTECallback != null) {
+            mLTECallback.refreshView(mLTETile, mLTEState);
+        }
+    }
+
+    void refreshLTETile() {
+        if (mLTETile != null) {
+            onLTEChanged();
+        }
+    }
+
+    // 2g
+    void add2gTile(QuickSettingsTileView view, RefreshCallback cb) {
+        m2gTile = view;
+        m2gCallback = cb;
+        on2gChanged();
+    }
+
+    void on2gChanged() {
+        try {
+            dataState = Settings.Global.getInt(mContext.getContentResolver(), Settings.Global.PREFERRED_NETWORK_MODE);
+        } catch (SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        boolean enabled = dataState == PhoneConstants.NT_MODE_GSM_ONLY;
+        m2gState.enabled = enabled;
+        m2gState.iconId = enabled
+                ? R.drawable.ic_qs_2g_on
+                : R.drawable.ic_qs_2g_off;
+        m2gState.label = enabled
+                ? mContext.getString(R.string.quick_settings_twog_on_label)
+                : mContext.getString(R.string.quick_settings_twog_off_label);
+
+        if (m2gTile != null && m2gCallback != null) {
+            m2gCallback.refreshView(m2gTile, m2gState);
+        }
+    }
+
+    void refresh2gTile() {
+        if (m2gTile != null) {
+            on2gChanged();
+        }
+    }
+
+    // NFC
+    void addNFCTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mNFCTile = view;
+        mNFCCallback = cb;
+    }
+
+    void onNFCChanged() {
+        NfcAdapter adapter = NfcAdapter.getDefaultAdapter();
+        boolean enabled = adapter.isEnabled();
+        mNFCState.enabled = enabled;
+        mNFCState.iconId = enabled
+                ? R.drawable.ic_qs_nfc_on
+                : R.drawable.ic_qs_nfc_off;
+        mNFCState.label = enabled
+                ? mContext.getString(R.string.quick_settings_nfc_on_label)
+                : mContext.getString(R.string.quick_settings_nfc_off_label);
+
+        if (mNFCTile != null && mNFCCallback != null) {
+            mNFCCallback.refreshView(mNFCTile, mNFCState);
+        }
+    }
+
+    void refreshNFCTile() {
+        if (mNFCTile != null) {
+            onNFCChanged();
+        }
+    }
+
+    // Wifi Tether
+    void addWifiTetherTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mWifiTetherTile = view;
+        mWifiTetherCallback = cb;
+        onWifiTetherChanged();
+    }
+
+    void onWifiTetherChanged() {
+        wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        int mWifiApState = wifiManager.getWifiApState();
+        boolean enabled = mWifiApState == WifiManager.WIFI_AP_STATE_ENABLED || mWifiApState == WifiManager.WIFI_AP_STATE_ENABLING;
+        mWifiTetherState.enabled = enabled;
+        mWifiTetherState.iconId = enabled
+                ? R.drawable.ic_qs_wifi_tether_on
+                : R.drawable.ic_qs_wifi_tether_off;
+        mWifiTetherState.label = enabled
+                ? mContext.getString(R.string.quick_settings_wifi_tether_on_label)
+                : mContext.getString(R.string.quick_settings_wifi_tether_off_label);
+
+        if (mWifiTetherTile != null && mWifiTetherCallback != null) {
+            mWifiTetherCallback.refreshView(mWifiTetherTile, mWifiTetherState);
+        }
+    }
+
+    void refreshWifiTetherTile() {
+        if (mWifiTetherTile != null) {
+            onWifiTetherChanged();
+        }
+    }
+
+    // USB Tether
+    void addUSBTetherTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mUSBTetherTile = view;
+        mUSBTetherCallback = cb;
+        onUSBTetherChanged();
+    }
+
+    void onUSBTetherChanged() {
+        boolean enabled = updateUsbState();
+        mUSBTetherState.enabled = enabled;
+        mUSBTetherState.iconId = enabled
+                ? R.drawable.ic_qs_usb_tether_on
+                : R.drawable.ic_qs_usb_tether_off;
+        mUSBTetherState.label = enabled
+                ? mContext.getString(R.string.quick_settings_usb_tether_on_label)
+                : mContext.getString(R.string.quick_settings_usb_tether_off_label);
+
+        if (mUSBTetherTile != null && mUSBTetherCallback != null) {
+            mUSBTetherCallback.refreshView(mUSBTetherTile, mUSBTetherState);
+        }
+    }
+
+    void refreshUSBTetherTile() {
+        if (mUSBTetherTile != null) {
+            onUSBTetherChanged();
+        }
+    }
+
+    public boolean updateUsbState() {
+        ConnectivityManager connManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        String[] mUsbRegexs = connManager.getTetherableUsbRegexs();
+        String[] tethered = connManager.getTetheredIfaces();
+        boolean usbTethered = false;
+        for (String s : tethered) {
+            for (String regex : mUsbRegexs) {
+                if (s.matches(regex)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+      return false;
+    }
+
+    // Torch
+    void addTorchTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mTorchTile = view;
+        mTorchCallback = cb;
+        onTorchChanged();
+    }
+
+    void onTorchChanged() {
+        boolean enabled = Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.TORCH_STATE, false);
+        mTorchState.enabled = enabled;
+        mTorchState.iconId = enabled
+                ? R.drawable.ic_qs_torch_on
+                : R.drawable.ic_qs_torch_off;
+        mTorchState.label = enabled
+                ? mContext.getString(R.string.quick_settings_torch_on_label)
+                : mContext.getString(R.string.quick_settings_torch_off_label);
+
+        if (mTorchTile != null && mTorchCallback != null) {
+            mTorchCallback.refreshView(mTorchTile, mTorchState);
+        }
+    }
+
+    void refreshTorchTile() {
+        if (mTorchTile != null) {
+            onTorchChanged();
+        }
+    }
+
     // Brightness
     void addBrightnessTile(QuickSettingsTileView view, RefreshCallback cb) {
         mBrightnessTile = view;
@@ -767,7 +1190,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         String toggles = Settings.System.getString(resolver, Settings.System.QUICK_TOGGLES);
        
         if (toggles != null) {
-            ArrayList<String> tiles = new ArrayList<String>();
+            ArrayList tiles = new ArrayList();
             String[] splitter = toggles.split("\\|");
             for (String toggle : splitter) {
                 tiles.add(toggle);
@@ -778,8 +1201,8 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         return getDefaultTiles().contains(tile);
     }
     
-    private ArrayList<String> getDefaultTiles() {
-        ArrayList<String> tiles = new ArrayList<String>();
+    private ArrayList getDefaultTiles() {
+        ArrayList tiles = new ArrayList();
         tiles.add(QuickSettings.USER_TOGGLE);
         tiles.add(QuickSettings.BRIGHTNESS_TOGGLE);
         tiles.add(QuickSettings.SETTINGS_TOGGLE);
