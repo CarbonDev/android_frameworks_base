@@ -4281,4 +4281,9 @@
     <string name="permdesc_sendMockSms">Allows the app to send mock SMS messages.
         This allows an app send SMS to trusted applications. Malicious apps could send messages
         continuously, blocking the device notification system and disrupting the user.</string>
+
+    <!-- Hardware Rotation lock string -->
+    <string name="toast_rotation_unlocked">Display rotation unlocked</string>
+    <string name="toast_rotation_locked">Display rotation locked</string>
+
 </resources>

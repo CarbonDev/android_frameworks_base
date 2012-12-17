@@ -2079,4 +2079,8 @@
   <!-- Irda Service -->
   <java-symbol type="bool" name="config_enableIrdaManagerService" />
 
+  <!-- HW rotation lock -->
+  <java-symbol type="string" name="toast_rotation_unlocked" />
+  <java-symbol type="string" name="toast_rotation_locked" />
+
 </resources>
