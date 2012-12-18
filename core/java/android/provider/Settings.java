@@ -3680,8 +3680,15 @@ public final class Settings {
         };
 
         /**
+         * use Alt Activity Resolver Grid
+         * boolean
+         *
+         * @hide
+         */
+        public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
+
+         /**
          * enabled and order of quick toggles
-         * 
          * @hide
          */
         public static final String QUICK_TOGGLES = "quick_toggles";
