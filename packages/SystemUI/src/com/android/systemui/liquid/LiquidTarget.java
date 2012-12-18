@@ -49,6 +49,7 @@ import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.util.Slog;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -88,6 +89,7 @@ public class LiquidTarget {
 	public final static String ACTION_SEARCH = "**search**";
     public final static String ACTION_NULL = "**null**";
 
+    private boolean mRecentButtonLock = false;
     private int mInjectKeyCode;
     private Context mContext;
     private Handler mHandler;
@@ -102,6 +104,21 @@ public class LiquidTarget {
 
     public boolean launchAction (String action){
 
+        if (action.equals(ACTION_RECENTS)) {
+            if (!mRecentButtonLock) {
+                try {
+                    IStatusBarService.Stub.asInterface(
+                            ServiceManager.getService(Context.STATUS_BAR_SERVICE))
+                            .toggleRecentApps();
+                } catch (RemoteException e) {
+                    // nuu
+                }
+                mRecentButtonLock = true;
+                // 250ms animation duration + 150ms start delay of animation + 1 for good luck
+                mHandler.postDelayed(mUnlockRecents, 401);
+            }
+            return true;
+        }
         try {
             ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
         } catch (RemoteException e) {
@@ -109,16 +126,13 @@ public class LiquidTarget {
 
         if (action == null || action.equals(ACTION_NULL)) {
             return false;
-        }
-        if (action.equals(ACTION_HOME)) {
+        } else if (action.equals(ACTION_HOME)) {
             injectKeyDelayed(KeyEvent.KEYCODE_HOME);
             return true;
-        }
-        if (action.equals(ACTION_BACK)) {
+        } else if (action.equals(ACTION_BACK)) {
             injectKeyDelayed(KeyEvent.KEYCODE_BACK);
             return true;
-        }
-        if (action.equals(ACTION_MENU)) {
+        } else if (action.equals(ACTION_MENU)) {
             injectKeyDelayed(KeyEvent.KEYCODE_MENU);
             return true;
         } else if (action.equals(ACTION_SEARCH)) {
@@ -127,16 +141,13 @@ public class LiquidTarget {
         } else if (action.equals(ACTION_POWER)) {
             injectKeyDelayed(KeyEvent.KEYCODE_POWER);
             return true;
-        }
-        if (action.equals(ACTION_IME)) {
+        } else if (action.equals(ACTION_IME)) {
             mContext.sendBroadcast(new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"));
             return true;
-        }
-        if (action.equals(ACTION_SCREENSHOT)) {
+        } else if (action.equals(ACTION_SCREENSHOT)) {
             takeScreenshot();
             return true;
-        }
-        if (action.equals(ACTION_TODAY)) {
+        } else if (action.equals(ACTION_TODAY)) {
             long startMillis = System.currentTimeMillis();
             Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
             builder.appendPath("time");
@@ -146,44 +157,36 @@ public class LiquidTarget {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
-        }
-        if (action.equals(ACTION_CLOCKOPTIONS)) {
+        } else if (action.equals(ACTION_CLOCKOPTIONS)) {
             Intent intent = new Intent(Intent.ACTION_QUICK_CLOCK);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
-        }
-        if (action.equals(ACTION_EVENT)) {
+        } else if (action.equals(ACTION_EVENT)) {
             Intent intent = new Intent(Intent.ACTION_INSERT)
                       .setData(Events.CONTENT_URI);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
-        }
-        if (action.equals(ACTION_VOICEASSIST)) {
+        } else if (action.equals(ACTION_VOICEASSIST)) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
-        }
-        if (action.equals(ACTION_ALARM)) {
-			Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else if (action.equals(ACTION_ALARM)) {
+            Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-			return true;
-		}
-        if (action.equals(ACTION_ASSIST)) {
+            return true;
+        } else if (action.equals(ACTION_ASSIST)) {
             Intent intent = new Intent(Intent.ACTION_ASSIST);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
-        }
-        if (action.equals(ACTION_KILL)) {
+        } else if (action.equals(ACTION_KILL)) {
             mHandler.post(mKillTask);
             return true;
-        }
-
-        if (action.equals(ACTION_VIB)) {
+        } else if (action.equals(ACTION_VIB)) {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             if(am != null){
                 if(am.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE) {
@@ -201,8 +204,7 @@ public class LiquidTarget {
                 }
             }
             return true;
-        }
-        if (action.equals(ACTION_SILENT)) {
+        } else if (action.equals(ACTION_SILENT)) {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             if(am != null){
                 if(am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
@@ -216,8 +218,7 @@ public class LiquidTarget {
                 }
             }
             return true;
-        }
-        if (action.equals(ACTION_SILENT_VIB)) {
+        } else if (action.equals(ACTION_SILENT_VIB)) {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             if(am != null){
                 if(am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
@@ -237,33 +238,27 @@ public class LiquidTarget {
                 }
             }
             return true;
-        }
-
-        if (action.equals(ACTION_RECENTS)) {
-            mHandler.post(mToggleRecents);
-            return true;
-        }
-        if (action.equals(ACTION_NOTIFICATIONS)) {
+        } else if (action.equals(ACTION_NOTIFICATIONS)) {
             try {
                 IStatusBarService.Stub.asInterface(
-                        ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).expandNotificationsPanel();
+                        ServiceManager.getService(Context.STATUS_BAR_SERVICE)).expandNotificationsPanel();
             } catch (RemoteException e) {
                 // A RemoteException is like a cold
                 // Let's hope we don't catch one!
             }
             return true;
         }
-            // we must have a custom uri
+        // we must have a custom uri
         try {
             Intent intent = Intent.parseUri(action, 0);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
-            } catch (URISyntaxException e) {
-                    Log.e(TAG, "URISyntaxException: [" + action + "]");
-            } catch (ActivityNotFoundException e){
-                    Log.e(TAG, "ActivityNotFound: [" + action + "]");
-            }
+        } catch (URISyntaxException e) {
+                Log.e(TAG, "URISyntaxException: [" + action + "]");
+        } catch (ActivityNotFoundException e){
+                Log.e(TAG, "ActivityNotFound: [" + action + "]");
+        }
         return false; // we didn't handle the action!
     }
 
@@ -411,14 +406,10 @@ public class LiquidTarget {
         }
     };
 
-    Runnable mToggleRecents = new Runnable() {
+    final Runnable mUnlockRecents = new Runnable() {
         @Override
         public void run() {
-            try {
-                IStatusBarService.Stub.asInterface(
-                        ServiceManager.getService(Context.STATUS_BAR_SERVICE)).toggleRecentApps();
-            } catch (RemoteException e) {
-            }
+            mRecentButtonLock = false;
         }
     };
 
