@@ -16,11 +16,8 @@
 
 package com.android.systemui.carbon;
 
-import java.net.URISyntaxException;
-
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActivityManagerNative;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.ContentUris;
@@ -49,7 +46,6 @@ import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.util.Slog;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -58,22 +54,21 @@ import android.widget.Toast;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 /*
  * Helper classes for managing Carbon custom actions
  */
-
 public class CarbonTarget {
 
-    final String TAG = "CarbonTarget";
+    public final static String TAG = "CarbonTarget";
 
     public final static String ACTION_HOME = "**home**";
     public final static String ACTION_BACK = "**back**";
     public final static String ACTION_SCREENSHOT = "**screenshot**";
     public final static String ACTION_MENU = "**menu**";
     public final static String ACTION_POWER = "**power**";
-    public final static String ACTION_LAST_APP = "**lastapp**";
     public final static String ACTION_NOTIFICATIONS = "**notifications**";
     public final static String ACTION_RECENTS = "**recents**";
     public final static String ACTION_IME = "**ime**";
@@ -87,48 +82,45 @@ public class CarbonTarget {
     public final static String ACTION_ALARM = "**alarm**";
     public final static String ACTION_TODAY = "**today**";
     public final static String ACTION_CLOCKOPTIONS = "**clockoptions**";
-	public final static String ACTION_VOICEASSIST = "**voiceassist**";
-	public final static String ACTION_TORCH = "**torch**";
-	public final static String ACTION_SEARCH = "**search**";
+    public final static String ACTION_VOICEASSIST = "**voiceassist**";
+    public final static String ACTION_TORCH = "**torch**";
+    public final static String ACTION_SEARCH = "**search**";
+    public final static String ACTION_LAST_APP = "**lastapp**";
     public final static String ACTION_NULL = "**null**";
 
-    private boolean mRecentButtonLock = false;
     private int mInjectKeyCode;
-    private Context mContext;
-    private Handler mHandler;
+    final private Context mContext;
+    final private Handler mHandler;
 
     final Object mScreenshotLock = new Object();
     ServiceConnection mScreenshotConnection = null;
 
-    public CarbonTarget (Context context){
+    private static CarbonTarget sInstance = null;
+
+    public static CarbonTarget getInstance(Context c) {
+        if (sInstance == null) {
+            sInstance = new CarbonTarget(c);
+        }
+        return sInstance;
+    }
+
+    public CarbonTarget(Context context) {
         mContext = context;
         mHandler = new Handler();
     }
 
-    public boolean launchAction (String action){
-
-        if (action.equals(ACTION_RECENTS)) {
-            if (!mRecentButtonLock) {
-                try {
-                    IStatusBarService.Stub.asInterface(
-                            ServiceManager.getService(Context.STATUS_BAR_SERVICE))
-                            .toggleRecentApps();
-                } catch (RemoteException e) {
-                    // nuu
-                }
-                mRecentButtonLock = true;
-                // 250ms animation duration + 150ms start delay of animation + 1 for good luck
-                mHandler.postDelayed(mUnlockRecents, 401);
-            }
-            return true;
-        }
-        try {
-            ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
-        } catch (RemoteException e) {
-        }
-
+    public boolean launchAction(String action) {
         if (action == null || action.equals(ACTION_NULL)) {
             return false;
+        } else if (action.equals(ACTION_RECENTS)) {
+            try {
+                IStatusBarService.Stub.asInterface(
+                        ServiceManager.getService(Context.STATUS_BAR_SERVICE))
+                        .toggleRecentApps();
+            } catch (RemoteException e) {
+                // nuu
+            }
+            return true;
         } else if (action.equals(ACTION_HOME)) {
             injectKeyDelayed(KeyEvent.KEYCODE_HOME);
             return true;
@@ -152,7 +144,7 @@ public class CarbonTarget {
             return true;
         } else if (action.equals(ACTION_TORCH)) {
             Intent intent = new Intent("android.intent.action.MAIN");
-            intent.setComponent(ComponentName.unflattenFromString("com.settings.Torch/.TorchActivity"));
+            intent.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
             intent.addCategory("android.intent.category.LAUNCHER");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
@@ -163,7 +155,7 @@ public class CarbonTarget {
             builder.appendPath("time");
             ContentUris.appendId(builder, startMillis);
             Intent intent = new Intent(Intent.ACTION_VIEW)
-                      .setData(builder.build());
+                    .setData(builder.build());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
@@ -174,7 +166,7 @@ public class CarbonTarget {
             return true;
         } else if (action.equals(ACTION_EVENT)) {
             Intent intent = new Intent(Intent.ACTION_INSERT)
-                      .setData(Events.CONTENT_URI);
+                    .setData(Events.CONTENT_URI);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
             return true;
@@ -198,17 +190,18 @@ public class CarbonTarget {
             return true;
         } else if (action.equals(ACTION_VIB)) {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-            if(am != null){
-                if(am.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE) {
+            if (am != null) {
+                if (am.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE) {
                     am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                     Vibrator vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-                    if(vib != null){
+                    if (vib != null) {
                         vib.vibrate(50);
                     }
-                }else{
+                } else {
                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, (int)(ToneGenerator.MAX_VOLUME * 0.85));
-                    if(tg != null){
+                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION,
+                            (int) (ToneGenerator.MAX_VOLUME * 0.85));
+                    if (tg != null) {
                         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
                     }
                 }
@@ -216,13 +209,14 @@ public class CarbonTarget {
             return true;
         } else if (action.equals(ACTION_SILENT)) {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-            if(am != null){
-                if(am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+            if (am != null) {
+                if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
                     am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                }else{
+                } else {
                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, (int)(ToneGenerator.MAX_VOLUME * 0.85));
-                    if(tg != null){
+                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION,
+                            (int) (ToneGenerator.MAX_VOLUME * 0.85));
+                    if (tg != null) {
                         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
                     }
                 }
@@ -230,19 +224,20 @@ public class CarbonTarget {
             return true;
         } else if (action.equals(ACTION_SILENT_VIB)) {
             AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-            if(am != null){
-                if(am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+            if (am != null) {
+                if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
                     am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                     Vibrator vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-                    if(vib != null){
+                    if (vib != null) {
                         vib.vibrate(50);
                     }
-                } else if(am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+                } else if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
                     am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 } else {
                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, (int)(ToneGenerator.MAX_VOLUME * 0.85));
-                    if(tg != null){
+                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION,
+                            (int) (ToneGenerator.MAX_VOLUME * 0.85));
+                    if (tg != null) {
                         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
                     }
                 }
@@ -251,14 +246,14 @@ public class CarbonTarget {
         } else if (action.equals(ACTION_NOTIFICATIONS)) {
             try {
                 IStatusBarService.Stub.asInterface(
-                        ServiceManager.getService(Context.STATUS_BAR_SERVICE)).expandNotificationsPanel();
+                        ServiceManager.getService(Context.STATUS_BAR_SERVICE))
+                        .expandNotificationsPanel();
             } catch (RemoteException e) {
                 // A RemoteException is like a cold
                 // Let's hope we don't catch one!
             }
             return true;
-        }
-        else if (action.equals(ACTION_LAST_APP)) {
+        } else if (action.equals(ACTION_LAST_APP)) {
             toggleLastApp();
             return true;
         }
@@ -269,18 +264,14 @@ public class CarbonTarget {
             mContext.startActivity(intent);
             return true;
         } catch (URISyntaxException e) {
-                Log.e(TAG, "URISyntaxException: [" + action + "]");
-        } catch (ActivityNotFoundException e){
-                Log.e(TAG, "ActivityNotFound: [" + action + "]");
+            Log.e(TAG, "URISyntaxException: [" + action + "]");
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "ActivityNotFound: [" + action + "]");
         }
         return false; // we didn't handle the action!
     }
 
-
-    //not using yet and dont want to take time to get drawables... yes lazy dev.
-    // Yes Steve, You are a lazy Dev.  I need this :)  - Zaphod 12-01-12
     public Drawable getIconImage(String uri) {
-
         if (uri == null)
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
         if (uri.equals(ACTION_HOME))
@@ -307,13 +298,13 @@ public class CarbonTarget {
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_lastapp);
         try {
             return mContext.getPackageManager().getActivityIcon(Intent.parseUri(uri, 0));
-            } catch (NameNotFoundException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
-    } 
+    }
 
     public String getProperSummary(String uri) {
         if (uri.equals(ACTION_HOME))
@@ -363,7 +354,7 @@ public class CarbonTarget {
             }
         }
 
-        return (friendlyName != null)  ? friendlyName : intent.toUri(0);
+        return (friendlyName != null) ? friendlyName : intent.toUri(0);
     }
 
     private String getFriendlyShortcutName(Intent intent) {
@@ -376,18 +367,21 @@ public class CarbonTarget {
         return name != null ? name : intent.toUri(0);
     }
 
-    private void injectKeyDelayed(int keycode){
+    private void injectKeyDelayed(int keycode) {
         mInjectKeyCode = keycode;
         mHandler.removeCallbacks(onInjectKey_Down);
         mHandler.removeCallbacks(onInjectKey_Up);
         mHandler.post(onInjectKey_Down);
-        mHandler.postDelayed(onInjectKey_Up,10); // introduce small delay to handle key press
+        mHandler.postDelayed(onInjectKey_Up, 10); // introduce small delay to
+                                                  // handle key press
     }
 
     final Runnable onInjectKey_Down = new Runnable() {
         public void run() {
-            final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    KeyEvent.ACTION_DOWN, mInjectKeyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+            final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    KeyEvent.ACTION_DOWN, mInjectKeyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                    0,
                     KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
                     InputDevice.SOURCE_KEYBOARD);
             InputManager.getInstance().injectInputEvent(ev,
@@ -397,7 +391,8 @@ public class CarbonTarget {
 
     final Runnable onInjectKey_Up = new Runnable() {
         public void run() {
-            final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+            final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
                     KeyEvent.ACTION_UP, mInjectKeyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                     KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
                     InputDevice.SOURCE_KEYBOARD);
@@ -409,7 +404,8 @@ public class CarbonTarget {
     Runnable mKillTask = new Runnable() {
         public void run() {
             final Intent intent = new Intent(Intent.ACTION_MAIN);
-            final ActivityManager am = (ActivityManager) mContext.getSystemService(Activity.ACTIVITY_SERVICE);
+            final ActivityManager am = (ActivityManager) mContext
+                    .getSystemService(Activity.ACTIVITY_SERVICE);
             String defaultHomePackage = "com.android.launcher";
             intent.addCategory(Intent.CATEGORY_HOME);
             final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
@@ -418,16 +414,9 @@ public class CarbonTarget {
             }
             String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
             if (!defaultHomePackage.equals(packageName)) {
-                    am.forceStopPackage(packageName);
-                    Toast.makeText(mContext, R.string.app_killed_message, Toast.LENGTH_SHORT).show();
+                am.forceStopPackage(packageName);
+                Toast.makeText(mContext, R.string.app_killed_message, Toast.LENGTH_SHORT).show();
             }
-        }
-    };
-
-    final Runnable mUnlockRecents = new Runnable() {
-        @Override
-        public void run() {
-            mRecentButtonLock = false;
         }
     };
 
@@ -502,7 +491,7 @@ public class CarbonTarget {
                 public void onServiceDisconnected(ComponentName name) {
                 }
             };
-            if (mContext.bindService(intent, conn, mContext.BIND_AUTO_CREATE)) {
+            if (mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
                 mScreenshotConnection = conn;
                 H.postDelayed(mScreenshotTimeout, 10000);
             }

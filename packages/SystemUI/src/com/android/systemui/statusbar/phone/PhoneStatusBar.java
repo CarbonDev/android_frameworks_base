@@ -116,6 +116,7 @@ import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.carbon.CarbonTarget;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -767,7 +768,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 }
                 mQS.setService(this);
                 mQS.setBar(mStatusBarView);
-                mQS.updateResources();
+                mQS.setup(mNetworkController, mBluetoothController, mBatteryController,
+                        mLocationController);
 
             } else {
                 mQS = null; // fly away, be free
@@ -2756,18 +2758,22 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (newTheme != null &&
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
-            recreateStatusBar();
+            try {
+                Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
+            } catch (IOException e) {
+                // we're screwed here fellas
+            }
         } else {
 
             if (mClearButton instanceof TextView) {
                 ((TextView)mClearButton).setText(context.getText(R.string.status_bar_clear_all_button));
             }
+
+            // Update the QuickSettings container
+            if (mQS != null) mQS.updateResources();
+
             loadDimens();
         }
-
-        // Update the QuickSettings container
-        if (mQS != null) mQS.updateResources();
-
     }
 
     protected void loadDimens() {

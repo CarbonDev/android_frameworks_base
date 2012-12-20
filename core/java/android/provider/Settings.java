@@ -3518,6 +3518,20 @@ public final class Settings {
         public static final String QUICK_TOGGLE_FAV_CONTACT = "quick_toggle_fav_contact";
 
         /**
+         * enable and disable fast toggle in settings
+         *
+         * @hide
+         */
+        public static final String FAST_TOGGLE = "fast_toggle";
+
+        /**
+         * enable and disable fast toggle in settings
+         *
+         * @hide
+         */
+        public static final String CHOOSE_FASTTOGGLE_SIDE = "choose_fasttoggle_side";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

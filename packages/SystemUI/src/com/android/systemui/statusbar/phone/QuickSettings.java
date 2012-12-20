@@ -824,7 +824,7 @@ class QuickSettings {
                 quick.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AwesomeAction.getInstance(mContext).launchAction(AwesomeAction.ACTION_SILENT_VIB);
+                        CarbonTarget.getInstance(mContext).launchAction(CarbonTarget.ACTION_SILENT_VIB);
                         mModel.refreshSoundStateTile();
                     }
                 });
