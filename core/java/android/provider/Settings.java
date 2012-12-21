@@ -3194,6 +3194,11 @@ public final class Settings {
         public static final String USER_UI_MODE = "user_ui_mode";
 
         /**
+         * Custom carrier label
+         */
+        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
+
+        /**
          * User configurable flag for determining if NavBar is enabled
          *
          * @hide
