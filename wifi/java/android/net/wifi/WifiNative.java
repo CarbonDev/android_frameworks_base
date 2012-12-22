@@ -355,6 +355,10 @@ public class WifiNative {
     }
 
     public boolean setCountryCode(String countryCode) {
+        if (countryCode == null) {
+            // Ping the driver
+            return doBooleanCommand("DRIVER COUNTRY");
+        }
         return doBooleanCommand("DRIVER COUNTRY " + countryCode);
     }
 
