@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.EventLog;
@@ -432,6 +433,9 @@ public class WebSettingsClassic extends WebSettings {
             buffer.append(" Build/");
             buffer.append(id);
         }
+        final String liquidversion = SystemProperties.get("ro.liquid.version");
+        if (liquidversion != null && liquidversion.length() > 0)
+            buffer.append("; LiquidSmooth-" + liquidversion.replaceAll("([0-9\\.]+?)-.*","$1"));
         String mobile = context.getResources().getText(
             com.android.internal.R.string.web_user_agent_target_content).toString();
         final String base = context.getResources().getText(

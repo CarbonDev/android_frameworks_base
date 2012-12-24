@@ -87,6 +87,7 @@
             android:paddingLeft="6dip"
             android:layout_marginRight="8dip"
             android:gravity="center_vertical|left"
+            android:clickable="false"
             />
 
         <TextView
@@ -121,6 +122,14 @@
                 android:layout_width="wrap_content"
                 android:paddingLeft="4dip"
                 android:visibility="gone"
+                />
+            <com.android.systemui.statusbar.policy.CircleBattery
+                android:id="@+id/dock_circle_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:paddingLeft="4dip"
+                android:gravity="center_vertical|left"
                 />
             <ImageView
                 android:id="@+id/battery"

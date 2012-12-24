@@ -121,9 +121,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mIsWaitingForEcmExit = false;
     private boolean mHasTelephony;
     private boolean mHasVibrator;
-
     private Profile mChosenProfile;
-
 
     /**
      * @param context everything needs a context :(
@@ -305,7 +303,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             });
 
         // next: reboot
-	// only shown if enabled, enabled by default
+        // only shown if enabled, enabled by default
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.POWER_MENU_REBOOT_ENABLED, 1) == 1) {
             mItems.add(
@@ -396,7 +394,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         R.string.global_action_bug_report) {
 
                     public void onPress() {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getUiContext());
                         builder.setTitle(com.android.internal.R.string.bugreport_title);
                         builder.setMessage(com.android.internal.R.string.bugreport_message);
                         builder.setNegativeButton(com.android.internal.R.string.cancel, null);
@@ -438,13 +436,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // next: optionally add a list of users to switch to
-        if (SystemProperties.getBoolean("fw.power_user_switcher", false)) {
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_USER_ENABLED, 0) == 1) {
             addUsersToMenu(mItems);
         }
 
         // last: silent mode
         if ((Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_SILENT_ENABLED, 1) == 1) &&
+                Settings.System.POWER_MENU_SOUND_ENABLED, 1) == 1) &&
                 (SHOW_SILENT_TOGGLE)) {
             mItems.add(mSilentModeAction);
         }
@@ -469,6 +468,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         return mAdapter.getItem(position).onLongPress();
                     }
         });
+
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
 
         dialog.setOnDismissListener(this);

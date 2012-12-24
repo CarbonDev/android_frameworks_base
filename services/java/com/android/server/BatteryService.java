@@ -711,7 +711,6 @@ public final class BatteryService extends Binder {
                     com.android.internal.R.integer.config_notificationsBatteryMediumARGB);
             mBatteryFullARGB = mContext.getResources().getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryFullARGB);
-
             // Does the Device support changing battery LED colors?
             mMultiColorLed = context.getResources().getBoolean(
                     com.android.internal.R.bool.config_multiColorBatteryLed);
@@ -765,7 +764,7 @@ public final class BatteryService extends Binder {
                     mBatteryLight.setColor(mBatteryMediumARGB);
                 }
             } else {
-                //No lights if not charging and not low
+                // No lights if not charging and not low
                 mBatteryLight.turnOff();
             }
         }

@@ -398,6 +398,9 @@
     <!-- Content description of the alarm tile in quick settings (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_alarm">Alarm set for <xliff:g id="time" example="Wed 3:30 PM">%s</xliff:g>.</string>
 
+    <string name="accessibility_quick_settings_ringer">Sound <xliff:g id="state" example="Off">%s</xliff:g>.</string>
+    <string name="accessibility_quick_settings_vibration">Vibration <xliff:g id="state" example="Off">%s</xliff:g>.</string>
+
     <!-- Title of dialog shown when 2G-3G data usage has exceeded limit and has been disabled. [CHAR LIMIT=48] -->
     <string name="data_usage_disabled_dialog_3g_title">2G-3G data disabled</string>
     <!-- Title of dialog shown when 4G data usage has exceeded limit and has been disabled. [CHAR LIMIT=48] -->
@@ -510,69 +513,39 @@
     <string name="quick_settings_wifi_display_label">Wi-Fi Display</string>
     <!-- QuickSettings: Wifi display [CHAR LIMIT=NONE] -->
     <string name="quick_settings_wifi_display_no_connection_label">Wireless Display</string>
+    <!-- QuickSettings: Profile [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_profile_label">Profile</string>
     <!-- QuickSettings: Brightness dialog title [CHAR LIMIT=NONE] -->
     <string name="quick_settings_brightness_dialog_title">Brightness</string>
     <!-- QuickSettings: Brightness dialog auto brightness button [CHAR LIMIT=NONE] -->
     <string name="quick_settings_brightness_dialog_auto_brightness_label">AUTO</string>
 
-    <!--  Quick Settings -->
-    <string name="quick_settings_vibrate_on_label">Vibrate On</string>
-    <string name="quick_settings_vibrate_off_label">Vibrate Off</string>
-    <string name="quick_settings_silent_on_label">Silent On</string>
-    <string name="quick_settings_silent_off_label">Silent Off</string>
-    <string name="quick_settings_fcharge_on_label">F-Charge On</string>
-    <string name="quick_settings_fcharge_off_label">F-Charge Off</string>
-    <string name="quick_settings_torch_on_label">Torch On</string>
-    <string name="quick_settings_torch_off_label">Torch Off</string>
-    <string name="quick_settings_nfc_on_label">NFC On</string>
-    <string name="quick_settings_nfc_off_label">NFC Off</string>
-    <string name="quick_settings_wifi_tether_on_label">Wifi Tether On</string>
-    <string name="quick_settings_wifi_tether_off_label">Wifi Tether Off</string>
-    <string name="quick_settings_bt_tether_on_label">BT Tether On</string>
-    <string name="quick_settings_bt_tether_off_label">BT Tether Off</string>
-    <string name="quick_settings_usb_tether_on_label">USB Tether On</string>
-    <string name="quick_settings_usb_tether_off_label">USB Tether Off</string>
-    <string name="quick_settings_sync_on_label">Sync On</string>
-    <string name="quick_settings_sync_off_label">Sync Off</string>
-    <string name="quick_settings_twog_on_label">2g On</string>
-    <string name="quick_settings_twog_off_label">2g Off</string>
-    <string name="quick_settings_lte_on_label">LTE On</string>
-    <string name="quick_settings_lte_off_label">LTE Off</string>
-    <string name="quick_settings_gps_on_label">GPS On</string>
-    <string name="quick_settings_gps_off_label">GPS Off</string>
-    <string name="quick_settings_data_on_label">Data On</string>
-    <string name="quick_settings_data_off_label">Data Off</string>
-
     <!-- Title of help text shown when the notification panel is pulled down for the very first time. [CHAR LIMIT=NONE] -->
     <string name="status_bar_help_title">Notifications appear here</string>
     <!-- Body of help text shown when the notification panel is pulled down for the very first time. [CHAR LIMIT=NONE] -->
     <string name="status_bar_help_text">Access them anytime by swiping down.\nSwipe down again for system controls.</string>
+    <string name="powerwidget_screen_timeout_toast">Screen timeout set to: %1$d %2$s</string>
 
-    <string name="recents_kill_all_button_text">Kill all</string>
+    <string name="quick_settings_gps">GPS</string>
+    <string name="quick_settings_screen_sleep">Go To Sleep</string>
+    <string name="quick_settings_ringer_on">Sound On</string>
+    <string name="quick_settings_ringer_off">Sound Off</string>
+    <string name="quick_settings_vibration_on">Vibration On</string>
+    <string name="quick_settings_vibration_off">Vibration Off</string>
+    <string name="quick_settings_label_enabled">On</string>
+    <string name="quick_settings_label_disabled">Off</string>
+    <string name="quick_settings_ringer_normal">Sound</string>
+    <string name="quick_settings_lockscreen">Lockscreen</string>
+    <string name="quick_settings_network_type">Network Mode</string>
+    <string name="quick_settings_report_bug">Report Bug</string>
+    <string name="quick_settings_sync">Sync</string>
+    <string name="quick_settings_torch">Torch</string>
+    <string name="quick_settings_nfc">NFC</string>
+    <string name="quick_settings_screen_timeout">Timeout</string>
+    <string name="quick_settings_screen_timeout_summary">%1$d %2$s</string>
 
-    <!--  RamBar -->
-    <string name="memory">RAM</string>
-    <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
-    <string name="service_background_processes"><xliff:g id="memory">%1$s</xliff:g> free</string>
-    <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
-    <string name="service_foreground_processes"><xliff:g id="memory">%1$s</xliff:g> used</string>
-    <!-- Text to label a process entry with the process name. -->
-    <string name="service_process_name"><xliff:g id="process">%1$s</xliff:g></string>
-    <!-- Running services, description for a service in the started state -->
-    <string name="service_client_name"><xliff:g id="client_name">%1$s</xliff:g></string>
-    <!-- Running services, description for a service in the started state -->
-    <string name="service_started_by_app">Started by app.</string>
-    <!-- Descriptive text of a running process: singular process, singular service. -->
-    <string name="running_processes_item_description_s_s"><xliff:g id="numprocess">%1$d</xliff:g>
-        process and <xliff:g id="numservices">%2$d</xliff:g> service</string>
-    <!-- Descriptive text of a running process: singular process, plural service. -->
-    <string name="running_processes_item_description_s_p"><xliff:g id="numprocess">%1$d</xliff:g>
-        process and <xliff:g id="numservices">%2$d</xliff:g> services</string>
-     <!-- Descriptive text of a running process: plural process, singular service. -->
-    <string name="running_processes_item_description_p_s"><xliff:g id="numprocess">%1$d</xliff:g>
-        processes and <xliff:g id="numservices">%2$d</xliff:g> service</string>
-    <!-- Descriptive text of a running process: plural process, plural service. -->
-    <string name="running_processes_item_description_p_p"><xliff:g id="numprocess">%1$d</xliff:g>
-        processes and <xliff:g id="numservices">%2$d</xliff:g> services</string>
-
+    <!-- Text to display next to the minimal graphical battery meter.  [CHAR LIMIT=3] -->
+    <string name="status_bar_settings_battery_meter_min_format" translatable="false">
+        <xliff:g id="number">%d</xliff:g>
+    </string>
 </resources>

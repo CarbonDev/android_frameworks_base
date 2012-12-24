@@ -46,7 +46,6 @@ import android.media.IAudioService;
 import android.media.IRingtonePlayer;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -65,7 +64,6 @@ import android.util.Slog;
 import android.util.Xml;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.android.internal.statusbar.StatusBarNotification;
@@ -76,9 +74,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
-
-import com.android.internal.app.ThemeUtils;
-
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -87,9 +82,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Calendar;
 import java.util.Map;
 
 import libcore.io.IoUtils;
@@ -110,6 +105,7 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final int SHORT_DELAY = 2000; // 2 seconds
 
     private static final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
+    private static final int VIBRATE_PATTERN_MAXLEN = 8 * 2 + 1; // up to eight bumps
 
     private static final int DEFAULT_STREAM_TYPE = AudioManager.STREAM_NOTIFICATION;
     private static final boolean SCORE_ONGOING_HIGHER = false;
@@ -122,7 +118,6 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final boolean ENABLE_BLOCKED_TOASTS = true;
 
     final Context mContext;
-    Context mUiContext;
     final IActivityManager mAm;
     final IBinder mForegroundToken = new Binder();
 
@@ -134,6 +129,9 @@ public class NotificationManagerService extends INotificationManager.Stub
     private int mDefaultNotificationColor;
     private int mDefaultNotificationLedOn;
     private int mDefaultNotificationLedOff;
+
+    private long[] mDefaultVibrationPattern;
+    private long[] mFallbackVibrationPattern;
 
     private boolean mSystemReady;
     private int mDisabledNotifications;
@@ -534,13 +532,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     };
 
-    private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mUiContext = null;
-        }
-    };
-
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -548,7 +539,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
             boolean queryRestart = false;
             boolean packageChanged = false;
-            
+
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)
                     || action.equals(Intent.ACTION_PACKAGE_RESTARTED)
                     || (packageChanged=action.equals(Intent.ACTION_PACKAGE_CHANGED))
@@ -708,6 +699,19 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     }
 
+    static long[] getLongArray(Resources r, int resid, int maxlen, long[] def) {
+        int[] ar = r.getIntArray(resid);
+        if (ar == null) {
+            return def;
+        }
+        final int len = ar.length > maxlen ? maxlen : ar.length;
+        long[] out = new long[len];
+        for (int i=0; i<len; i++) {
+            out[i] = ar[i];
+        }
+        return out;
+    }
+
     NotificationManagerService(Context context, StatusBarManagerService statusBar,
             LightsService lights)
     {
@@ -743,6 +747,16 @@ public class NotificationManagerService extends INotificationManager.Stub
             mPackageNameMappings.put(map[0], map[1]);
         }
 
+        mDefaultVibrationPattern = getLongArray(resources,
+                com.android.internal.R.array.config_defaultNotificationVibePattern,
+                VIBRATE_PATTERN_MAXLEN,
+                DEFAULT_VIBRATE_PATTERN);
+
+        mFallbackVibrationPattern = getLongArray(resources,
+                com.android.internal.R.array.config_notificationFallbackVibePattern,
+                VIBRATE_PATTERN_MAXLEN,
+                DEFAULT_VIBRATE_PATTERN);
+
         // Don't start allowing notifications until the setup wizard has run once.
         // After that, including subsequent boots, init with notifications turned on.
         // This works on the first boot because the setup wizard will toggle this
@@ -774,7 +788,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         ledObserver.observe();
         QuietHoursSettingsObserver qhObserver = new QuietHoursSettingsObserver(mHandler);
         qhObserver.observe();
-        ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
     }
 
     void systemReady() {
@@ -1225,25 +1238,39 @@ public class NotificationManagerService extends INotificationManager.Stub
                 }
 
                 // vibrate
-                // new in 4.2: if there was supposed to be a sound and we're in vibrate mode,
-                // we always vibrate, even if no vibration was specified
-                final boolean convertSoundToVibration =
-                           notification.vibrate == null
-                        && (useDefaultSound || notification.sound != null)
-                        && (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
-                        && (Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, false));
+                // Does the notification want to specify its own vibration?
+                final boolean hasCustomVibrate = notification.vibrate != null;
 
+                // new in 4.2: if there was supposed to be a sound and we're in vibrate mode,
+                // and no other vibration is specified, we apply the default vibration anyway
+                final boolean convertSoundToVibration =
+                           !hasCustomVibrate
+                        && (useDefaultSound || notification.sound != null)
+                        && (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE);
+
+                // The DEFAULT_VIBRATE flag trumps any custom vibration.
                 final boolean useDefaultVibrate =
-                    (notification.defaults & Notification.DEFAULT_VIBRATE) != 0
-                    || convertSoundToVibration;
+                        (notification.defaults & Notification.DEFAULT_VIBRATE) != 0;
                 if (!(inQuietHours && mQuietHoursStill)
-                        && (useDefaultVibrate || notification.vibrate != null)
+                        && (useDefaultVibrate || convertSoundToVibration || hasCustomVibrate)
                         && !(audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)) {
                     mVibrateNotification = r;
-
-                    mVibrator.vibrate(useDefaultVibrate ? DEFAULT_VIBRATE_PATTERN
-                                                        : notification.vibrate,
-                              ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
+                    if (useDefaultVibrate || convertSoundToVibration) {
+                        // Escalate privileges so we can use the vibrator even if the notifying app
+                        // does not have the VIBRATE permission.
+                        long identity = Binder.clearCallingIdentity();
+                        try {
+                            mVibrator.vibrate(convertSoundToVibration ? mFallbackVibrationPattern
+                                                                      : mDefaultVibrationPattern,
+                                ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
+                        } finally {
+                            Binder.restoreCallingIdentity(identity);
+                        }
+                    } else if (notification.vibrate.length > 1) {
+                        // If you want your own vibration pattern, you need the VIBRATE permission
+                        mVibrator.vibrate(notification.vibrate,
+                            ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
+                    }
                 }
             }
 
@@ -1646,13 +1673,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         return -1;
     }
 
-    private Context getUiContext() {
-        if (mUiContext == null) {
-            mUiContext = ThemeUtils.createUiContext(mContext);
-        }
-        return mUiContext != null ? mUiContext : mContext;
-    }
-
     private void updateNotificationPulse() {
         synchronized (mNotificationList) {
             updateLightsLocked();
@@ -1683,7 +1703,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                 }
                 pw.println("  ");
             }
-
         }
 
         synchronized (mNotificationList) {

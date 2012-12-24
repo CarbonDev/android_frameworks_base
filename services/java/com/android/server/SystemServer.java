@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.IPackageManager;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.media.AudioService;
 import android.net.wifi.p2p.WifiP2pService;
 import android.os.Handler;
@@ -40,6 +42,7 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.server.search.SearchManagerService;
 import android.service.dreams.DreamService;
 import android.util.DisplayMetrics;
@@ -84,6 +87,19 @@ class ServerThread extends Thread {
     void reportWtf(String msg, Throwable e) {
         Slog.w(TAG, "***********************************************");
         Log.wtf(TAG, "BOOT FAILURE " + msg, e);
+    }
+
+    private class AdbPortObserver extends ContentObserver {
+        public AdbPortObserver() {
+            super(null);
+        }
+        @Override
+        public void onChange(boolean selfChange) {
+            int adbPort = Settings.Secure.getInt(mContentResolver,
+                Settings.Secure.ADB_PORT, 0);
+            // setting this will control whether ADB runs on TCP/IP or USB
+            SystemProperties.set("service.adb.tcp.port", Integer.toString(adbPort));
+        }
     }
 
     @Override
@@ -144,6 +160,7 @@ class ServerThread extends Thread {
         WindowManagerService wm = null;
         BluetoothManagerService bluetooth = null;
         DockObserver dock = null;
+        RotationSwitchObserver rotateSwitch = null;
         UsbService usb = null;
         SerialService serial = null;
         TwilightService twilight = null;
@@ -343,6 +360,9 @@ class ServerThread extends Thread {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting core service", e);
         }
+
+        boolean hasRotationLock = context.getResources().getBoolean(com.android
+                .internal.R.bool.config_hasRotationLockSwitch);
 
         DevicePolicyManagerService devicePolicy = null;
         StatusBarManagerService statusBar = null;
@@ -643,7 +663,17 @@ class ServerThread extends Thread {
             }
 
             try {
-                Slog.i(TAG, "Wired Accessory Manager");
+                if (hasRotationLock) {
+                    Slog.i(TAG, "Rotation Switch Observer");
+                    // Listen for switch changes
+                    rotateSwitch = new RotationSwitchObserver(context);
+                }
+            } catch (Throwable e) {
+                reportWtf("starting RotationSwitchObserver", e);
+            }
+
+            try {
+                Slog.i(TAG, "Wired Accessory Observer");
                 // Listen for wired headset changes
                 inputManager.setWiredAccessoryCallbacks(
                         new WiredAccessoryManager(context, inputManager));
@@ -768,6 +798,15 @@ class ServerThread extends Thread {
             }
         }
 
+        // make sure the ADB_ENABLED setting value matches the secure property value
+        Settings.Secure.putInt(mContentResolver, Settings.Secure.ADB_PORT,
+                Integer.parseInt(SystemProperties.get("service.adb.tcp.port", "-1")));
+
+        // register observer to listen for settings changes
+        mContentResolver.registerContentObserver(
+            Settings.Secure.getUriFor(Settings.Secure.ADB_PORT),
+            false, new AdbPortObserver());
+
         // Before things start rolling, be sure we have decided whether
         // we are in safe mode.
         final boolean safeMode = wm.detectSafeMode();
@@ -867,6 +906,7 @@ class ServerThread extends Thread {
         final NetworkPolicyManagerService networkPolicyF = networkPolicy;
         final ConnectivityService connectivityF = connectivity;
         final DockObserver dockF = dock;
+        final RotationSwitchObserver rotateSwitchF = rotateSwitch;
         final UsbService usbF = usb;
         final ThrottleService throttleF = throttle;
         final TwilightService twilightF = twilight;
@@ -929,6 +969,11 @@ class ServerThread extends Thread {
                     if (dockF != null) dockF.systemReady();
                 } catch (Throwable e) {
                     reportWtf("making Dock Service ready", e);
+                }
+                try {
+                    if (rotateSwitchF != null) rotateSwitchF.systemReady();
+                } catch (Throwable e) {
+                    reportWtf("making Rotation Switch Service ready", e);
                 }
                 try {
                     if (usbF != null) usbF.systemReady();

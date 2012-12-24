@@ -341,7 +341,8 @@
     <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
     <string name="reboot_progress">Rebooting\u2026</string>
     <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will be a confirmation dialog.  This is the message. -->
-    <string name="reboot_confirm">Your phone will reboot.</string>
+    <string name="reboot_confirm" product="tablet">Your tablet will reboot.</string>
+    <string name="reboot_confirm" product="default">Your phone will reboot.</string>
 
     <!-- Spoken description for ringer silent option. [CHAR LIMIT=NONE] -->
     <string name="silent_mode_silent">Ringer off</string>
@@ -1071,6 +1072,11 @@
     <string name="permlab_movePackage">move app resources</string>
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_movePackage">Allows the app to move app resources from internal to external media and vice versa.</string>
+
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_preventpower">prevent power key</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_preventpower">Allows an application to override the power key</string>
 
     <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permlab_readLogs">read sensitive log data</string>
@@ -2149,6 +2155,7 @@
     <!-- When the lock screen is showing and the phone plugged in, and the battery
          is not fully charged, show the current charge %.  -->
     <string name="lockscreen_plugged_in">Charging, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
+    <string name="lockscreen_discharging">Discharging, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
     <!-- When the lock screen is showing, the phone is plugged in and the battery is fully
          charged, say that it is charged. -->
     <string name="lockscreen_charged">Charged</string>
@@ -2156,8 +2163,8 @@
     <string name="lockscreen_battery_short"><xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
 
     <!-- When the lock screen is showing and the battery is low, warn user to plug
-         in the phone soon. -->
-    <string name="lockscreen_low_battery">Connect your charger.</string>
+         in the phone soon and show current percentage. -->
+    <string name="lockscreen_low_battery">Connect your charger, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
 
     <!-- Shown in the lock screen when there is no SIM card. -->
     <string name="lockscreen_missing_sim_message_short">No SIM card</string>
@@ -3323,9 +3330,9 @@
     <string name="extmedia_format_button_format">Format</string>
 
     <!-- Title of notification shown when ADB is actively connected to the phone. -->
-    <string name="adb_active_notification_title">USB debugging connected</string>
+    <string name="adb_active_notification_title">Android debugging enabled</string>
     <!-- Message of notification shown when ADB is actively connected to the phone. -->
-    <string name="adb_active_notification_message">Touch to disable USB debugging.</string>
+    <string name="adb_active_notification_message">Select to disable debugging.</string>
 
     <!-- Used to replace %s in urls retreived from the signin server with locales.  For Some        -->
     <!-- devices we don't support all the locales we ship to and need to replace the '%s' with a    -->
@@ -3839,6 +3846,9 @@
     <!-- STK setup Call -->
     <string name="SetupCallDefault">Accept call?</string>
 
+    <!-- Long-press back kill application -->
+    <string name="app_killed_message">Application killed</string>
+
     <!-- Title for a button to choose the currently selected activity
          as the default in the activity resolver. [CHAR LIMIT=25] -->
     <string name="activity_resolver_use_always">Always</string>
@@ -4046,71 +4056,7 @@
     <!-- label for item that opens the profile choosing dialog -->
     <string name="global_action_choose_profile">Profile</string>
 
-    <!-- Lock screen Weather - Weather codes -->
-    <string name="weather_0">Tornado</string>
-    <string name="weather_1">Tropical Storm</string>
-    <string name="weather_2">Hurricane</string>
-    <string name="weather_3">Severe Thunderstorms</string>
-    <string name="weather_4">Thunderstorms</string>
-    <string name="weather_5">Mixed Rain and Snow</string>
-    <string name="weather_6">Mixed Rain and Sleet</string>
-    <string name="weather_7">Mixed Snow and Sleet</string>
-    <string name="weather_8">Freezing Drizzle</string>
-    <string name="weather_9">Drizzle</string>
-    <string name="weather_10">Freezing Rain</string>
-    <string name="weather_11">Showers</string>
-    <string name="weather_12">Showers</string>
-    <string name="weather_13">Snow Flurries</string>
-    <string name="weather_14">Light Snow Showers</string>
-    <string name="weather_15">Blowing Snow</string>
-    <string name="weather_16">Snow</string>
-    <string name="weather_17">Hail</string>
-    <string name="weather_18">Sleet</string>
-    <string name="weather_19">Dust</string>
-    <string name="weather_20">Foggy</string>
-    <string name="weather_21">Haze</string>
-    <string name="weather_22">Smoky</string>
-    <string name="weather_23">Blustery</string>
-    <string name="weather_24">Windy</string>
-    <string name="weather_25">Cold</string>
-    <string name="weather_26">Cloudy</string>
-    <string name="weather_27">Mostly Cloudy</string> <!-- Night -->
-    <string name="weather_28">Mostly Cloudy</string> <!-- Day -->
-    <string name="weather_29">Partly Cloudy</string> <!-- Night -->
-    <string name="weather_30">Partly Cloudy</string> <!-- Day -->
-    <string name="weather_31">Clear</string> <!-- Night -->
-    <string name="weather_32">Sunny</string>
-    <string name="weather_33">Fair</string> <!-- Night -->
-    <string name="weather_34">Fair</string> <!-- Day -->
-    <string name="weather_35">Mixed Rain and Hail</string>
-    <string name="weather_36">Hot</string>
-    <string name="weather_37">Isolated Thunderstorms</string>
-    <string name="weather_38">Scattered Thunderstorms</string>
-    <string name="weather_39">Scattered Thunderstorms</string>
-    <string name="weather_40">Scattered Showers</string>
-    <string name="weather_41">Heavy Snow</string>
-    <string name="weather_42">Scattered Snow Showers</string>
-    <string name="weather_43">Heavy Snow</string>
-    <string name="weather_44">Partly Cloudy</string>
-    <string name="weather_45">Thundershowers</string>
-    <string name="weather_46">Snow Showers</string>
-    <string name="weather_47">Isolated Thundershowers</string>
-    <!-- Forecast unavailable -->
-    <string name="weather_3200"></string>
-
-    <!-- Lock screen Weather - Wind directions -->
-    <string name="weather_N">N</string>
-    <string name="weather_NE">NE</string>
-    <string name="weather_E">E</string>
-    <string name="weather_SE">SE</string>
-    <string name="weather_S">S</string>
-    <string name="weather_SW">SW</string>
-    <string name="weather_W">W</string>
-    <string name="weather_NW">NW</string>
-
-    <!-- Lock screen Weather - error messages -->
-    <string name="weather_no_data">No data</string>
-    <string name="weather_tap_to_refresh">Tap to refresh</string>
-    <string name="weather_refreshing">Refreshing</string>
-
+    <!-- Hardware Rotation lock string -->
+    <string name="toast_rotation_unlocked">Display rotation unlocked</string>
+    <string name="toast_rotation_locked">Display rotation locked</string>
 </resources>

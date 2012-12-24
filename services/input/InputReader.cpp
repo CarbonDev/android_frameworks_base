@@ -972,6 +972,7 @@ void InputDevice::process(const RawEvent* rawEvents, size_t count) {
                 ALOGD("Dropped input event while waiting for next input sync.");
 #endif
             }
+
         } else if (rawEvent->type == EV_SYN && rawEvent->code == SYN_DROPPED) {
             ALOGI("Detected input event buffer overrun for device %s.", getName().string());
             mDropUntilNextSync = true;
@@ -1341,7 +1342,6 @@ void TouchButtonAccumulator::process(const RawEvent* rawEvent) {
             break;
         }
     }
-
 #ifdef LEGACY_TOUCHSCREEN
     // set true to mBtnTouch by multi-touch event with pressure more than zero
     // some touchscreen driver which has BTN_TOUCH feature doesn't send BTN_TOUCH event
@@ -1630,12 +1630,12 @@ void MultiTouchMotionAccumulator::process(const RawEvent* rawEvent) {
                 break;
             case ABS_MT_TOUCH_MAJOR:
                 slot->mInUse = true;
-	#ifdef LEGACY_TOUCHSCREEN
+#ifdef LEGACY_TOUCHSCREEN
                 // emulate ABS_MT_PRESSURE
                 slot->mAbsMTPressure = rawEvent->value;
-	#else
+#else
                 slot->mAbsMTTouchMajor = rawEvent->value;
-	#endif
+#endif
                 break;
             case ABS_MT_TOUCH_MINOR:
                 slot->mInUse = true;
@@ -1644,12 +1644,12 @@ void MultiTouchMotionAccumulator::process(const RawEvent* rawEvent) {
                 break;
             case ABS_MT_WIDTH_MAJOR:
                 slot->mInUse = true;
-	#ifdef LEGACY_TOUCHSCREEN
+#ifdef LEGACY_TOUCHSCREEN
                 // emulate ABS_MT_TOUCH_MAJOR
                 slot->mAbsMTTouchMajor = rawEvent->value;
-	#else
+#else
                 slot->mAbsMTWidthMajor = rawEvent->value;
-	#endif
+#endif
                 break;
             case ABS_MT_WIDTH_MINOR:
                 slot->mInUse = true;
@@ -2424,7 +2424,6 @@ void CursorInputMapper::process(const RawEvent* rawEvent) {
     if (rawEvent->type == EV_SYN && rawEvent->code == SYN_REPORT) {
         sync(rawEvent->when);
     }
-
 #ifdef LEGACY_TRACKPAD
     // sync now since BTN_MOUSE is not necessarily followed by SYN_REPORT and
     // we need to ensure that we report the up/down promptly.
