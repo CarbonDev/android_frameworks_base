@@ -63,6 +63,7 @@ public class GlowPadView extends View {
     private static final int STATE_SNAP = 4;
     private static final int STATE_FINISH = 5;
 
+    //Lockscreen targets
     /**
      * @hide
      */

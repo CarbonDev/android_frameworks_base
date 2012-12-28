@@ -37,6 +37,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.CustomTheme;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -356,6 +357,14 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[shortClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[longClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[doubleClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.CURRENT_UI_MODE), false, this);
             update();
         }
 
@@ -371,9 +380,31 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
             mBrightnessControl = !autoBrightness && Settings.System.getInt(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
+            mClockActions[shortClick] = Settings.System.getString(resolver,
+                    Settings.System.NOTIFICATION_CLOCK[shortClick]);
+
+            mClockActions[longClick] = Settings.System.getString(resolver,
+                    Settings.System.NOTIFICATION_CLOCK[longClick]);
+
+            mClockActions[doubleClick] = Settings.System.getString(resolver,
+                    Settings.System.NOTIFICATION_CLOCK[doubleClick]);
+
+            if (mClockActions[shortClick]  == null ||mClockActions[shortClick].equals("")) {
+                mClockActions[shortClick] = "**clockoptions**";
+            }
+            if (mClockActions[longClick]  == null || mClockActions[longClick].equals("")) {
+                mClockActions[longClick] = "**null**";
+		    }
+            if (mClockActions[doubleClick] == null || mClockActions[doubleClick].equals("") || mClockActions[doubleClick].equals("**null**")) {
+                mClockActions[doubleClick] = "**null**";
+                mClockDoubleClicked = false;
+		    } else {
+                mClockDoubleClicked = true;
+            }
+            mCurrentUIMode = Settings.System.getInt(resolver,
+                    Settings.System.CURRENT_UI_MODE, 0);
         }
     }
-
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     private boolean mUserSetup = false;
@@ -434,7 +465,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     protected PhoneStatusBarView makeStatusBarView() {
         final Context context = mContext;
 
-        mLiqiudTarget = new LiquidTarget(mContext);
+        mLiquidTarget = new LiquidTarget(mContext);
 
         Resources res = context.getResources();
 
@@ -552,7 +583,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
-        updateSettings();
 
         mSettingsButton = (ImageView) mStatusBarWindow.findViewById(R.id.settings_button);
         if (mSettingsButton != null) {
@@ -2412,7 +2442,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             public void run() {
                     doubleClickCounter = 0;
                     animateCollapsePanels();
-                    mLiqiudTarget.launchAction(mClockActions[shortClick]);
+                    mLiquidTarget.launchAction(mClockActions[shortClick]);
             }
         };
 
@@ -2809,56 +2839,5 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.getUriFor(Settings.System.QS_DYNAMIC_WIFI),
                     false, this);
         }
-    }
-
-   class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-		void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_CLOCK[shortClick]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_CLOCK[longClick]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_CLOCK[doubleClick]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.CURRENT_UI_MODE), false, this);
-        }
-
-         @Override
-        public void onChange(boolean selfChange) {
-            updateSettings();
-        }
-    }
-
-   protected void updateSettings() {
-        ContentResolver cr = mContext.getContentResolver();
-
-        mClockActions[shortClick] = Settings.System.getString(cr,
-                Settings.System.NOTIFICATION_CLOCK[shortClick]);
-
-        mClockActions[longClick] = Settings.System.getString(cr,
-                Settings.System.NOTIFICATION_CLOCK[longClick]);
-
-        mClockActions[doubleClick] = Settings.System.getString(cr,
-                Settings.System.NOTIFICATION_CLOCK[doubleClick]);
-
-        if (mClockActions[shortClick]  == null ||mClockActions[shortClick].equals("")) {
-            mClockActions[shortClick] = "**clockoptions**";
-        }
-        if (mClockActions[longClick]  == null || mClockActions[longClick].equals("")) {
-            mClockActions[longClick] = "**null**";
-		}
-        if (mClockActions[doubleClick] == null || mClockActions[doubleClick].equals("") || mClockActions[doubleClick].equals("**null**")) {
-            mClockActions[doubleClick] = "**null**";
-            mClockDoubleClicked = false;
-		} else {
-            mClockDoubleClicked = true;
-        }
-        mCurrentUIMode = Settings.System.getInt(cr,
-                Settings.System.CURRENT_UI_MODE, 0);
     }
 }

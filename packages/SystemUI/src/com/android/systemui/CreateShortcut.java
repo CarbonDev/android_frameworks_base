@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.liquid;
+package com.android.systemui;
 
 import android.app.LauncherActivity;
 import android.content.Intent;
