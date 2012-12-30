@@ -459,9 +459,12 @@ public class QuickSettingsController {
                 break;
             case SCREENTIMEOUT_TILE:
                 qs = new ScreenTimeoutTile(mContext, inflater, mContainerView, this);
+<<<<<<< HEAD
                 break;
             case USBTETHER_TILE:
                 qs = new UsbTetherTile(mContext, inflater, mContainerView, this);
+=======
+>>>>>>> 7d167c1... QuickSettingsController.java: remove unneeded casts
                 break;
             }
             if (qs != null) {
