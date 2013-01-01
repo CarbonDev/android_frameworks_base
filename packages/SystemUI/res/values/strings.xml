@@ -557,7 +557,7 @@
     </string>
 
     <!--  Target/Action Strings -->
-    <string name="shortcut_label">Liqiud Actions</string>
+    <string name="shortcut_label">Carbon Actions</string>
     <string name="action_home">Home</string>
     <string name="action_back">Back</string>
     <string name="action_recents">Recents</string>
@@ -586,4 +586,6 @@
     <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
     <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> used</string>
 
+    <!-- Label in drop down to identify brightness slider -->
+    <string name="brightness_label">Brightness</string>
 </resources>
