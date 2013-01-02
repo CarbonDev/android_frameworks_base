@@ -3569,6 +3569,12 @@ public final class Settings {
         public static final String LOCKSCREEN_HIDE_INITIAL_PAGE_HINTS = "lockscreen_hide_initial_page_hints";
 
         /**
+         * Weather to minimize lockscreen challenge on screen turned on
+         * @hide
+         */
+        public static final String LOCKSCREEN_MINIMIZE_LOCKSCREEN_CHALLENGE = "lockscreen_minimize_lockscreen_challenge";
+
+        /**
          * Enable longpress on expand challenge handle to unlock device
          * @hide
          */
