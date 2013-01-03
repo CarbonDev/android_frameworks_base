@@ -3734,10 +3734,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         df.bottom = of.bottom = cf.bottom = mRestrictedScreenTop+mRestrictedScreenHeight;
                     }
                     if (adjust != SOFT_INPUT_ADJUST_NOTHING) {
-                        vf.left = mRestrictedScreenLeft;
-                        vf.top =  mRestrictedScreenTop;
-                        vf.right = mRestrictedScreenLeft+mRestrictedScreenWidth;
-                        vf.bottom = mRestrictedScreenTop+mRestrictedScreenHeight;;
+                        vf.left = mCurLeft;
+                        vf.top = mCurTop;
+                        vf.right = mCurRight;
+                        vf.bottom = mCurBottom;
                     } else {
                         vf.set(cf);
                     }
