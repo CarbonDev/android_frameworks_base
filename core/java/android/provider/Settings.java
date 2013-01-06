@@ -3562,6 +3562,12 @@ public final class Settings {
         };
 
         /**
+         * Wether the hints for the left and right widgets are shown when the screen is turned on
+         * @hide
+         */
+        public static final String LOCKSCREEN_HIDE_INITIAL_PAGE_HINTS = "lockscreen_hide_initial_page_hints";
+
+        /**
          * Whether to use keyguard or homescreen widgets
          * @hide
          */

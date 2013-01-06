@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.format.DateFormat;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.Gravity;
@@ -612,7 +613,10 @@ public class KeyguardWidgetPager extends PagedView implements PagedView.PageSwit
 
     public void showInitialPageHints() {
         mShowingInitialHints = true;
-        updateChildrenContentAlpha(KeyguardWidgetFrame.OUTLINE_ALPHA_MULTIPLIER);
+        if (!Settings.System.getBoolean(getContext().getContentResolver(),
+                        Settings.System.LOCKSCREEN_HIDE_INITIAL_PAGE_HINTS, false)) {
+            updateChildrenContentAlpha(KeyguardWidgetFrame.OUTLINE_ALPHA_MULTIPLIER);
+        }
     }
 
     @Override
