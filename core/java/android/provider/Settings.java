@@ -2830,6 +2830,13 @@ public final class Settings {
         public static final String EXPANDED_DESKTOP_MODE = "expanded_desktop_mode";
 
         /**
+         * whether to hide the Ram Usage Bar on recent switcher
+         *
+         * @hide
+         */
+        public static final String RECENTS_RAM_BAR = "recents_ram_bar";
+
+        /**
          * Whether to use a separate delay for "slide to unlock" and security
          * lock
          * @hide
