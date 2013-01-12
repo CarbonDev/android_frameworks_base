@@ -387,11 +387,12 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         mRecentButton.setOnTouchListener(mRecentsPreloadOnTouchListener);
 
-        mQuickNavbarPanel = (QuickNavbarPanel)View.inflate(context,
-                R.layout.system_bar_navigation_panel, null);
+        // Quick navigation bar panel
+        mQuickNavbarPanel = (QuickNavbarPanel) View.inflate(context,
+                R.layout.quick_navigation_panel, null);
         lp = new WindowManager.LayoutParams(
-                200,
-                200,
+                500,
+                500,
                 20,
                 0,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
@@ -400,19 +401,20 @@ public class TabletStatusBar extends BaseStatusBar implements
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
                     | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 PixelFormat.TRANSLUCENT);
-        //lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+//        lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
         lp.setTitle("QuickNavbarPanel");
         lp.windowAnimations = android.R.style.Animation;
 
-        WindowManagerImpl.getDefault().addView(mQuickNavbarPanel, lp);
         mQuickNavbarPanel.setBar(this);
-        mQuickNavbarPanel.show(false, false);
+        mQuickNavbarPanel.show(true);
         mQuickNavbarPanel.setOnTouchListener(
                 new TouchOutsideListener(MSG_CLOSE_QUICKNAVBAR_PANEL, mQuickNavbarPanel));
         if (mQuickNavbarTrigger != null) {
             mStatusBarView.setIgnoreChildren(4, mQuickNavbarTrigger, mQuickNavbarPanel);
         }
         mQuickNavbarPanel.setHandler(mHandler);
+
+        mWindowManager.addView(mQuickNavbarPanel, lp);
 
         mPile = (NotificationRowLayout)mNotificationPanel.findViewById(R.id.content);
         mPile.removeAllViews();
@@ -421,12 +423,24 @@ public class TabletStatusBar extends BaseStatusBar implements
         ScrollView scroller = (ScrollView)mPile.getParent();
         scroller.setFillViewport(true);
 
-        mDateTimeView = mNotificationPanel.findViewById(R.id.datetime);
-        if (mDateTimeView != null) {
-            mDateTimeView.setOnClickListener(mClockClickListener);
-            mDateTimeView.setOnLongClickListener(mClockLongClickListener);
-            mDateTimeView.setEnabled(true);
-        }
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
+
+        updateQickNavbarVisibility();
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.QUICK_NAVIGATION), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateQickNavbarVisibility();
+                }
+            }
+        );
+    }
+
+    public void updateQickNavbarVisibility() {
+        ContentResolver resolver = mContext.getContentResolver();
+        boolean hide = Settings.System.getInt(resolver,
+                Settings.System.QUICK_NAVIGATION, 0) == 1;
     }
 
     @Override
@@ -533,18 +547,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mWindowManager.updateViewLayout(mNotificationPanel,
                 mNotificationPanelParams);
         updateSearchPanel();
-
-        mHeightReceiver.updateHeight(); // display size may have changed
-        loadDimens();
-        mNotificationPanelParams.height = getNotificationPanelHeight();
-        WindowManagerImpl.getDefault().updateViewLayout(mNotificationPanel,
-                mNotificationPanelParams);
-        mRecentsPanel.updateValuesFromResources();
-        // if the sliding drawer was open before, make sure to open it back up
-        if (mSlider != null && mIsDrawerOpen == true) {
-            mHeightReceiver.updateHeight(false);
-            mSlider.open();
-        }
     }
 
     protected void loadDimens() {
@@ -587,30 +589,14 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         loadDimens();
 
-        mIsSlidingDrawer = Settings.System.getInt(context.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_USE_SLIDER, 0) == 1;
-        int layout = mIsSlidingDrawer
-                    ? R.layout.system_bar_slider_popup : R.layout.system_bar;
         final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
                 context, R.layout.system_bar, null);
         mStatusBarView = sb;
 
         sb.setHandler(mHandler);
 
-        mHeightReceiver = new HeightReceiver(mContext);
-        mHeightReceiver.registerReceiver();
-
-        mSlider = (SlidingDrawer)sb.findViewById(R.id.slidingDrawer1);
-        if (mSlider != null) {
-            mSlider.setOnDrawerCloseListener(mSliderCloseListener);
-            mSlider.setOnDrawerOpenListener(mSliderOpenListener);
-            mSlider.setOnDrawerScrollListener(mSliderScrollListener);
-            mQuickNavbarTrigger = (View)sb.findViewById(R.id.popup_area1);
-            //quicknavArea.setOnTouchListener(mQuickNavbartouchListener);
-            //quicknavArea = (ImageView)sb.findViewById(R.id.popup_area2);
-            //quicknavArea.setOnTouchListener(mQuickNavbartouchListener);
-            mQuickNavbarTrigger.setOnTouchListener(new QuickNavbarTouchListener());
-        }
+        mQuickNavbarTrigger = (View)sb.findViewById(R.id.popup_area1);
+        mQuickNavbarTrigger.setOnTouchListener(new QuickNavbarTouchListener());
 
         try {
             // Sanity-check that someone hasn't set up the config wrong and asked for a navigation
@@ -1062,13 +1048,13 @@ public class TabletStatusBar extends BaseStatusBar implements
                 case MSG_OPEN_QUICKNAVBAR_PANEL:
                     if (DEBUG) Slog.d(TAG, "opening quicknavbar panel");
                     if (!mQuickNavbarPanel.isShowing()) {
-                        mQuickNavbarPanel.show(true, true);
+                        mQuickNavbarPanel.show(true);
                     }
                     break;
                 case MSG_CLOSE_QUICKNAVBAR_PANEL:
                     if (DEBUG) Slog.d(TAG, "closing quicknavbar panel");
                    //if (mQuickNavbarPanel.isShowing()) {
-                        mQuickNavbarPanel.show(false, true);
+                        mQuickNavbarPanel.show(false);
                     //}
                     break;
                 case MSG_TOGGLE_RECENTS_PANEL:
@@ -1708,14 +1694,13 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         public boolean onTouch(View v, MotionEvent event) {
             boolean panelShowing = mQuickNavbarPanel.isShowing();
-            //if (panelShowing) return false;
 
             final int action = event.getAction();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                            300,
-                            150,
+                            500,
+                            500,
                             (int)event.getX() - 150,
                             0,
                             WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
@@ -1939,107 +1924,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     @Override
     protected boolean shouldDisableNavbarGestures() {
         return mNotificationPanel.getVisibility() == View.VISIBLE;
-    }
-
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            // resolver.registerContentObserver(
-            // Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS),
-            // false,
-            // this);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_USE_SLIDER), false,
-                    this);
-
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_AUTOHIDE_SLIDER), false,
-                    this);
-
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_AUTOHIDE_TIME), false,
-                    this);
-
-            updateSettings();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            updateSettings();
-        }
-    }
-
-    protected void updateSettings() {
-        ContentResolver resolver = mContext.getContentResolver();
-
-        boolean hide = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_AUTOHIDE_SLIDER, 0) == 1;
-
-        if (hide != mAutoHide) {
-            mAutoHide = hide;
-            if (hide)
-                updateAutoHideTimer();
-            else
-                cancelAutoHideTimer();
-        }
-
-        mAutoHideTime = (long)Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_AUTOHIDE_TIME, 10) * 1000;
-    }
-
-    OnDrawerScrollListener mSliderScrollListener = new OnDrawerScrollListener() {
-        @Override
-        public void onScrollStarted() {
-            // if the drawer is not opened then the user is most likely attempting
-            // to expand it so adjust the TabletStatusBarView height to match the   
-            // tablet status bar height plus the height of the drawer handle
-            if (mSlider.isOpened() == false) {
-                mHeightReceiver.updateHeight(false);
-            }
-        }
-			
-        @Override
-        public void onScrollEnded() {
-        }
-    };
-
-    OnDrawerCloseListener mSliderCloseListener = new OnDrawerCloseListener() {
-        @Override
-        public void onDrawerClosed() {
-            // Drawer is now closed so change the height of the TabletStatusBarView
-            // to match the height of the sliding drawer handle
-            mHeightReceiver.updateHeight(true);
-            mIsDrawerOpen = false;
-        }
-    };
-
-    OnDrawerOpenListener mSliderOpenListener = new OnDrawerOpenListener() {
-        @Override
-        public void onDrawerOpened() {
-            // Drawer is now open so start the auto-hide timer if enabled
-            if (mAutoHide)
-                updateAutoHideTimer();
-                mIsDrawerOpen = true;
-        }
-    };
-
-    public void updateAutoHideTimer() {
-        if (mSlider == null || mAutoHide == false)
-            return;
-        AlarmManager am = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
-        Intent i = new Intent(mContext, AutoHideReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-        try {
-            am.cancel(pi);
-        } catch (Exception e) {
-        }
-        Calendar time = Calendar.getInstance();
-        time.setTimeInMillis(System.currentTimeMillis() + mAutoHideTime);
-        am.set(AlarmManager.RTC, time.getTimeInMillis(), pi);
     }
 
     public void cancelAutoHideTimer() {
