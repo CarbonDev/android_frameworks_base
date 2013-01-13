@@ -46,4 +46,6 @@
     <color name="qcMenuBackground">#C0000000</color>
     <color name="qc_tab_nr">#F033B5E5</color>
 
+    <!-- Pie control panel -->
+    <color name="pie_menu_background">#C0000000</color>
 </resources>

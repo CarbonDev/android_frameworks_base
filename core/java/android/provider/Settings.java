@@ -3520,6 +3520,19 @@ public final class Settings {
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
 
         /**
+         * Whether to enable or not pie controls
+         * The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String PIE_CONTROLS = "pie_controls";
+
+       /**
+        * Key to store Torch state.
+        * @hide 
+        */
+        public static final String TORCH_STATE = "torch_state";
+
+        /**
          *
          * @hide
          */
