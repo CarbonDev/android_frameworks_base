@@ -363,6 +363,24 @@ public abstract class BaseStatusBar extends SystemUI implements
                     userSwitched(mCurrentUserId);
                 }
             }}, filter);
+
+        updateQickNavbarVisibility();
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.QUICK_NAVIGATION), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateQickNavbarVisibility();
+                }
+            }
+        );
+
+    }
+
+    public void updateQickNavbarVisibility() {
+        ContentResolver resolver = mContext.getContentResolver();
+        boolean show = Settings.System.getInt(resolver,
+                Settings.System.QUICK_NAVIGATION, 0) == 1;
+        mQuickNavbarTrigger.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     public void userSwitched(int newUserId) {
