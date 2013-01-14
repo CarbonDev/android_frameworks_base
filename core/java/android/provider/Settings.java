@@ -3538,6 +3538,7 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_WIDGETS = "navigation_bar_widgets";
 
+
         /**
          * @hide
          */
@@ -3566,6 +3567,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_HIDE_INITIAL_PAGE_HINTS = "lockscreen_hide_initial_page_hints";
+
+        /**
+         * Enable longpress on expand challenge handle to unlock device
+         * @hide
+         */
+        public static final String LOCKSCREEN_LONGPRESS_CHALLENGE = "lockscreen_longpress_challenge";
 
         /**
          * Whether to use keyguard or homescreen widgets

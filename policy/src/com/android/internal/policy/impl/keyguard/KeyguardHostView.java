@@ -87,6 +87,7 @@ public class KeyguardHostView extends KeyguardViewBase {
     private KeyguardSecurityViewFlipper mSecurityViewContainer;
     private KeyguardSelectorView mKeyguardSelectorView;
     private KeyguardTransportControlView mTransportControl;
+    private View mExpandChallengeView;
     private boolean mIsVerifyUnlockOnly;
     private boolean mEnableFallback; // TODO: This should get the value from KeyguardPatternView
     private SecurityMode mCurrentSecuritySelection = SecurityMode.Invalid;
@@ -394,6 +395,15 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         showPrimarySecurityScreen(false);
         updateSecurityViews();
+                if (Settings.System.getBoolean(getContext().getContentResolver(),
+                Settings.System.LOCKSCREEN_LONGPRESS_CHALLENGE, false)) {
+            mExpandChallengeView = (View) findViewById(R.id.expand_challenge_handle);
+            if (mExpandChallengeView != null) {
+                mExpandChallengeView.setOnLongClickListener(mFastUnlockClickListener);
+            }
+        }
+
+        minimizeChallengeIfNeeded();
     }
 
     private void setBackButtonEnabled(boolean enabled) {
@@ -406,6 +416,14 @@ public class KeyguardHostView extends KeyguardViewBase {
     private boolean shouldEnableAddWidget() {
         return numWidgets() < MAX_WIDGETS && mUserSetupCompleted;
     }
+
+    private final OnLongClickListener mFastUnlockClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            showNextSecurityScreenOrFinish(false);
+            return true;
+        }
+    };
 
     private int getDisabledFeatures(DevicePolicyManager dpm) {
         int disabledFeatures = DevicePolicyManager.KEYGUARD_DISABLE_FEATURES_NONE;
