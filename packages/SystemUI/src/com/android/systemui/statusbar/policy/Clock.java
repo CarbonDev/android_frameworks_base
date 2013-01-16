@@ -46,6 +46,12 @@ import java.util.TimeZone;
  * Digital clock for the status bar.
  */
 public class Clock extends TextView {
+
+    public interface OnClockChangedListener
+    {
+        public abstract void onChange(CharSequence t);
+    }
+
     protected boolean mAttached;
     protected Calendar mCalendar;
     protected String mClockFormatString;
@@ -81,7 +87,13 @@ public class Clock extends TextView {
 
     Handler mHandler;
 
-    protected class SettingsObserver extends ContentObserver {
+    private OnClockChangedListener clockChangeListener = null;
+    public void setOnClockChangedListener(OnClockChangedListener l)
+    {
+        clockChangeListener = l;
+    }
+
+    class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
@@ -130,10 +142,7 @@ public class Clock extends TextView {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
+    public void startBroadcastReceiver() {
         if (!mAttached) {
             mAttached = true;
             IntentFilter filter = new IntentFilter();
@@ -157,6 +166,12 @@ public class Clock extends TextView {
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
         updateSettings();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startBroadcastReceiver();
     }
 
     @Override
@@ -191,10 +206,14 @@ public class Clock extends TextView {
 
     final void updateClock() {
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        setText(getSmallTime());
+        CharSequence seq = getSmallTime();
+        setText(seq);
+        if (clockChangeListener != null) {
+            clockChangeListener.onChange(seq);
+        }
     }
 
-    private final CharSequence getSmallTime() {
+    public final CharSequence getSmallTime() {
         Context context = getContext();
         boolean b24 = DateFormat.is24HourFormat(context);
         int res;
