@@ -3526,6 +3526,16 @@ public final class Settings {
          */
         public static final String PIE_CONTROLS = "pie_controls";
 
+        /**
+         * Location of the pie in the screen
+         * 0 = Gravity.TOP
+         * 1 = Gravity.BOTTOM
+         * 2 = Gravity.RIGHT
+         * 3 = Gravity.LEFT
+         * @hide
+         */
+        public static final String PIE_GRAVITY = "pie_gravity";
+
        /**
         * Key to store Torch state.
         * @hide 
