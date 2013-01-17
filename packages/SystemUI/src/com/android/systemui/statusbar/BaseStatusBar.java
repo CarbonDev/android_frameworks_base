@@ -178,6 +178,17 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private boolean mShowNotificationCounts;
 
+    public WindowManager getWindowManager() {
+        return mWindowManager;
+    }
+
+    public NotificationRowLayout getNotificationRowLayout() {
+        return mPile;
+    }
+
+    public void collapse() {
+    }
+
     public IStatusBarService getStatusBarService() {
         return mBarService;
     }
@@ -268,50 +279,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     }
 
-    private void addPie(int gravity) {
-        // Quick navigation bar trigger area
-        final Resources res = mContext.getResources();
-        mPieControlsTrigger = new View(mContext);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                (gravity == Gravity.TOP || gravity == Gravity.BOTTOM ?
-                        ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
-                (gravity == Gravity.LEFT || gravity == Gravity.RIGHT ?
-                        ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
-                WindowManager.LayoutParams.TYPE_INPUT_METHOD_DIALOG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
-
-        lp.gravity = gravity;
-
-        // Quick navigation bar panel
-        PieControlPanel panel = (PieControlPanel) View.inflate(mContext,
-                R.layout.pie_control_panel, null);
-
-        mPieControlsTrigger.setOnTouchListener(new PieControlsTouchListener(panel));
-        mWindowManager.addView(mPieControlsTrigger, lp);
-
-        lp = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_INPUT_METHOD_DIALOG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        lp.setTitle("PieControlPanel");
-        lp.windowAnimations = android.R.style.Animation;
-
-        panel.setBar(this);
-        panel.setHandler(mHandler);
-        panel.setOrientation(gravity);
-        mWindowManager.addView(panel, lp);
-    }
-
     public void start() {
         mWindowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
         mWindowManagerService = WindowManagerGlobal.getWindowManagerService();
@@ -332,12 +299,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.STATUS_BAR_NOTIF_COUNT, 0) == 1;
 
         mStatusBarContainer = new FrameLayout(mContext);
-
-        // Add pie
-        addPie(Gravity.TOP);
-        addPie(Gravity.LEFT);
-        addPie(Gravity.BOTTOM);
-        addPie(Gravity.RIGHT);
 
         // Connect in to the status bar manager service
         StatusBarIconList iconList = new StatusBarIconList();
@@ -412,6 +373,11 @@ public abstract class BaseStatusBar extends SystemUI implements
                 }
             }}, filter);
 
+        // Add pie
+        addPie(Gravity.TOP);
+        addPie(Gravity.LEFT);
+        addPie(Gravity.BOTTOM);
+        addPie(Gravity.RIGHT);
 
         updatePieControlsVisibility();
         mContext.getContentResolver().registerContentObserver(
@@ -422,7 +388,94 @@ public abstract class BaseStatusBar extends SystemUI implements
                 }
             }
         );
+    }
 
+    private void addPie(int gravity) {
+        // Quick navigation bar trigger area
+        final Resources res = mContext.getResources();
+        mPieControlsTrigger = new View(mContext);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                (gravity == Gravity.TOP || gravity == Gravity.BOTTOM ?
+                        ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
+                (gravity == Gravity.LEFT || gravity == Gravity.RIGHT ?
+                        ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
+                WindowManager.LayoutParams.TYPE_INPUT_METHOD_DIALOG,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                PixelFormat.TRANSLUCENT);
+
+        lp.gravity = gravity;
+
+        // Quick navigation bar panel
+        PieControlPanel panel = (PieControlPanel) View.inflate(mContext,
+                R.layout.pie_control_panel, null);
+
+        mPieControlsTrigger.setOnTouchListener(new PieControlsTouchListener(panel));
+        mWindowManager.addView(mPieControlsTrigger, lp);
+
+        lp = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_INPUT_METHOD_DIALOG,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
+                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                PixelFormat.TRANSLUCENT);
+        lp.setTitle("PieControlPanel");
+        lp.windowAnimations = android.R.style.Animation;
+
+        panel.setBar(this);
+        panel.setHandler(mHandler);
+        panel.setOrientation(gravity);
+        mWindowManager.addView(panel, lp);
+    }
+
+    private void updateIconColor() {
+        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                Settings.System.STATUS_ICON_COLOR);
+        if (!colorInfo.lastColorString.equals(mLastIconColor.lastColorString)) {
+            if(mClock != null) mClock.setTextColor(colorInfo.lastColor);
+            if(mSignalCluster != null) mSignalCluster.setColor(colorInfo);
+            if(mBatteryController != null) mBatteryController.setColor(colorInfo);
+            if (mStatusIcons != null) {
+                for(int i = 0; i < mStatusIcons.getChildCount(); i++) {
+                    Drawable iconDrawable = ((ImageView)mStatusIcons.getChildAt(i)).getDrawable();
+                    if (colorInfo.isLastColorNull) {
+                        iconDrawable.clearColorFilter();                        
+                    } else {
+                        iconDrawable.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_IN);
+                    }
+                }
+            }
+            mLastIconColor = colorInfo;
+        }
+    }
+
+    private void updateBackgroundColor() {
+        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                ExtendedPropertiesUtils.isTablet() ? Settings.System.NAV_BAR_COLOR :
+                Settings.System.STATUS_BAR_COLOR);
+        if (!colorInfo.lastColorString.equals(mLastBackgroundColor.lastColorString)) {
+            // Only enable crossfade for transparent backdrops
+            mTransition.setCrossFadeEnabled(!colorInfo.isLastColorOpaque);
+
+            // Clear first layer, paint current color, reset transition to first layer
+            mCurrentCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            mCurrentCanvas.drawColor(mLastBackgroundColor.lastColor);
+            mTransition.resetTransition();
+
+            // Clear second layer, paint new color, start transition
+            mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            mNewCanvas.drawColor(colorInfo.lastColor);
+            mTransition.startTransition(colorInfo.speed);
+
+            // Remember for later
+            mLastBackgroundColor = colorInfo;
+        }
     }
 
     public void updatePieControlsVisibility() {
