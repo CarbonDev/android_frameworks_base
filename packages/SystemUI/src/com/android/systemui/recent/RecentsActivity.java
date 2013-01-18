@@ -32,6 +32,7 @@ import android.view.WindowManager;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecentsActivity extends Activity {
@@ -45,6 +46,10 @@ public class RecentsActivity extends Activity {
     private static final String WAS_SHOWING = "was_showing";
 
     private RecentsPanelView mRecentsPanel;
+    private static ArrayList<NavigationCallback>sNavigationCallbacks
+            = new ArrayList<NavigationCallback>();
+    private static RecentsPanelView mRecentsPanel;
+    private static boolean mShowing;
     private IntentFilter mIntentFilter;
     private boolean mShowing;
     private boolean mForeground;
@@ -115,6 +120,18 @@ public class RecentsActivity extends Activity {
 
     public static boolean forceOpaqueBackground(Context context) {
         return WallpaperManager.getInstance(context).getWallpaperInfo() != null;
+    }
+
+    public void setRecentHints(boolean show) {
+        // Check if we need to enable alternate drawable for recent apps key
+        // on all the stored navigation callbacks
+        for(NavigationCallback callback : sNavigationCallbacks) {
+            if(callback == null) break; // FIXME: Add multiuser support
+            int navigationHints = callback.getNavigationIconHints();
+            callback.setNavigationIconHints(NavigationBarView.NAVBAR_RECENTS_HINT,
+                    show ? (navigationHints | StatusBarManager.NAVIGATION_HINT_RECENT_ALT)
+                    : (navigationHints & ~StatusBarManager.NAVIGATION_HINT_RECENT_ALT), true);
+        }
     }
 
     @Override
@@ -235,5 +252,17 @@ public class RecentsActivity extends Activity {
 
     boolean isActivityShowing() {
          return mShowing;
+    }
+
+    public static void addNavigationCallback(NavigationCallback callback) {
+        sNavigationCallbacks.add(callback);
+    }
+
+    public static int getTasks() {
+        return mRecentsPanel.getTasks();
+    }
+
+    public static boolean isActivityShowing() {
+        return mShowing;
     }
 }

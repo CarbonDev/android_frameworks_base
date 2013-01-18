@@ -178,11 +178,11 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private boolean mShowNotificationCounts;
 
-    public NotificationRowLayout getNotificationRowLayout() {
-        return mPile;
+    public void collapse() {
     }
 
-    public void collapse() {
+    public NotificationRowLayout getNotificationRowLayout() {
+        return mPile;
     }
 
     public IStatusBarService getStatusBarService() {
