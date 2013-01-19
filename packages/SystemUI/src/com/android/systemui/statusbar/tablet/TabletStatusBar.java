@@ -407,6 +407,8 @@ public class TabletStatusBar extends BaseStatusBar implements
     @Override
     public void start() {
         super.start(); // will add the main bar view
+        mNotificationPanel.mCallback
+                .setAlternativePanel(mPieControlPanel);
     }
 
     private static void copyNotifications(ArrayList<Pair<IBinder, StatusBarNotification>> dest,

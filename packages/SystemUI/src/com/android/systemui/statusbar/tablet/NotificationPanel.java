@@ -97,11 +97,23 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
     Choreographer mChoreo = new Choreographer();
 
-    final int FLIP_DURATION_OUT = 125;
-    final int FLIP_DURATION_IN = 225;
-    final int FLIP_DURATION = (FLIP_DURATION_IN + FLIP_DURATION_OUT);
-    Animator mScrollViewAnim, mFlipSettingsViewAnim, mNotificationButtonAnim,
-    mSettingsButtonAnim, mClearButtonAnim;
+    QuickSettingsContainerView mSettingsContainer;
+    QuickSettings mQS;
+
+    public QuickSettingsCallback mCallback;
+
+    // Simple callback used to provide a bar to QuickSettings
+    class QuickSettingsCallback extends PanelBar {
+        public QuickSettingsCallback(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        public void collapseAllPanels(boolean animate) {
+            super.collapseAllPanels(animate);
+            show(false, animate);
+        }
+    }
 
     public NotificationPanel(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -477,43 +489,15 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         }
     }
 
-    public void animateCollapseQuickSettings() {
-        mBar.mStatusBarView.collapseAllPanels(true);
-    }
-
-    public void flipToNotifications() {
-        if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
-        if (mScrollViewAnim != null) mScrollViewAnim.cancel();
-        if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
-        if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
-        if (mClearButtonAnim != null) mClearButtonAnim.cancel();
-
-        mNotificationScroller.setVisibility(View.VISIBLE);
-        mScrollViewAnim = start(
-            startDelay(FLIP_DURATION_OUT,
-                interpolator(mDecelerateInterpolator,
-                    ObjectAnimator.ofFloat(mNotificationScroller, View.SCALE_X, 0f, 1f)
-                        .setDuration(FLIP_DURATION_IN)
-                    )));
-        mFlipSettingsViewAnim = start(
-            setVisibilityWhenDone(
-                interpolator(mAccelerateInterpolator,
-                        ObjectAnimator.ofFloat(mFlipSettingsView, View.SCALE_X, 1f, 0f)
-                        )
-                    .setDuration(FLIP_DURATION_OUT),
-                mFlipSettingsView, View.INVISIBLE));
-        mNotificationButtonAnim = start(
-            setVisibilityWhenDone(
-                ObjectAnimator.ofFloat(mNotificationButton, View.ALPHA, 0f)
-                    .setDuration(FLIP_DURATION),
-                mNotificationButton, View.INVISIBLE));
-        mSettingsButton.setVisibility(View.VISIBLE);
-        mSettingsButtonAnim = start(
-            ObjectAnimator.ofFloat(mSettingsButton, View.ALPHA, 1f)
-                .setDuration(FLIP_DURATION));
-        mClearButton.setVisibility(View.VISIBLE);
-        updateClearButton();
-        mBar.setAreThereNotifications(); // this will show/hide the button as necessary
+    public void setupQuickSettings(BaseStatusBar statusBar, NetworkController networkController,
+            BluetoothController bluetoothController, BatteryControllerStock batteryControllerStock,
+            LocationController locationController) {
+        mCallback = new QuickSettingsCallback(mContext, null);
+        // Add Quick Settings
+        mSettingsContainer = (QuickSettingsContainerView)mSettingsView.findViewById(R.id.quick_settings_container);
+        mQS = new QuickSettings(mContext, mSettingsContainer, statusBar);
+        mQS.setBar(mCallback);
+        mQS.setupQuickSettings();
     }
 
     public ViewPropertyAnimator setVisibilityWhenDone(
