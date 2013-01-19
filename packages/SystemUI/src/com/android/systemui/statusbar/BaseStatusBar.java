@@ -86,6 +86,9 @@ import android.widget.PopupMenu;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
+import com.android.systemui.statusbar.policy.NotificationRowLayout;
+
 import java.util.ArrayList;
 
 public abstract class BaseStatusBar extends SystemUI implements
@@ -179,6 +182,11 @@ public abstract class BaseStatusBar extends SystemUI implements
     private boolean mShowNotificationCounts;
 
     public void collapse() {
+    }
+
+    public QuickSettingsContainerView getQuickSettingsPanel() {
+        // This method should be overriden
+        return null;
     }
 
     public NotificationRowLayout getNotificationRowLayout() {
