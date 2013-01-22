@@ -27,11 +27,11 @@ import android.database.ContentObserver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.Rect;
@@ -39,6 +39,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Path;
@@ -66,6 +67,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import com.android.internal.statusbar.StatusBarNotification;
+import com.android.internal.statusbar.StatusBarIcon;
+
 import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.PieControl;
@@ -75,9 +79,6 @@ import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.PiePolicy;
-
-import com.android.internal.statusbar.StatusBarNotification;
-import com.android.internal.statusbar.StatusBarIcon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,7 +186,6 @@ public class PieMenu extends FrameLayout {
     // Flags
     private int mStatusMode;
     private float mPieSize = SIZE_BASE;
-    private boolean mPerAppColor;
     private boolean mOpen;
 
     // Animations
@@ -200,8 +200,6 @@ public class PieMenu extends FrameLayout {
         // Fetch modes
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MODE, 2);
-        mPerAppColor = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_PAC, 0) == 1;
         mPieSize = Settings.System.getFloat(mContext.getContentResolver(),
                 Settings.System.PIE_SIZE, 1f);
 
@@ -255,13 +253,12 @@ public class PieMenu extends FrameLayout {
                 100, mInnerBatteryRadius, mOuterBatteryRadius, mCenter);
 
         // Colors
-        boolean pac = mPerAppColor && ColorUtils.getPerAppColorState(mContext);
         ColorUtils.ColorSettingInfo buttonColorInfo = ColorUtils.getColorSettingInfo(mContext,
                 Settings.System.NAV_BUTTON_COLOR);
 
         mNotificationPaint.setColor(COLOR_STATUS);
 
-        if (pac) {
+        if (ColorUtils.getPerAppColorState(mContext)) {
             ColorUtils.ColorSettingInfo colorInfo;
             colorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
             mPieBackground.setColor(ColorUtils.extractRGB(colorInfo.lastColor) | COLOR_ALPHA_MASK);
@@ -293,8 +290,10 @@ public class PieMenu extends FrameLayout {
         }
 
         buttonColorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BUTTON_COLOR);
-        for (PieItem item : mItems) {
-            item.setColor(buttonColorInfo.lastColor, buttonColorInfo.isLastColorNull ? false : pac);
+        if(!buttonColorInfo.isLastColorNull){
+            for (PieItem item : mItems) {
+                item.setColor(buttonColorInfo.lastColor);
+            }
         }
 
         // Notifications
