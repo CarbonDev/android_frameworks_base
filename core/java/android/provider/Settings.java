@@ -3553,6 +3553,12 @@ public final class Settings {
          */
         public static final String PIE_MODE = "pie_mode";
 
+        /**
+         * Pie size fraction
+         * @hide
+         */
+        public static final String PIE_SIZE = "pie_size";
+
        /**
         * Key to store Torch state.
         * @hide 
