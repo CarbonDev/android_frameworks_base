@@ -1019,14 +1019,17 @@ class QuickSettings {
                     public void onClick(View v) {
                         boolean enabled = false;
                         if (mNfcAdapter == null) {
-                            mNfcAdapter = NfcAdapter.getDefaultAdapter();
-                            mModel.setNfcAdapter(mNfcAdapter);
+                            mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
                         }
-                        enabled = mNfcAdapter.isEnabled();
-                        if (enabled) {
-                            mNfcAdapter.disable();
-                        } else {
-                            mNfcAdapter.enable();
+                        try {
+                            enabled = mNfcAdapter.isEnabled();
+                            if (enabled) {
+                                mNfcAdapter.disable();
+                            } else {
+                                mNfcAdapter.enable();
+                            }
+                        } catch (NullPointerException ex) {
+                            // we'll ignore this click
                         }
                     }
                 });
