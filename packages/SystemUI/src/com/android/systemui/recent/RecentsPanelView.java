@@ -104,7 +104,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private ImageView mClearRecents;
     private LinearColorBar mRamUsageBar;
 
-    private long mTotalUsedMemory;
+    private long mFreeMemory;
     private long mTotalMemory;
     private long mCachedMemory;
     private long mActiveMemory;
@@ -880,8 +880,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         freeMem = mTotalMemory - mActiveMemory - mCachedMemory;
                         break;
                     case 3:
-                        usedMem = mActiveMemory + mCachedMemory + mTotalUsedMemory;
-                        freeMem = mTotalMemory - mActiveMemory - mCachedMemory - mTotalUsedMemory;
+                        usedMem = mTotalMemory - mFreeMemory;
+                        freeMem = mFreeMemory;
                         break;
                 }
 
@@ -895,7 +895,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 mRamText.setText(getResources().getString(
                         R.string.memory));
                 float totalMem = mTotalMemory;
-                float totalShownMem = mTotalUsedMemory / totalMem;
+                float totalShownMem = (mTotalMemory - mFreeMemory - mCachedMemory -  mActiveMemory)/ totalMem;
                 float totalActiveMem = mActiveMemory / totalMem;
                 float totalCachedMem = mCachedMemory / totalMem;
                 mRamUsageBar.setRatios(totalShownMem, totalCachedMem, totalActiveMem);
@@ -966,7 +966,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             }
         } catch (IOException e) {}
-        mTotalUsedMemory = result;
+        mFreeMemory = result;
 
         try {
             String firstLine = readLine("/proc/meminfo", 6);
