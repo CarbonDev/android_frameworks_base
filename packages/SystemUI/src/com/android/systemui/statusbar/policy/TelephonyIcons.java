@@ -111,6 +111,17 @@ class TelephonyIcons {
               R.drawable.stat_sys_data_fully_connected_h }
     };
 
+    static final int[][] DATA_H_ALT= {
+        { R.drawable.stat_sys_data_connected_h_alt,
+          R.drawable.stat_sys_data_connected_h_alt,
+          R.drawable.stat_sys_data_connected_h_alt,
+          R.drawable.stat_sys_data_connected_h_alt },
+        { R.drawable.stat_sys_data_fully_connected_h_alt,
+          R.drawable.stat_sys_data_fully_connected_h_alt,
+          R.drawable.stat_sys_data_fully_connected_h_alt,
+          R.drawable.stat_sys_data_fully_connected_h_alt }
+    };
+
     //HPSPA+
     static final int[][] DATA_HP = {
             { R.drawable.stat_sys_data_connected_hp,
