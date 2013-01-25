@@ -413,6 +413,20 @@ public abstract class BaseStatusBar extends SystemUI implements
         settingsObserver.observe();
     }
 
+    private boolean showPie() {
+        boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+        boolean pie = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_CONTROLS, 0) == 1;
+        int gravity = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.PIE_GRAVITY, 2);
+        boolean vertical = ((gravity & 1) != 0 || (gravity & 2) != 0);
+
+        return ((expanded && pie) || (!vertical && pie));
+    }
+
+
+    public View mContainer;
     private void attachPies() {
         // Add pie (s), want some slice?
         int gravity = Settings.System.getInt(mContext.getContentResolver(),
@@ -482,11 +496,9 @@ public abstract class BaseStatusBar extends SystemUI implements
                     ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
               (gravity == Gravity.LEFT || gravity == Gravity.RIGHT ?
                     ViewGroup.LayoutParams.MATCH_PARENT : res.getDimensionPixelSize(R.dimen.pie_trigger_height)),
-              WindowManager.LayoutParams.TYPE_INPUT_METHOD_DIALOG,
-              WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                      | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+              WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
+                      WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                       | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                      | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                       | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
               PixelFormat.TRANSLUCENT);
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
