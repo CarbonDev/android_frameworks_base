@@ -63,6 +63,7 @@ public class KeyButtonView extends ImageView {
     int mDurationSpeedOff = 50;
     float mGlowAlpha = 0f, mGlowScale = 1f, mDrawingAlpha = 1f;
     boolean mSupportsLongpress = true;
+    boolean mShouldTintIcons = true;
     protected boolean mHandlingLongpress = false;
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
@@ -136,18 +137,14 @@ public class KeyButtonView extends ImageView {
             setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
             mGlowWidth = mGlowBG.getIntrinsicWidth();
             mGlowHeight = mGlowBG.getIntrinsicHeight();
-            int defaultColor = mContext.getResources().getColor(
-                    com.android.internal.R.color.white);
             ContentResolver resolver = mContext.getContentResolver();
             mGlowBGColor = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_GLOW_TINT, defaultColor);
+                    Settings.System.NAVIGATION_BAR_GLOW_TINT, -1);
 
-            if (mGlowBGColor == Integer.MIN_VALUE) {
-                mGlowBGColor = defaultColor;
-            }
             mGlowBG.setColorFilter(null);
-            mGlowBG.setColorFilter(mGlowBGColor, PorterDuff.Mode.SRC_ATOP);
-
+            if (mGlowBGColor != -1) {
+                mGlowBG.setColorFilter(mGlowBGColor, PorterDuff.Mode.SRC_ATOP);
+            }
         }
     }
 
@@ -223,8 +220,20 @@ public class KeyButtonView extends ImageView {
 
             // also invalidate our immediate parent to help avoid situations where nearby glows
             // interfere
-            ((View)getParent().getParent()).invalidate();
+            ((View)getParent()).invalidate();
         }
+    }
+
+    public void setTint(boolean tint) {
+        setColorFilter(null);
+        if (tint) {
+            int color = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_TINT, -1);
+            if (color != -1) {
+                setColorFilter(color);
+            }
+        }
+        mShouldTintIcons = tint;
     }
 
     public void setPressed(boolean pressed) {
@@ -380,31 +389,15 @@ public class KeyButtonView extends ImageView {
         setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
 
         if (mGlowBG != null) {
-            int defaultColor = mContext.getResources().getColor(
-                    com.android.internal.R.color.white);
             mGlowBGColor = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_GLOW_TINT, defaultColor);
+                    Settings.System.NAVIGATION_BAR_GLOW_TINT, -1);
 
-            if (mGlowBGColor == Integer.MIN_VALUE) {
-                mGlowBGColor = defaultColor;
-            }
             mGlowBG.setColorFilter(null);
-            mGlowBG.setColorFilter(mGlowBGColor, PorterDuff.Mode.SRC_ATOP);
+            if (mGlowBGColor != -1) {
+                mGlowBG.setColorFilter(mGlowBGColor, PorterDuff.Mode.SRC_ATOP);
+            }
         }
-
-        int defaultButtonColor = mContext.getResources().getColor(
-                    com.android.internal.R.color.white);
-        int color = Settings.System.getInt(resolver,
-                Settings.System.NAVIGATION_BAR_TINT, defaultButtonColor);
-        if (color == Integer.MIN_VALUE) {
-            setColorFilter(null);
-        } else {
-            setColorFilter(null);
-            setColorFilter(color);
-        }
-                  
+        setTint(mShouldTintIcons);
         invalidate();
     }
 }
-
-
