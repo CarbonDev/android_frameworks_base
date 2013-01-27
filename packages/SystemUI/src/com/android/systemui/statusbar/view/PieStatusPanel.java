@@ -83,12 +83,8 @@ public class PieStatusPanel {
         mPanelParents[NOTIFICATIONS_PANEL] = (ViewGroup) mNotificationPanel.getParent();
         mPanelParents[QUICK_SETTINGS_PANEL] = (ViewGroup) mQS.getParent();
 
-        LayoutInflater inflater = (LayoutInflater) mContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-        mContainer = inflater.inflate(R.layout.pie_notification_panel, null);
-
-        mContentFrame = (View) mContainer.findViewById(R.id.content_frame);
-        mScrollView = (ScrollView) mContainer.findViewById(R.id.notification_scroll);
+        mContentFrame = (View) mPanel.getBar().mContainer.findViewById(R.id.content_frame);
+        mScrollView = (ScrollView) mPanel.getBar().mContainer.findViewById(R.id.content_scroll);
         mScrollView.setOnTouchListener(new OnTouchListener(){
             final int SCROLLING_DISTANCE_TRIGGER = 100;
             float scrollX;
