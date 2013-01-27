@@ -416,11 +416,10 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         boolean pie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_CONTROLS, 0) == 1;
-        int gravity = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_GRAVITY, 2);
-        boolean vertical = ((gravity & 1) != 0 || (gravity & 2) != 0);
+        boolean navbarZero = mContext.getResources().getDimensionPixelSize(
+                                 com.android.internal.R.dimen.navigation_bar_height_0));
 
-        return ((expanded && pie) || (!vertical && pie));
+        return (pie && (expanded || navbarZero));
     }
 
     public void updatePieControls() {
