@@ -141,10 +141,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected FrameLayout mStatusBarContainer;
 
     // Pie controls
-    public ArrayList<PieControlPanel> mPieControlPanel
-            = new ArrayList<PieControlPanel>();
-    public ArrayList<View> mPieControlsTrigger
-            = new ArrayList<View>();
+    public PieControlPanel mPieControlPanel;
+    public View mPieControlsTrigger;
+    public View mContainer;
     int mIndex;
 
     // Policy
@@ -279,15 +278,14 @@ public abstract class BaseStatusBar extends SystemUI implements
         private float initialY = 0;
         int index;
 
-        public PieControlsTouchListener(int index) {
-            this.index = index;
-            orient = mPieControlPanel.get(index).getOrientation();
+        public PieControlsTouchListener() {
+            orient = mPieControlPanel.getOrientation();
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             final int action = event.getAction();
-            if (!mPieControlPanel.get(index).isShowing()) {
+            if (!mPieControlPanel.isShowing()) {
                 switch(action) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = event.getX();
@@ -300,13 +298,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                                 orient == Gravity.TOP ? deltaY : deltaX;
                         // Swipe up
                         if (distance > 10) {
-                            mPieControlPanel.get(index).show(true);
+                            mPieControlPanel.show(true);
                             event.setAction(MotionEvent.ACTION_DOWN);
-                            mPieControlPanel.get(index).onTouchEvent(event);
+                            mPieControlPanel.onTouchEvent(event);
                         }
                 }
             } else {
-                return mPieControlPanel.get(index).onTouchEvent(event);
+                return mPieControlPanel.onTouchEvent(event);
             }
             return false;
         }
@@ -407,7 +405,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             }}, filter);
 
 
-        attachPies();
+        attachPie();
 
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
@@ -425,32 +423,44 @@ public abstract class BaseStatusBar extends SystemUI implements
         return ((expanded && pie) || (!vertical && pie));
     }
 
+    public void updatePieControls() {
+        if (mPieControlsTrigger != null) mWindowManager.removeView(mPieControlsTrigger);
+        if (mPieControlPanel != null)  mWindowManager.removeView(mPieControlPanel);
+        attachPie();
+    }
 
-    public View mContainer;
-    private void attachPies() {
-        // Add pie (s), want some slice?
-        int gravity = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_GRAVITY, 2);
+    private void attachPie() {
+        if(showPie()) {
 
-        ContentResolver resolver = mContext.getContentResolver();
-        boolean expanded = Settings.System.getInt(resolver,
-                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
-        boolean show = expanded && Settings.System.getInt(resolver,
-                Settings.System.PIE_CONTROLS, 0) == 1;
+            if (mContainer == null) {
+                // Add panel window, one to be used by all pies that is
+                LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
+                mContainer = inflater.inflate(R.layout.pie_notification_panel, null);
+                mWindowManager.addView(mContainer, PieStatusPanel.getFlipPanelLayoutParams());
+            }
 
-        if(show) {
-            if ((gravity & 1) != 0) {
-                addPieInLocation(Gravity.TOP);
+            // Add pie (s), want some slice?
+            int gravity = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.PIE_GRAVITY, 3);
+
+            switch(gravity) {
+                case 0:
+                    addPieInLocation(Gravity.LEFT);
+                    break;
+                case 1:
+                    addPieInLocation(Gravity.TOP);
+                    break;
+                case 2:
+                    addPieInLocation(Gravity.RIGHT);
+                    break;
+                default:
+                    addPieInLocation(Gravity.BOTTOM);
+                    break;
             }
-            if ((gravity & 2) != 0) {
-                addPieInLocation(Gravity.BOTTOM);
-            }
-            if ((gravity & 4) != 0) {
-                addPieInLocation(Gravity.RIGHT);
-            }
-            if ((gravity & 8) != 0) {
-                addPieInLocation(Gravity.LEFT);
-            }
+        } else {
+            mPieControlsTrigger = null;
+            mPieControlPanel = null;
         }
     }
 
@@ -463,10 +473,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         View pieControlsTrigger = new View(mContext);
 
         // Store our views for removing / adding
-        mPieControlPanel.add(panel);
-        mPieControlsTrigger.add(pieControlsTrigger);
+        mPieControlPanel = panel;
+        mPieControlsTrigger = pieControlsTrigger;
 
-        pieControlsTrigger.setOnTouchListener(new PieControlsTouchListener(mIndex ++));
+        pieControlsTrigger.setOnTouchListener(new PieControlsTouchListener());
         mWindowManager.addView(pieControlsTrigger, getPieTriggerLayoutParams(mContext, gravity));
 
         panel.init(mHandler, this, pieControlsTrigger, gravity);
@@ -546,24 +556,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             // Remember for later
             mLastBackgroundColor = colorInfo;
         }
-    }
-
-    public void updatePieControls() {
-        mIndex = 0;
-        for(View controlsTrigger : mPieControlsTrigger) {
-            mWindowManager.removeView(controlsTrigger);
-            for(int i = 0; i<mPieControlPanel.size(); i++) {
-                mWindowManager.removeView(mPieControlPanel.get(i));
-                mPieControlPanel.remove(i);
-            }
-        }
-        mPieControlsTrigger.clear();
-        mPieControlPanel.clear();
-        attachPies();
-    }
-
-    public ArrayList<PieControlPanel> getPieControlPanels() {
-        return mPieControlPanel;
     }
 
     public void userSwitched(int newUserId) {
@@ -677,13 +669,9 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     @Override
     public void animateCollapsePanels(int flags) {
-        if (!mPieControlPanel.isEmpty()
+        if (mPieControlPanel != null
                 && flags == CommandQueue.FLAG_EXCLUDE_NONE) {
-            for(PieControlPanel panel : mPieControlPanel) {
-                if(panel != null) {
-                    panel.animateCollapsePanels();
-                }
-            }
+            mPieControlPanel.animateCollapsePanels();
         }
     }
 
