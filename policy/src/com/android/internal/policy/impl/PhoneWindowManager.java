@@ -429,6 +429,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
             if (action.equals(Intent.ACTION_SCREENSHOT)) {
                 takeScreenshot();
+            }    
+            if (action.equals(Intent.ACTION_POWERMENU_PROFILE)) {
+               showGlobalActionsProfileDialog();
             }
         }
 
@@ -440,6 +443,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 filter.addAction(Intent.ACTION_POWERMENU);
                 filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
                 filter.addAction(Intent.ACTION_SCREENSHOT);
+                filter.addAction(Intent.ACTION_POWERMENU_PROFILE);
                 mContext.registerReceiver(mPowerMenuReceiver, filter);
             }
         }
@@ -1076,6 +1080,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // poke the wake lock so they have some time to see the dialog.
             mKeyguardMediator.userActivity();
         }
+    }
+
+    void showGlobalActionsProfileDialog() {
+	        if (mGlobalActions == null) {
+	            mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
+	        }
+	        mGlobalActions.showProfileDialog();
     }
 
     boolean isDeviceProvisioned() {
