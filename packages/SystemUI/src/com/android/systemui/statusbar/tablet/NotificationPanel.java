@@ -82,6 +82,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     ImageView mNotificationButton;
     View mNotificationScroller;
     ViewGroup mContentFrame;
+    View mSettingsView;
     Rect mContentArea = new Rect();
     ViewGroup mContentParent;
     TabletStatusBar mBar;
@@ -102,6 +103,12 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     float mContentFrameMissingTranslation;
 
     Choreographer mChoreo = new Choreographer();
+
+    final int FLIP_DURATION_OUT = 125;
+    final int FLIP_DURATION_IN = 225;
+    final int FLIP_DURATION = (FLIP_DURATION_IN + FLIP_DURATION_OUT);
+    Animator mScrollViewAnim, mFlipSettingsViewAnim, mNotificationButtonAnim,
+    mSettingsButtonAnim, mClearButtonAnim;
 
     public QuickSettingsCallback mCallback;
 
@@ -371,7 +378,8 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     }
 
     @Override
-    public void onClick(View v) {  
+    public void onClick(View v) {
+            swapPanels();
     }
 
     public void setNotificationCount(int n) {
@@ -379,6 +387,35 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     }
 
     public void setContentFrameVisible(final boolean showing, boolean animate) {
+    }
+
+    public void swapPanels() {
+        final View toShow, toHide;
+        if (mSettingsView.getVisibility() == View.GONE) {
+            toShow = mSettingsView;
+            toHide = mNotificationScroller;
+        } else {
+            toShow = mNotificationScroller;
+            toHide = mSettingsView;
+        }
+        Animator a = ObjectAnimator.ofFloat(toHide, "alpha", 1f, 0f)
+                .setDuration(PANEL_FADE_DURATION);
+        a.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator _a) {
+                toHide.setVisibility(View.GONE);
+                toShow.setVisibility(View.VISIBLE);
+                if (toShow == mSettingsView || mNotificationCount > 0) {
+                    ObjectAnimator.ofFloat(toShow, "alpha", 0f, 1f)
+                            .setDuration(PANEL_FADE_DURATION)
+                            .start();
+                }
+
+                updateClearButton();
+                updatePanelModeButtons();
+            }
+        });
+        a.start();
     }
 
     public void updateClearButton() {
@@ -393,6 +430,12 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
     public void setClearable(boolean clearable) {
         mHasClearableNotifications = clearable;
+    }
+
+    public void updatePanelModeButtons() {
+        final boolean settingsVisible = mSettingsView.getVisibility() == View.VISIBLE;
+        mSettingsButton.setVisibility(!settingsVisible && mSettingsButton.isEnabled() ? View.VISIBLE : View.GONE);
+        mNotificationButton.setVisibility(settingsVisible ? View.VISIBLE : View.GONE);
     }
 
     public boolean isInContentArea(int x, int y) {
@@ -492,16 +535,39 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         }
     }
 
-    public void setupQuickSettings(BaseStatusBar statusBar, NetworkController networkController,
-            BluetoothController bluetoothController, BatteryControllerStock batteryControllerStock,
-            LocationController locationController) {
-        mCallback = new QuickSettingsCallback(mContext, null);
-        mCallback.setStatusBar(mBar);
-        // Add Quick Settings
-        mSettingsContainer = (QuickSettingsContainerView)mSettingsView.findViewById(R.id.quick_settings_container);
-        mQS = new QuickSettings(mContext, mSettingsContainer, statusBar);
-        mQS.setBar(mCallback);
-        mQS.setupQuickSettings();
+    public void flipToNotifications() {
+        if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
+        if (mScrollViewAnim != null) mScrollViewAnim.cancel();
+        if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
+        if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
+        if (mClearButtonAnim != null) mClearButtonAnim.cancel();
+
+        mNotificationScroller.setVisibility(View.VISIBLE);
+        mScrollViewAnim = start(
+            startDelay(FLIP_DURATION_OUT,
+                interpolator(mDecelerateInterpolator,
+                    ObjectAnimator.ofFloat(mNotificationScroller, View.SCALE_X, 0f, 1f)
+                        .setDuration(FLIP_DURATION_IN)
+                    )));
+        mFlipSettingsViewAnim = start(
+            setVisibilityWhenDone(
+                interpolator(mAccelerateInterpolator,
+                        ObjectAnimator.ofFloat(mFlipSettingsView, View.SCALE_X, 1f, 0f)
+                        )
+                    .setDuration(FLIP_DURATION_OUT),
+                mFlipSettingsView, View.INVISIBLE));
+        mNotificationButtonAnim = start(
+            setVisibilityWhenDone(
+                ObjectAnimator.ofFloat(mNotificationButton, View.ALPHA, 0f)
+                    .setDuration(FLIP_DURATION),
+                mNotificationButton, View.INVISIBLE));
+        mSettingsButton.setVisibility(View.VISIBLE);
+        mSettingsButtonAnim = start(
+            ObjectAnimator.ofFloat(mSettingsButton, View.ALPHA, 1f)
+                .setDuration(FLIP_DURATION));
+        mClearButton.setVisibility(View.VISIBLE);
+        updateClearButton();
+        mBar.setAreThereNotifications(); // this will show/hide the button as necessary
     }
 
     public ViewPropertyAnimator setVisibilityWhenDone(
@@ -657,7 +723,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     public void setSettingsEnabled(boolean settingsEnabled) {
         if (mSettingsButton != null) {
             mSettingsButton.setEnabled(settingsEnabled);
-            mSettingsButton.setVisibility(settingsEnabled ? View.VISIBLE : View.GONE);
+            updatePanelModeButtons();
         }
     }
 

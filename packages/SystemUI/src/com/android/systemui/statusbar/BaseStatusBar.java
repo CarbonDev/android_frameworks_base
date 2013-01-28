@@ -41,6 +41,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -432,10 +433,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         boolean pie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_CONTROLS, 0) == 1;
-        boolean navbarZero = mContext.getResources().getDimensionPixelSize(
-                                 com.android.internal.R.dimen.navigation_bar_height_0);
 
-        return (pie && (expanded || navbarZero));
+        return (pie && (expanded));
     }
 
     public void updatePieControls() {

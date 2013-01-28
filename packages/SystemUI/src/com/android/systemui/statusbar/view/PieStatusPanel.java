@@ -215,7 +215,7 @@ public class PieStatusPanel {
                 getFlipPanelLayoutParams());
     }
 
-    private WindowManager.LayoutParams getFlipPanelLayoutParams() {
+    public static WindowManager.LayoutParams getFlipPanelLayoutParams() {
         return new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,

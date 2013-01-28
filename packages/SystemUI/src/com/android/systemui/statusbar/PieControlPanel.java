@@ -222,8 +222,6 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             injectKeyDelayed(KeyEvent.KEYCODE_MENU);
         } else if (buttonName.equals(PieControl.RECENT_BUTTON)) {
             mStatusBar.toggleRecentApps();
-        } else if (buttonName.equals(PieControl.CLEAR_ALL_BUTTON)) {
-            mStatusBar.clearRecentApps();
         } else if (buttonName.equals(PieControl.SEARCH_BUTTON)) {
             launchAssistAction();
         }

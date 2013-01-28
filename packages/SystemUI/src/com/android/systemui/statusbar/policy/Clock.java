@@ -46,7 +46,6 @@ import java.util.TimeZone;
  * Digital clock for the status bar.
  */
 public class Clock extends TextView {
-
     protected boolean mAttached;
     protected Calendar mCalendar;
     protected String mClockFormatString;
@@ -109,14 +108,8 @@ public class Clock extends TextView {
 
         @Override
         public void onChange(boolean selfChange) {
-            if(!mShowAlways) updateParameters();
             updateSettings();
         }
-    }
-
-    private void updateParameters() {
-
-        mClockFormatString = null;
     }
 
     public Clock(Context context) {
@@ -129,17 +122,12 @@ public class Clock extends TextView {
 
     public Clock(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mContext = context;
-        TypedArray a = context.obtainStyledAttributes(attrs, com.android.systemui.R.styleable.Clock, defStyle, 0);
-        mShowAlways = a.getBoolean(com.android.systemui.R.styleable.Clock_showAlways, false);
-
-        updateParameters();
-
-        SettingsObserver observer = new SettingsObserver(new Handler());
-        observer.observe();
     }
 
-    public void startBroadcastReceiver() {
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
         if (!mAttached) {
             mAttached = true;
             IntentFilter filter = new IntentFilter();
@@ -163,12 +151,6 @@ public class Clock extends TextView {
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
         updateSettings();
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        startBroadcastReceiver();
     }
 
     @Override
@@ -203,11 +185,10 @@ public class Clock extends TextView {
 
     final void updateClock() {
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        CharSequence seq = getSmallTime();
-        setText(seq);
+        setText(getSmallTime());
     }
 
-    public final CharSequence getSmallTime() {
+    private final CharSequence getSmallTime() {
         Context context = getContext();
         boolean b24 = DateFormat.is24HourFormat(context);
         int res;
