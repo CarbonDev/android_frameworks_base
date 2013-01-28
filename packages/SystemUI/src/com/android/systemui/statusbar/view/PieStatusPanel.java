@@ -58,9 +58,7 @@ public class PieStatusPanel {
     public static final int QUICK_SETTINGS_PANEL = 1;
 
     private Context mContext;
-    private WindowManager mWindowManager;
     private ScrollView mScrollView;
-    private View mContainer;
     private View mContentFrame;
     private QuickSettingsContainerView mQS;
     private NotificationRowLayout mNotificationPanel;
@@ -73,7 +71,6 @@ public class PieStatusPanel {
     public PieStatusPanel(Context context, PieControlPanel panel) {
         mContext = context;
         mPanel = panel;
-        mWindowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
 
         mNotificationPanel = mPanel.getBar().getNotificationRowLayout();
         mNotificationPanel.setTag(NOTIFICATIONS_PANEL);
@@ -117,8 +114,7 @@ public class PieStatusPanel {
             }                               
         });
 
-        mContainer.setVisibility(View.GONE);
-        mWindowManager.addView(mContainer, getFlipPanelLayoutParams());
+        mPanel.getBar().mContainer.setVisibility(View.GONE);
     }
 
     public int getFlipViewState() {
@@ -197,22 +193,22 @@ public class PieStatusPanel {
         alphAnimation.start();
 
         ViewGroup parent = getPanelParent(panel);
-        parent.removeView(panel);
+        parent.removeAllViews();
+        mScrollView.removeAllViews();
         mScrollView.addView(panel);
         updateContainer(true);
     }
 
     private void hidePanel(View panel) {
         ViewGroup parent = getPanelParent(panel);
-        mScrollView.removeView(panel);
+        mScrollView.removeAllViews();
+        parent.removeAllViews();
         parent.addView(panel, panel.getLayoutParams());
         updateContainer(false);
     }
 
     private void updateContainer(boolean visible) {
-        mContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
-        mWindowManager.updateViewLayout(mContainer,
-                getFlipPanelLayoutParams());
+        mPanel.getBar().mContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public static WindowManager.LayoutParams getFlipPanelLayoutParams() {

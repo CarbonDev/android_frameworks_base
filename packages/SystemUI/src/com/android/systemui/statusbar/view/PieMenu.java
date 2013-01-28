@@ -100,20 +100,6 @@ public class PieMenu extends FrameLayout {
     private static int ANIMATOR_BATTERY_METER = 21;
     private static int ANIMATOR_SNAP_WOBBLE = 22;
 
-    private static final int COLOR_ALPHA_MASK = 0xaa000000;
-    private static final int COLOR_OPAQUE_MASK = 0xff000000;
-    private static final int COLOR_SNAP_BACKGROUND = 0xffffffff;
-    private static final int COLOR_PIE_BACKGROUND = 0xaaff005e;
-    private static final int COLOR_PIE_BUTTON = 0xb2ffffff;
-    private static final int COLOR_PIE_SELECT = 0xaadbff00;
-    private static final int COLOR_PIE_OUTLINES = 0x55ffffff;
-    private static final int COLOR_CHEVRON_LEFT = 0x0999cc;
-    private static final int COLOR_CHEVRON_RIGHT = 0x33b5e5;
-    private static final int COLOR_BATTERY_JUICE = 0x33b5e5;
-    private static final int COLOR_BATTERY_JUICE_LOW = 0xffbb33;
-    private static final int COLOR_BATTERY_JUICE_CRITICAL = 0xff4444;
-    private static final int COLOR_BATTERY_BACKGROUND = 0xffffff;
-    private static final int COLOR_STATUS = 0xffffff;
     private static final int BASE_SPEED = 500;
     private static final int EMPTY_ANGLE_BASE = 12;
     private static final float SIZE_BASE = 1f;
@@ -213,7 +199,6 @@ public class PieMenu extends FrameLayout {
     private int mStatusMode;
     private float mPieSize = SIZE_BASE;
     private boolean mOpen;
-    private boolean mNavbarZero;
 
     // Animations
     private int mGlowOffsetLeft = 150;
@@ -226,6 +211,8 @@ public class PieMenu extends FrameLayout {
         mPanelOrientation = mPanel.getOrientation();
 
         // Fetch modes
+        boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MODE, 2);
         mPieSize = Settings.System.getFloat(mContext.getContentResolver(),
@@ -287,18 +274,20 @@ public class PieMenu extends FrameLayout {
         mBatteryPathJuice = makeSlice(mStartBattery, mStartBattery + mBatteryLevel * (mEndBattery-mStartBattery) /
                 100, mInnerBatteryRadius, mOuterBatteryRadius, mCenter);
 
+        // Colors
+
         mNotificationPaint.setColor(COLOR_STATUS);
         mSnapBackground.setColor(COLOR_SNAP_BACKGROUND);
 
-        mPieBackground.setColor(COLOR_PIE_BACKGROUND);
-        mPieSelected.setColor(COLOR_PIE_SELECT);
-        mPieOutlines.setColor(COLOR_PIE_OUTLINES);
-        mClockPaint.setColor(COLOR_STATUS);
-        mAmPmPaint.setColor(COLOR_STATUS);
-        mStatusPaint.setColor(COLOR_STATUS);
-        mChevronBackgroundLeft.setColor(COLOR_CHEVRON_LEFT);
-        mChevronBackgroundRight.setColor(COLOR_CHEVRON_RIGHT);
-        mBatteryJuice.setColorFilter(null);
+            mPieBackground.setColor(COLOR_PIE_BACKGROUND);
+            mPieSelected.setColor(COLOR_PIE_SELECT);
+            mPieOutlines.setColor(COLOR_PIE_OUTLINES);
+            mClockPaint.setColor(COLOR_STATUS);
+            mAmPmPaint.setColor(COLOR_STATUS);
+            mStatusPaint.setColor(COLOR_STATUS);
+            mChevronBackgroundLeft.setColor(COLOR_CHEVRON_LEFT);
+            mChevronBackgroundRight.setColor(COLOR_CHEVRON_RIGHT);
+            mBatteryJuice.setColorFilter(null);
 
         // Notifications
         mNotificationCount = 0;
@@ -879,8 +868,7 @@ public class PieMenu extends FrameLayout {
                         break;
                 }
 
-                if (!mNavbarZero) {
-                    if (state == PieStatusPanel.QUICK_SETTINGS_PANEL && 
+                if (state == PieStatusPanel.QUICK_SETTINGS_PANEL && 
                             mStatusPanel.getFlipViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL
                             && mStatusPanel.getCurrentViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL) {
                         mGlowOffsetRight = mPanelOrientation != Gravity.TOP ? 150 : 255;;
@@ -895,8 +883,7 @@ public class PieMenu extends FrameLayout {
                         mStatusPanel.setFlipViewState(PieStatusPanel.NOTIFICATIONS_PANEL);
                         if(hapticFeedback) mVibrator.vibrate(2);
                     }
-                }
-                deselect();
+                    deselect();
             }
 
             // Take back shade trigger if user decides to abandon his gesture
