@@ -52,7 +52,6 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.ColorUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.Gravity;
@@ -214,6 +213,7 @@ public class PieMenu extends FrameLayout {
     private int mStatusMode;
     private float mPieSize = SIZE_BASE;
     private boolean mOpen;
+    private boolean mNavbarZero;
 
     // Animations
     private int mGlowOffsetLeft = 150;
