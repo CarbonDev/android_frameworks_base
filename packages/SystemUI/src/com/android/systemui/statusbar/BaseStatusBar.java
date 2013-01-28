@@ -162,8 +162,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     private Canvas mCurrentCanvas;
     private Canvas mNewCanvas;
     private TransitionDrawable mTransition;
-    public ColorUtils.ColorSettingInfo mLastIconColor;
-    public ColorUtils.ColorSettingInfo mLastBackgroundColor;
 
     // UI-specific methods
 
@@ -510,50 +508,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
         lp.gravity = gravity;
         return lp;
-    }
-
-    private void updateIconColor() {
-        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                Settings.System.STATUS_ICON_COLOR);
-        if (!colorInfo.lastColorString.equals(mLastIconColor.lastColorString)) {
-            if(mClock != null) mClock.setTextColor(colorInfo.lastColor);
-            if(mSignalCluster != null) mSignalCluster.setColor(colorInfo);
-            if(mBatteryController != null) mBatteryController.setColor(colorInfo);
-            if (mStatusIcons != null) {
-                for(int i = 0; i < mStatusIcons.getChildCount(); i++) {
-                    Drawable iconDrawable = ((ImageView)mStatusIcons.getChildAt(i)).getDrawable();
-                    if (colorInfo.isLastColorNull) {
-                        iconDrawable.clearColorFilter();                        
-                    } else {
-                        iconDrawable.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_IN);
-                    }
-                }
-            }
-            mLastIconColor = colorInfo;
-        }
-    }
-
-    private void updateBackgroundColor() {
-        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                ExtendedPropertiesUtils.isTablet() ? Settings.System.NAV_BAR_COLOR :
-                Settings.System.STATUS_BAR_COLOR);
-        if (!colorInfo.lastColorString.equals(mLastBackgroundColor.lastColorString)) {
-            // Only enable crossfade for transparent backdrops
-            mTransition.setCrossFadeEnabled(!colorInfo.isLastColorOpaque);
-
-            // Clear first layer, paint current color, reset transition to first layer
-            mCurrentCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            mCurrentCanvas.drawColor(mLastBackgroundColor.lastColor);
-            mTransition.resetTransition();
-
-            // Clear second layer, paint new color, start transition
-            mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            mNewCanvas.drawColor(colorInfo.lastColor);
-            mTransition.startTransition(colorInfo.speed);
-
-            // Remember for later
-            mLastBackgroundColor = colorInfo;
-        }
     }
 
     public void userSwitched(int newUserId) {

@@ -287,48 +287,18 @@ public class PieMenu extends FrameLayout {
         mBatteryPathJuice = makeSlice(mStartBattery, mStartBattery + mBatteryLevel * (mEndBattery-mStartBattery) /
                 100, mInnerBatteryRadius, mOuterBatteryRadius, mCenter);
 
-        // Colors
-        ColorUtils.ColorSettingInfo buttonColorInfo = ColorUtils.getColorSettingInfo(mContext,
-                Settings.System.NAV_BUTTON_COLOR);
-
         mNotificationPaint.setColor(COLOR_STATUS);
         mSnapBackground.setColor(COLOR_SNAP_BACKGROUND);
 
-        if (ColorUtils.getPerAppColorState(mContext)) {
-            ColorUtils.ColorSettingInfo colorInfo;
-            colorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
-            mPieBackground.setColor(ColorUtils.extractRGB(colorInfo.lastColor) | COLOR_ALPHA_MASK);
-
-            colorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_GLOW_COLOR);
-            mPieSelected.setColor(ColorUtils.extractRGB(colorInfo.lastColor) | COLOR_ALPHA_MASK);
-
-            colorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.STATUS_ICON_COLOR);
-            mClockPaint.setColor(colorInfo.lastColor);
-            mAmPmPaint.setColor(colorInfo.lastColor);
-            mClockPaint.setColor(colorInfo.lastColor);
-            mStatusPaint.setColor(colorInfo.lastColor);
-
-            mChevronBackgroundLeft.setColor(ColorUtils.extractRGB(buttonColorInfo.lastColor) | COLOR_OPAQUE_MASK);
-            mChevronBackgroundRight.setColor(ColorUtils.extractRGB(buttonColorInfo.lastColor) | COLOR_OPAQUE_MASK);
-            mPieOutlines.setColor(buttonColorInfo.lastColor);
-            mBatteryJuice.setColorFilter(buttonColorInfo.isLastColorNull ? null :
-                    new PorterDuffColorFilter(ColorUtils.extractRGB(buttonColorInfo.lastColor) | COLOR_OPAQUE_MASK, Mode.SRC_ATOP));
-
-            buttonColorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BUTTON_COLOR);
-            for (PieItem item : mItems) {
-                item.setColor(buttonColorInfo.isLastColorNull ? COLOR_PIE_BUTTON : buttonColorInfo.lastColor);
-            }
-        } else {
-            mPieBackground.setColor(COLOR_PIE_BACKGROUND);
-            mPieSelected.setColor(COLOR_PIE_SELECT);
-            mPieOutlines.setColor(COLOR_PIE_OUTLINES);
-            mClockPaint.setColor(COLOR_STATUS);
-            mAmPmPaint.setColor(COLOR_STATUS);
-            mStatusPaint.setColor(COLOR_STATUS);
-            mChevronBackgroundLeft.setColor(COLOR_CHEVRON_LEFT);
-            mChevronBackgroundRight.setColor(COLOR_CHEVRON_RIGHT);
-            mBatteryJuice.setColorFilter(null);
-        }
+        mPieBackground.setColor(COLOR_PIE_BACKGROUND);
+        mPieSelected.setColor(COLOR_PIE_SELECT);
+        mPieOutlines.setColor(COLOR_PIE_OUTLINES);
+        mClockPaint.setColor(COLOR_STATUS);
+        mAmPmPaint.setColor(COLOR_STATUS);
+        mStatusPaint.setColor(COLOR_STATUS);
+        mChevronBackgroundLeft.setColor(COLOR_CHEVRON_LEFT);
+        mChevronBackgroundRight.setColor(COLOR_CHEVRON_RIGHT);
+        mBatteryJuice.setColorFilter(null);
 
         // Notifications
         mNotificationCount = 0;
