@@ -2824,24 +2824,6 @@ public final class Settings {
          */
         public static final String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
 
-	/**
-         * Custom carrier label
-         */
-        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
-
-        /**
-         * whether to hide the Ram Usage Bar on recent switcher
-         *
-         * @hide
-         */
-        public static final String RECENTS_RAM_BAR = "recents_ram_bar";
-
-        /**
-         * whether to hide the kill-all button on recent switcher
-         *
-         * @hide
-         */
-        public static final String RECENT_KILL_ALL_BUTTON = "recent_kill_all_button";
          /**
          * Statusbar State
          * @hide
