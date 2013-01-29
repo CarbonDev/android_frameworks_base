@@ -94,6 +94,7 @@ public abstract class KeyguardAbsKeyInputView extends LinearLayout
 
     protected abstract int getPasswordTextViewId();
     protected abstract void resetState();
+    protected abstract boolean getQuickUnlockAllowed();
 
     @Override
     protected void onFinishInflate() {
@@ -113,8 +114,8 @@ public abstract class KeyguardAbsKeyInputView extends LinearLayout
             }
         });
 
-        mQuickUnlock = (Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL, 0) == 1);
+        mQuickUnlock = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL, false);
 
         mPasswordEntry.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -127,12 +128,11 @@ public abstract class KeyguardAbsKeyInputView extends LinearLayout
                 if (mCallback != null) {
                     mCallback.userActivity(0);
                 }
-                if (mQuickUnlock) {
-                    String entry = mPasswordEntry.getText().toString();
-                    if (entry.length() > MINIMUM_PASSWORD_LENGTH_BEFORE_REPORT &&
-                            mLockPatternUtils.checkPassword(entry)) {
-                        mCallback.reportSuccessfulUnlockAttempt();
+                if (mQuickUnlock && getQuickUnlockAllowed()) {
+                    if (s.length() > MINIMUM_PASSWORD_LENGTH_BEFORE_REPORT &&
+                            mLockPatternUtils.checkPassword(s.toString())) {
                         mCallback.dismiss(true);
+                        mCallback.reportSuccessfulUnlockAttempt();
                     }
                 }
             }
