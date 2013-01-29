@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.view;
 import android.database.ContentObserver;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.ColorFilterMaker;
 import android.graphics.drawable.Drawable;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -180,9 +181,13 @@ public class PieItem {
     }
 
     public void setColor(int color) {
+        int mKeyColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_KEY_TINT, 0xFF000000);
+
         ImageView imageView = ((ImageView) mView);
         Drawable drawable = imageView.getDrawable();
-        drawable.setColorFilter(color, Mode.SRC_ATOP);
+        drawable.setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mKeyColor, .32f, 0f));
         imageView.setImageDrawable(drawable);
     }
 }

@@ -3552,6 +3552,12 @@ public final class Settings {
          */
         public static final String PIE_SIZE = "pie_size";
 
+        /**
+         * The keys also needed colors
+         * @hide
+         */
+        public static final String PIE_KEY_TINT = "pie_key_tint";
+
        /**
         * Key to store Torch state.
         * @hide 
