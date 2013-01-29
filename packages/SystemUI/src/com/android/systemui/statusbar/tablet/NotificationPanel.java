@@ -134,13 +134,15 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     }
 
     public void setBar(TabletStatusBar b) {
+        mCallback = new QuickSettingsCallback(mContext, null);
+        mCallback.setStatusBar(mBar);  
         mBar = b;
         // Since we are putting QuickSettings inside the NoticationPanel for TabletBar.
         // we can't set the services on inflate.  Need to wait until the StatusBar gets attached to
         // notification Panel.
         if (mQS != null && mBar != null) {
             mQS.setService(mBar);
-            mQS.setBar(mBar.mStatusBarView);
+            mQS.setBar(mCallback);
             mQS.setup(mBar.mNetworkController, mBar.mBluetoothController, mBar.mBatteryController,
                 mBar.mLocationController);
         }
