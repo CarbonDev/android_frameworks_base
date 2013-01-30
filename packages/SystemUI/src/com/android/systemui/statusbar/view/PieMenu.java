@@ -188,6 +188,8 @@ public class PieMenu extends FrameLayout {
     private float mEndBattery;
     private int mBatteryLevel;
 
+    Handler mHandler;
+
     private class SnapPoint {
         public SnapPoint(int snapX, int snapY, int snapRadius, int snapAlpha, int snapGravity) {
             x = snapX;
@@ -289,10 +291,31 @@ public class PieMenu extends FrameLayout {
                 100, mInnerBatteryRadius, mOuterBatteryRadius, mCenter);
 
         // Colors
+        int defaultBg = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_COLOR_STYLE, 1);
 
         mNotificationPaint.setColor(getResources().getColor(R.color.status));
         mSnapBackground.setColor(getResources().getColor(R.color.snap_background));
 
+        if (defaultBg == 0) {
+            mPieBackground.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_BACKGROUND, 0xAAFF005E));
+            mPieSelected.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_SELECT, 0xAADBFF00));
+            mPieOutlines.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_OUTLINES, 0xFFFFFFFF));
+            mClockPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_STATUS_CLOCK, 0xFFFFFF));
+            mAmPmPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_STATUS_CLOCK, 0xFFFFFF));
+            mStatusPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_STATUS, 0xFFFFFF));
+            mChevronBackgroundLeft.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_CHEVRON_LEFT, 0x0999CC));
+            mChevronBackgroundRight.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_CHEVRON_RIGHT, 0x33B5E5));
+            mBatteryJuice.setColorFilter(null);
+        } else {
             mPieBackground.setColor(getResources().getColor(R.color.pie_background));
             mPieSelected.setColor(getResources().getColor(R.color.pie_select));
             mPieOutlines.setColor(getResources().getColor(R.color.pie_outlines));
@@ -302,6 +325,7 @@ public class PieMenu extends FrameLayout {
             mChevronBackgroundLeft.setColor(getResources().getColor(R.color.chevron_left));
             mChevronBackgroundRight.setColor(getResources().getColor(R.color.chevron_right));
             mBatteryJuice.setColorFilter(null);
+        }
 
         // Notifications
         mNotificationCount = 0;
@@ -468,6 +492,9 @@ public class PieMenu extends FrameLayout {
                 measureClock(s);
             }
         });
+
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
 
         // Get all dimensions
         getDimensions();
@@ -980,5 +1007,39 @@ public class PieMenu extends FrameLayout {
     private boolean inside(float polar, PieItem item) {
         return (item.getStartAngle() < polar)
         && (item.getStartAngle() + item.getSweep() > polar);
+    }
+
+    //setup observer to do stuff!
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_COLOR_STYLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_BACKGROUND), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_SELECT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_OUTLINES), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_STATUS_CLOCK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_STATUS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_CHEVRON_LEFT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_CHEVRON_RIGHT), false, this);
+            getDimensions();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            getDimensions();
+        }
     }
 }

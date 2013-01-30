@@ -3552,11 +3552,69 @@ public final class Settings {
          */
         public static final String PIE_SIZE = "pie_size";
 
+       // PIE COLORS EVERYWHERE! //
+
         /**
-         * The keys also needed colors
          * @hide
          */
-        public static final String PIE_KEY_TINT = "pie_key_tint";
+        public static final String PIE_COLOR_STYLE = "pie_color_style";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_JUICE = "pie_juice";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_JUICE_LOW = "pie_juice_low";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_JUICE_CRITICAL = "pie_juice_critical";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_SNAP_BACKGROUND = "pie_snap_background";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BACKGROUND = "pie_background";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_SELECT = "pie_select";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_OUTLINES = "pie_outlines";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_STATUS_CLOCK = "pie_status_clock";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_STATUS = "pie_status";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CHEVRON_LEFT = "pie_chevron_left";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CHEVRON_RIGHT = "pie_chevron_right";
+
+       // PIE COLORS EVERYWHERE! //
 
        /**
         * Key to store Torch state.

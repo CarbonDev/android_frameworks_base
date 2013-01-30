@@ -181,13 +181,9 @@ public class PieItem {
     }
 
     public void setColor(int color) {
-        int mKeyColor = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_KEY_TINT, 0xFF000000);
-
         ImageView imageView = ((ImageView) mView);
         Drawable drawable = imageView.getDrawable();
-        drawable.setColorFilter(ColorFilterMaker.
-                changeColorAlpha(mKeyColor, .32f, 0f));
+        drawable.setColorFilter(color, Mode.SRC_ATOP);
         imageView.setImageDrawable(drawable);
     }
 }
