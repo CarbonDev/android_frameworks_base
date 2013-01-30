@@ -3567,12 +3567,7 @@ public final class Settings {
         /**
          * @hide
          */
-        public static final String PIE_JUICE_LOW = "pie_juice_low";
-
-        /**
-         * @hide
-         */
-        public static final String PIE_JUICE_CRITICAL = "pie_juice_critical";
+        public static final String PIE_BUTTON_COLOR = "pie_button_color";
 
         /**
          * @hide

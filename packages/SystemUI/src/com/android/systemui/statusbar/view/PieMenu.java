@@ -319,30 +319,34 @@ public class PieMenu extends FrameLayout {
                 100, mInnerBatteryRadius, mOuterBatteryRadius, mCenter);
 
         // Colors
-        int defaultBg = Settings.System.getInt(mContext.getContentResolver(),
+        int defaults = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.PIE_COLOR_STYLE, 1);
 
         mNotificationPaint.setColor(getResources().getColor(R.color.status));
         mSnapBackground.setColor(getResources().getColor(R.color.snap_background));
 
-        if (defaultBg == 0) {
+        if (defaults == 0) {
             mPieBackground.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_BACKGROUND, 0xAAFF005E));
+                        Settings.System.PIE_BACKGROUND, COLOR_PIE_BACKGROUND));
             mPieSelected.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_SELECT, 0xAADBFF00));
+                        Settings.System.PIE_SELECT, COLOR_PIE_SELECT));
             mPieOutlines.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_OUTLINES, 0xFFFFFFFF));
+                        Settings.System.PIE_OUTLINES, COLOR_PIE_OUTLINES));
             mClockPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_STATUS_CLOCK, 0xFFFFFF));
+                        Settings.System.PIE_STATUS_CLOCK, COLOR_STATUS));
             mAmPmPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_STATUS_CLOCK, 0xFFFFFF));
+                        Settings.System.PIE_STATUS_CLOCK, COLOR_STATUS));
             mStatusPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_STATUS, 0xFFFFFF));
+                        Settings.System.PIE_STATUS, COLOR_STATUS));
             mChevronBackgroundLeft.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_CHEVRON_LEFT, 0x0999CC));
+                        Settings.System.PIE_CHEVRON_LEFT, COLOR_CHEVRON_LEFT));
             mChevronBackgroundRight.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_CHEVRON_RIGHT, 0x33B5E5));
-            mBatteryJuice.setColorFilter(null);
+                        Settings.System.PIE_CHEVRON_RIGHT, COLOR_CHEVRON_RIGHT));
+            mBatteryJuice.setColorFilter(new PorterDuffColorFilter(extractRGB(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_JUICE, COLOR_BATTERY_JUICE)) | COLOR_OPAQUE_MASK, Mode.SRC_ATOP));
+            for (PieItem item : mItems) {
+                item.setColor(Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_BUTTON_COLOR, COLOR_PIE_BUTTON));
+            }
         } else {
             mPieBackground.setColor(getResources().getColor(R.color.pie_background));
             mPieSelected.setColor(getResources().getColor(R.color.pie_select));
@@ -353,6 +357,9 @@ public class PieMenu extends FrameLayout {
             mChevronBackgroundLeft.setColor(getResources().getColor(R.color.chevron_left));
             mChevronBackgroundRight.setColor(getResources().getColor(R.color.chevron_right));
             mBatteryJuice.setColorFilter(null);
+            for (PieItem item: mItems) {
+                item.setColor(COLOR_PIE_BUTTON);
+            }
         }
 
         // Notifications
@@ -411,6 +418,10 @@ public class PieMenu extends FrameLayout {
         mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setInterpolator(new DecelerateInterpolator());
         mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setRepeatMode(ValueAnimator.REVERSE);
         mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setRepeatCount(ValueAnimator.INFINITE);
+    }
+
+    private int extractRGB(int color) {
+        return color & 0x00FFFFFF;
     }
 
     private void measureClock(String text) {
