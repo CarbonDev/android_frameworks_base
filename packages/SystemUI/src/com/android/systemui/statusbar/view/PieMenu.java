@@ -829,7 +829,7 @@ public class PieMenu extends FrameLayout {
                 for (int i = 0; i < 4; i++) {
                     SnapPoint snap = mSnapPoint[i];
                     if (snap.active) {
-                        if(hapticFeedback) mVibrator.vibrate(2);
+                        if(hapticFeedback) mVibrator.vibrate(3);
                         deselect();
                         animateOut();
                         mPanel.reorient(snap.gravity);
@@ -854,7 +854,7 @@ public class PieMenu extends FrameLayout {
       
                 // Check for click actions
                 if (item != null && item.getView() != null && mCenterDistance < shadeTreshold) {
-                    if(hapticFeedback) mVibrator.vibrate(2);
+                    if(hapticFeedback) mVibrator.vibrate(3);
                     item.getView().performClick();
                 }
             }
@@ -878,7 +878,7 @@ public class PieMenu extends FrameLayout {
                 } else if (snapDistance < mSnapRadius) {
                     snap.alpha = 50;
                     if (!snap.active) {
-                        if(hapticFeedback) mVibrator.vibrate(2);
+                        if(hapticFeedback) mVibrator.vibrate(3);
                     }
                     snap.active = true;
                     snapActive = true;
