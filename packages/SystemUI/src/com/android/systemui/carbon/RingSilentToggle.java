@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.liquid;
+package com.android.systemui.carbon;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,8 +28,8 @@ import android.provider.Settings;
  * Toggle Ring/Vibrate/Silent
  */
 
-public class RingVibSilentToggle extends Activity  {
-  public RingVibSilentToggle() {
+public class RingSilentToggle extends Activity  {
+  public RingSilentToggle() {
     super();
   }
 
@@ -45,13 +45,7 @@ public class RingVibSilentToggle extends Activity  {
 
     AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     if(am != null){
-      if(am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-        am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if(vib != null){
-          vib.vibrate(50);
-        }
-      }else if(am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+      if(am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
         am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
       }else{
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);

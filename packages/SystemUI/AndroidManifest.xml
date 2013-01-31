@@ -73,7 +73,7 @@
     <!-- Power widget -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
-    <!-- Liquid extra permissions -->
+    <!-- carbon extra permissions -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -217,7 +217,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.systemui.liquid.NavbarToggle"
+            android:name="com.android.systemui.carbon.NavbarToggle"
             android:label="@string/toggle_navbar"
             android:icon="@drawable/toggle_navbar"
             android:theme="@android:style/Theme.Holo.Panel"
@@ -230,7 +230,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.systemui.liquid.WidgetToggle"
+            android:name="com.android.systemui.carbon.WidgetToggle"
             android:label="@string/toggle_widgets"
             android:icon="@drawable/ic_sysbar_widget"
             android:theme="@android:style/Theme.Holo.Panel"
@@ -243,7 +243,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.systemui.liquid.RingVibToggle"
+            android:name="com.android.systemui.carbon.RingVibToggle"
             android:label="@string/toggle_ring_vib"
             android:icon="@drawable/ic_lockscreen_vib"
             android:theme="@android:style/Theme.Holo.Panel"
@@ -256,7 +256,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.systemui.liquid.RingSilentToggle"
+            android:name="com.android.systemui.carbon.RingSilentToggle"
             android:label="@string/toggle_ring_silent"
             android:icon="@drawable/ic_lockscreen_silent"
             android:theme="@android:style/Theme.Holo.Panel"
@@ -269,7 +269,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.systemui.liquid.RingVibSilentToggle"
+            android:name="com.android.systemui.carbon.RingVibSilentToggle"
             android:label="@string/toggle_ring_vib_silent"
             android:icon="@drawable/ic_lockscreen_soundon"
             android:theme="@android:style/Theme.Holo.Panel"

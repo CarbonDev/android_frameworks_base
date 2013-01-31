@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.liquid;
+package com.android.systemui.carbon;
 
 import java.net.URISyntaxException;
 
@@ -59,12 +59,12 @@ import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
 
 /*
- * Helper classes for managing Liquid custom actions
+ * Helper classes for managing Carbon custom actions
  */
 
-public class LiquidTarget {
+public class CarbonTarget {
 
-    final String TAG = "LiquidTarget";
+    final String TAG = "CarbonTarget";
 
     public final static String ACTION_HOME = "**home**";
     public final static String ACTION_BACK = "**back**";
@@ -97,7 +97,7 @@ public class LiquidTarget {
     final Object mScreenshotLock = new Object();
     ServiceConnection mScreenshotConnection = null;
 
-    public LiquidTarget (Context context){
+    public CarbonTarget (Context context){
         mContext = context;
         mHandler = new Handler();
     }

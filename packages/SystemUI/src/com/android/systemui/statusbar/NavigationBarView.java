@@ -52,7 +52,7 @@ import android.widget.LinearLayout;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
-import com.android.systemui.liquid.LiquidTarget;
+import com.android.systemui.carbon.CarbonTarget;
 import com.android.systemui.statusbar.policy.ExtensibleKeyButtonView;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
@@ -84,7 +84,7 @@ public class NavigationBarView extends LinearLayout {
     
     public DelegateViewHelper mDelegateHelper;
 
-    private LiquidTarget mLiquidTarget;
+    private CarbonTarget mCarbonTarget;
 
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
@@ -110,21 +110,21 @@ public class NavigationBarView extends LinearLayout {
 
     public final static int StockButtonsQty = 3;
     public final static String[] StockClickActions = {
-        LiquidTarget.ACTION_BACK,
-        LiquidTarget.ACTION_HOME,
-        LiquidTarget.ACTION_RECENTS,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL };
+        CarbonTarget.ACTION_BACK,
+        CarbonTarget.ACTION_HOME,
+        CarbonTarget.ACTION_RECENTS,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL };
     public final static String[] StockLongpress = {
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL,
-        LiquidTarget.ACTION_NULL };
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL,
+        CarbonTarget.ACTION_NULL };
 
     FrameLayout rot0;
     FrameLayout rot90;
@@ -239,7 +239,7 @@ public class NavigationBarView extends LinearLayout {
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mBackAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
-        mLiquidTarget = new LiquidTarget(context);
+        mCarbonTarget = new CarbonTarget(context);
     }
 
     private void makeBar() {
@@ -268,7 +268,7 @@ public class NavigationBarView extends LinearLayout {
                         mLongpressActions[j],
                         mPortraitIcons[j]);
                 v.setTag((landscape ? "key_land_" : "key_") + j);
-                v.setLiquidTarget(mLiquidTarget);
+                v.setCarbonTarget(mCarbonTarget);
                 iconUri = mPortraitIcons[j];
                 if (iconUri != null && iconUri.length() > 0) {
                     // custom icon from the URI here
@@ -277,7 +277,7 @@ public class NavigationBarView extends LinearLayout {
                         v.setImageDrawable(new BitmapDrawable(getResources(), f.getAbsolutePath()));
                     }
                 } else {
-                        v.setImageDrawable(mLiquidTarget.getIconImage(mClickActions[j]));
+                        v.setImageDrawable(mCarbonTarget.getIconImage(mClickActions[j]));
                 }
                 addButton(navButtonLayout, v, landscape && !mLeftyMode);
                 // if we are in LeftyMode, then we want to add to end, like Portrait

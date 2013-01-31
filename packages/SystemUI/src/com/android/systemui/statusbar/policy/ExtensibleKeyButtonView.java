@@ -10,14 +10,14 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.systemui.R;
-import com.android.systemui.liquid.LiquidTarget;
+import com.android.systemui.carbon.CarbonTarget;
 import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.recent.RecentsActivity;
 
 
 public class ExtensibleKeyButtonView extends KeyButtonView {
 
-    private LiquidTarget mLiquidTarget;
+    private CarbonTarget mCarbonTarget;
 
     public String mClickAction, mLongpress;
 
@@ -26,28 +26,28 @@ public class ExtensibleKeyButtonView extends KeyButtonView {
         setActions(ClickAction,Longpress);
     }
 
-    public void setLiquidTarget(LiquidTarget targ){
-        mLiquidTarget = targ;
+    public void setCarbonTarget(CarbonTarget targ){
+        mCarbonTarget = targ;
     }
 
     public void setActions(String ClickAction, String Longpress) {
         mClickAction = ClickAction;
         mLongpress = Longpress;
         if (ClickAction != null) {
-            if (ClickAction.equals(LiquidTarget.ACTION_HOME)) {
+            if (ClickAction.equals(CarbonTarget.ACTION_HOME)) {
                 setCode(KeyEvent.KEYCODE_HOME);
                 setId(R.id.home);
-            } else if (ClickAction.equals(LiquidTarget.ACTION_BACK)) {
+            } else if (ClickAction.equals(CarbonTarget.ACTION_BACK)) {
                 setCode(KeyEvent.KEYCODE_BACK);
                 setId(R.id.back);
-            } else if (ClickAction.equals(LiquidTarget.ACTION_MENU)) {
+            } else if (ClickAction.equals(CarbonTarget.ACTION_MENU)) {
                 setCode(KeyEvent.KEYCODE_MENU);
                 setId(R.id.menu);
-            } else if (ClickAction.equals(LiquidTarget.ACTION_POWER)) {
+            } else if (ClickAction.equals(CarbonTarget.ACTION_POWER)) {
                 setCode(KeyEvent.KEYCODE_POWER);
-            } else if (ClickAction.equals(LiquidTarget.ACTION_SEARCH)) {
+            } else if (ClickAction.equals(CarbonTarget.ACTION_SEARCH)) {
                 setCode(KeyEvent.KEYCODE_SEARCH);
-            } else if (ClickAction.equals(LiquidTarget.ACTION_RECENTS)) {
+            } else if (ClickAction.equals(CarbonTarget.ACTION_RECENTS)) {
                 setId(R.id.recent_apps);
                 setOnClickListener(mClickListener);
                 setOnTouchListener(mRecentsPreloadOnTouchListener);
@@ -56,7 +56,7 @@ public class ExtensibleKeyButtonView extends KeyButtonView {
             }
             setSupportsLongPress(false);
             if (Longpress != null)
-                if ((!Longpress.equals(LiquidTarget.ACTION_NULL)) || (getCode() != 0)) {
+                if ((!Longpress.equals(CarbonTarget.ACTION_NULL)) || (getCode() != 0)) {
                     // I want to allow long presses for defined actions, or if
                     // primary action is a 'key' and long press isn't defined
                     // otherwise
@@ -92,14 +92,14 @@ public class ExtensibleKeyButtonView extends KeyButtonView {
     private OnClickListener mClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            mLiquidTarget.launchAction(mClickAction);
+            mCarbonTarget.launchAction(mClickAction);
         }
     };
 
     private OnLongClickListener mLongPressListener = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            return mLiquidTarget.launchAction(mLongpress);
+            return mCarbonTarget.launchAction(mLongpress);
         }
     };
 }
