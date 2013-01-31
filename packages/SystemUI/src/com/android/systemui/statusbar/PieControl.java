@@ -116,7 +116,7 @@ public class PieControl implements OnClickListener {
         mRecent = makeItem(R.drawable.ic_sysbar_recent, 1, RECENT_BUTTON, false);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, mIsAssistantAvailable);
         if(mIsAssistantAvailable) {
-            mSearch = makeItem(R.drawable.ic_sysbar_search, 1, SEARCH_BUTTON, true);
+            mSearch = makeItem(R.drawable.ic_sysbar_search_side, 1, SEARCH_BUTTON, true);
         }
 
         mPie.addItem(mMenu);
