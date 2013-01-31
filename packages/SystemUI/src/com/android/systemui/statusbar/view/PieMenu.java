@@ -1073,6 +1073,8 @@ public class PieMenu extends FrameLayout {
                     Settings.System.PIE_CHEVRON_LEFT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PIE_CHEVRON_RIGHT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_JUICE), false, this);
             getDimensions();
         }
 
