@@ -1006,6 +1006,8 @@ public class NetworkController extends BroadcastReceiver {
         String mobileLabel = "";
         int N;
         final boolean emergencyOnly = isEmergencyOnly();
+        final String customLabel = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.CUSTOM_CARRIER_LABEL);
 
         if (!mHasMobileDataFeature) {
             mDataSignalIconId = mPhoneSignalIconId = 0;
@@ -1159,6 +1161,12 @@ public class NetworkController extends BroadcastReceiver {
                 mDataTypeIconId = R.drawable.stat_sys_data_connected_roam;
                 mQSDataTypeIconId = R.drawable.ic_qs_signal_r;
             }
+        }
+
+        if (customLabel != null && customLabel.length() > 0) {  
+            combinedLabel = customLabel;    
+            mobileLabel = customLabel;  
+            wifiLabel = customLabel;    
         }
 
         if (DEBUG) {
