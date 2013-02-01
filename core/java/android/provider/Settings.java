@@ -3525,6 +3525,18 @@ public final class Settings {
          */
         public static final String PIE_CONTROLS = "pie_controls";
 
+        /**
+         * Pie menu, should default to 0 (no, show only when needed)
+         * @hide
+         */
+        public static final String PIE_MENU = "pie_menu";
+
+        /**
+         * Pie search, should default to 1 (yes, show)
+         * @hide
+         */
+        public static final String PIE_SEARCH = "pie_search";
+
         /*
          * Pie gap angle, should default to 1
          * @hide
