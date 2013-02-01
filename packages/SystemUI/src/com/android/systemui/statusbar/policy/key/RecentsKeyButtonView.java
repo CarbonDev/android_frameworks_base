@@ -16,6 +16,7 @@ import com.android.systemui.recent.RecentsActivity;
 public class RecentsKeyButtonView extends ExtensibleKeyButtonView {
 
     private boolean mRecentsLocked = false;
+    public Context mContext;
 
     public RecentsKeyButtonView(Context context, AttributeSet attrs, String clickAction,
             String longPress) {
