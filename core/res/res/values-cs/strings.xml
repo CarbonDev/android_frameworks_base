@@ -1496,4 +1496,18 @@
     <string name="app_no_restricted_accounts" msgid="4011285085817350390">"Tato aplikace nepodporuje účty pro omezené profily."</string>
     <string name="app_not_found" msgid="3429141853498927379">"Aplikace potřebná k provedení této akce nebyla nalezena"</string>
     <string name="revoke" msgid="5404479185228271586">"Zrušit"</string>
+    <string name="app_killed_message">Aplikace ukončena</string>
+    <string name="global_action_screenshot">Snímek obrazovky</string>
+    <string name="global_action_torch">Svítilna</string>
+    <string name="reboot">Restartovat</string>
+    <string name="reboot_recovery">Recovery</string>
+    <string name="reboot_download">Download</string>
+    <string name="reboot_bootloader">Bootloader</string>
+    <string name="reboot_progress">Zařízení se restartuje</string>
+    <string name="vibration_picker_title">Zvolit vibrační vzor</string>
+    <string name="vibration_picker_del_title">Smazat vibrační vzor</string>
+    <string name="notify_turn_wifi_off_title">Vypnout Wi-Fi</string>
+    <string name="lockscreen_always_battery">Vybíjení, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
+    <string name="lockscreen_always_low_battery">Připojte dobíjecí zařízení, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
+    <string name="global_actions_toggle_navbar_hide">Ovládání navigační a stavové lišty</string>
 </resources>

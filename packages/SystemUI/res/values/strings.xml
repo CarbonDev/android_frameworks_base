@@ -563,6 +563,7 @@
 
     <string name="widgets">Widgets</string>
     <string name="toggle_navbar">NavBar - Toggle</string>
+    <string name="toggle_statusbar">StatusBar - Toggle</string>
     <string name="toggle_widgets">Widgets - Toggle</string>
     <string name="toggle_ring_vib">Ring/Vib - Toggle</string>
     <string name="toggle_ring_silent">Ring/Silent - Togle</string>

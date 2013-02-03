@@ -165,6 +165,7 @@ public class ToggleManager {
             toggleMap.put(QUICKRECORD_TOGGLE, QuickRecordToggle.class);
             toggleMap.put(QUIETHOURS_TOGGLE, QuietHoursToggle.class);
             toggleMap.put(STATUSBAR_TOGGLE, StatusbarToggle.class);
+<<<<<<< HEAD
             toggleMap.put(SLEEP_TOGGLE, SleepToggle.class);
             toggleMap.put(CARBON_TOGGLE, CarbonToggle.class);
             toggleMap.put(POWERMENU_TOGGLE, PowerMenuToggle.class);
@@ -174,6 +175,8 @@ public class ToggleManager {
             toggleMap.put(STAYAWAKE_TOGGLE, StayAwakeToggle.class);
             toggleMap.put(WIRELESS_ADB_TOGGLE, WirelessAdbToggle.class);
             toggleMap.put(MUSIC_TOGGLE, MusicToggle.class);
+=======
+>>>>>>> 3840e89... FW: Status Bar Hide toggle (1/3)
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;

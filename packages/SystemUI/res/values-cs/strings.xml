@@ -206,4 +206,76 @@
     <string name="quick_settings_brightness_dialog_auto_brightness_label" msgid="5064982743784071218">"AUTOMATICKY"</string>
     <string name="status_bar_help_title" msgid="1199237744086469217">"Zde se zobrazují oznámení"</string>
     <string name="status_bar_help_text" msgid="7874607155052076323">"Můžete je kdykoli zobrazit tím, že přejedete prstem dolů."\n"Přejedete-li prstem dolů ještě jednou, zobrazí se ovládací prvky systému."</string>
+<<<<<<< HEAD
+=======
+    <!-- AOKP translations -->
+    <string name="shortcut_label">Akce AOKP</string>
+    <string name="action_home">Domů</string>
+    <string name="action_back">Zpět</string>
+    <string name="action_recents">Spuštěné aplikace</string>
+    <string name="action_screenshot">Snímek obrazovky</string>
+    <string name="action_menu">Menu</string>
+    <string name="action_ime">Otevřít metody vstupu</string>
+    <string name="action_kill">Ukončit aplikaci</string>
+    <string name="action_power">Napájení</string>
+    <string name="action_notifications">Notifikace</string>
+    <string name="action_none">Prázdné</string>
+    <string name="widgets">Widgety</string>
+    <string name="toggle_navbar">Přepnout navigační lištu</string>
+    <string name="toggle_statusbar">Přepnout stavovou lištu</string>
+    <string name="toggle_ring_vib">Přepnout hlasitý/vibrace</string>
+    <string name="toggle_ring_silent">Přepnout hlasitý/tichý</string>
+    <string name="toggle_ring_vib_silent">Přepnout hlasitý/vibrace/tichý</string>
+    <string name="toggle_widgets">Přepnout widgety</string>
+    <string name="app_killed_message">Aplikace ukončena</string>
+    <string name="recents_kill_all_button_text">Ukončit vše</string>
+    <string name="quick_settings_vibrate_on_label">Jen vibrace zapnuty</string>
+    <string name="quick_settings_vibrate_off_label">Jen vibrace vypnuty</string>
+    <string name="quick_settings_silent_on_label">Tichý režim zapnut</string>
+    <string name="quick_settings_silent_off_label">Tichý režim vypnut</string>
+    <string name="quick_settings_fcharge_on_label">Rychlé nab. zapnuto</string>
+    <string name="quick_settings_fcharge_off_label">Rychlé nab. vypnuto</string>
+    <string name="quick_settings_torch_on_label">Svítilna zapnuta</string>
+    <string name="quick_settings_torch_off_label">Svítilna vypnuta</string>
+    <string name="quick_settings_nfc_on_label">NFC zapnuto</string>
+    <string name="quick_settings_nfc_off_label">NFC vypnuto</string>
+    <string name="quick_settings_wifi_tether_on_label">Wifi hotspot zapnut</string>
+    <string name="quick_settings_wifi_tether_off_label">Wifi hotspot vypnut</string>
+    <string name="quick_settings_bt_tether_on_label">BT tether. zapnut</string>
+    <string name="quick_settings_bt_tether_off_label">BT tether. vypnut</string>
+    <string name="quick_settings_usb_tether_on_label">USB tether. zapnut</string>
+    <string name="quick_settings_usb_tether_off_label">USB tether. vypnut</string>
+    <string name="quick_settings_sync_on_label">Synch. zapnuta</string>
+    <string name="quick_settings_sync_off_label">Synch. vypnuta</string>
+    <string name="quick_settings_twog_on_label">2g zapnuto</string>
+    <string name="quick_settings_twog_off_label">2g vypnuto</string>
+    <string name="quick_settings_lte_on_label">LTE zapnuto</string>
+    <string name="quick_settings_lte_off_label">LTE vypnuto</string>
+    <string name="quick_settings_gps_on_label">GPS zapnuta</string>
+    <string name="quick_settings_gps_off_label">GPS vypnuta</string>
+    <string name="quick_settings_data_on_label">Data zapnuta</string>
+    <string name="quick_settings_data_off_label">Data vypnuta</string>
+    <string name="quick_settings_navbar_hide_on_label">Skrytá NL zapnuta</string>
+    <string name="quick_settings_navbar_hide_off_label">Skrytá NL vypnuta</string>
+    <string name="quick_settings_quiet_hours_on_label">Hod. klidu zapnuty</string>
+    <string name="quick_settings_quiet_hours_off_label">Hod. klidu vypnuty</string>
+    <string name="quick_settings_sound_on">Hlasitě zapnuto</string>
+    <string name="quick_settings_statusbar_on_label">Stav. lišta zapnuta</string>
+    <string name="quick_settings_statusbar_off_label">Stav. lišta vypnuta</string>
+    <string name="quick_settings_recording">Nahrávání...</string>
+    <string name="quick_settings_recordingcap">Nahrávka zaznamenána</string>
+    <string name="quick_settings_playing">Přehrávání...</string>
+    <string name="quick_settings_quickrecord">Rychlé nahrávání</string>
+    <string name="quick_settings_nofile">Dlouhý stisk pro nahrávání</string>
+    <string name="memory">RAM</string>
+    <string name="service_background_processes"><xliff:g id="memory">%1$s</xliff:g> volno</string>
+    <string name="service_foreground_processes"><xliff:g id="memory">%1$s</xliff:g> použito</string>
+    <string name="service_process_name"><xliff:g id="process">%1$s</xliff:g></string>
+    <string name="service_client_name"><xliff:g id="client_name">%1$s</xliff:g></string>
+    <string name="service_started_by_app">Spuštěno aplikací.</string>
+    <string name="running_processes_item_description_s_s"><xliff:g id="numprocess">%1$d</xliff:g> služba a <xliff:g id="numservices">%2$d</xliff:g> služba</string>
+    <string name="running_processes_item_description_s_p"><xliff:g id="numprocess">%1$d</xliff:g> služby a <xliff:g id="numservices">%2$d</xliff:g> služby</string>
+    <string name="running_processes_item_description_p_s"><xliff:g id="numprocess">%1$d</xliff:g> služba a <xliff:g id="numservices">%2$d</xliff:g> služba</string>
+    <string name="running_processes_item_description_p_p"><xliff:g id="numprocess">%1$d</xliff:g> služby a <xliff:g id="numservices">%2$d</xliff:g> služby</string>
+>>>>>>> 3840e89... FW: Status Bar Hide toggle (1/3)
 </resources>

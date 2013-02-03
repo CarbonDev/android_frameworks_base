@@ -1872,6 +1872,14 @@
   <!-- Hardware Key ReMapping -->
   <java-symbol type="integer" name="config_deviceHardwareKeys" />
 
+  <!-- Hide Navbar -->
+  <java-symbol type="layout" name="global_actions_navbar_mode" />
+  <java-symbol type="id" name="navbarstatus" />
+  <java-symbol type="id" name="navbartoggle" />
+  <java-symbol type="id" name="navbarhome" />
+  <java-symbol type="id" name="navbarback" />
+  <java-symbol type="id" name="navbarmenu" />
+
   <!-- Notification and battery light -->
   <java-symbol type="bool" name="config_intrusiveBatteryLed" />
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
@@ -1931,13 +1939,6 @@
 
   <!-- Panel auto brightness -->
   <java-symbol type="integer" name="config_panelAutoBrightnessValue" />
-
-  <!-- Hide Navbar -->
-  <java-symbol type="layout" name="global_actions_navbar_mode" />
-  <java-symbol type="id" name="navbartoggle" />
-  <java-symbol type="id" name="navbarhome" />
-  <java-symbol type="id" name="navbarback" />
-  <java-symbol type="id" name="navbarmenu" />
 
   <java-symbol type="string" name="config_fastChargePath" />
 
