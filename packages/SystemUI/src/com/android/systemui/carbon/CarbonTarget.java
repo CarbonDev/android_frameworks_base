@@ -58,6 +58,8 @@ import android.widget.Toast;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
 
+import java.util.List;
+
 /*
  * Helper classes for managing Carbon custom actions
  */
@@ -71,6 +73,7 @@ public class CarbonTarget {
     public final static String ACTION_SCREENSHOT = "**screenshot**";
     public final static String ACTION_MENU = "**menu**";
     public final static String ACTION_POWER = "**power**";
+    public final static String ACTION_LAST_APP = "**lastapp**";
     public final static String ACTION_NOTIFICATIONS = "**notifications**";
     public final static String ACTION_RECENTS = "**recents**";
     public final static String ACTION_IME = "**ime**";
@@ -248,6 +251,10 @@ public class CarbonTarget {
             }
             return true;
         }
+        else if (action.equals(ACTION_LAST_APP)) {
+            toggleLastApp();
+            return true;
+        }
         // we must have a custom uri
         try {
             Intent intent = Intent.parseUri(action, 0);
@@ -289,6 +296,8 @@ public class CarbonTarget {
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_search);
         if (uri.equals(ACTION_NOTIFICATIONS))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_notifications);
+        if (uri.equals(ACTION_LAST_APP))
+            return mContext.getResources().getDrawable(R.drawable.ic_sysbar_lastapp);
         try {
             return mContext.getPackageManager().getActivityIcon(Intent.parseUri(uri, 0));
             } catch (NameNotFoundException e) {
@@ -320,6 +329,8 @@ public class CarbonTarget {
             return mContext.getResources().getString(R.string.action_search);
         if (uri.equals(ACTION_NOTIFICATIONS))
             return mContext.getResources().getString(R.string.action_notifications);
+        if (uri.equals(ACTION_LAST_APP))
+            return mContext.getResources().getString(R.string.action_lastapp);
         if (uri.equals(ACTION_NULL))
             return mContext.getResources().getString(R.string.action_none);
         try {
@@ -488,6 +499,34 @@ public class CarbonTarget {
                 mScreenshotConnection = conn;
                 H.postDelayed(mScreenshotTimeout, 10000);
             }
+        }
+    }
+
+    private void toggleLastApp() {
+        int lastAppId = 0;
+        int looper = 1;
+        String packageName;
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        final ActivityManager am = (ActivityManager) mContext
+                .getSystemService(Activity.ACTIVITY_SERVICE);
+        String defaultHomePackage = "com.android.launcher";
+        intent.addCategory(Intent.CATEGORY_HOME);
+        final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
+        if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
+            defaultHomePackage = res.activityInfo.packageName;
+        }
+        List <ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(5);
+        // lets get enough tasks to find something to switch to
+        // Note, we'll only get as many as the system currently has - up to 5
+        while ((lastAppId == 0) && (looper < tasks.size())) {
+            packageName = tasks.get(looper).topActivity.getPackageName();
+            if (!packageName.equals(defaultHomePackage) && !packageName.equals("com.android.systemui")) {
+                lastAppId = tasks.get(looper).id;
+            }
+            looper++;
+        }
+        if (lastAppId != 0) {
+            am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
         }
     }
 

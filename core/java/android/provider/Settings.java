@@ -1925,6 +1925,11 @@ public final class Settings {
         public static final int VOLUME_OVERLAY_NONE = 3;
 
         /**
+         * Ability to enable/disable Daul pane prefs.
+         */
+        public static final String DUAL_PANE_PREFS = "dual_pane_prefs";
+
+        /**
          * Determines which streams are affected by ringer mode changes. The
          * stream type's bit should be set to 1 if it should be muted when going
          * into an inaudible ringer mode.
@@ -2692,6 +2697,13 @@ public final class Settings {
          * @hide
          */
         public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
+
+         /**
+         * Quick Settings Quick Pulldown if no notifications are present
+         *
+         * @hide
+         */
+        public static final String QS_NO_NOTIFICATION_PULLDOWN = "qs_no_notification_pulldown";
 
         /**
          * Quick Settings Collapse Pane
@@ -3759,6 +3771,16 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_ALPHA = "navigation_bar_alpha";
+
+        /**
+         * @hide
+         */
+        public static final String STATUS_BAR_BRIGHTNESS_SLIDER = "statusbar_brightness_slider";
+
+        /**
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_BRIGHTNESS_LOC = "statusbar_toggles_brightness_loc";
 
     }
 
