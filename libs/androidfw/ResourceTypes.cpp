@@ -5081,6 +5081,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
         }
         err = group->packages.add(package);
         if (err < NO_ERROR) {
+            delete group;
             delete package;
             return (mError=err);
         }
