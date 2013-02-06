@@ -48,6 +48,7 @@ import java.util.List;
 public class PieControl implements OnClickListener {
     public static final String BACK_BUTTON = "##back##";
     public static final String HOME_BUTTON = "##home##";
+    public static final String LAST_APP_BUTTON = "##lastapp##";
     public static final String MENU_BUTTON = "##menu##";
     public static final String SEARCH_BUTTON = "##search##";
     public static final String RECENT_BUTTON = "##recent##";
@@ -60,6 +61,7 @@ public class PieControl implements OnClickListener {
     private PieItem mHome;
     private PieItem mMenu;
     private PieItem mRecent;
+    private PieItem mLastApp;
     private PieItem mSearch;
     private OnNavButtonPressedListener mListener;
     private PieControlPanel mPanel;
@@ -114,7 +116,9 @@ public class PieControl implements OnClickListener {
         mBack = makeItem(R.drawable.ic_sysbar_back, 1, BACK_BUTTON, false);
         mHome = makeItem(R.drawable.ic_sysbar_home, 1, HOME_BUTTON, false);
         mRecent = makeItem(R.drawable.ic_sysbar_recent, 1, RECENT_BUTTON, false);
+        mLastApp = makeItem(R.drawable.ic_sysbar_lastapp, 1, LAST_APP_BUTTON, true);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, true);
+        mPie.addItem(mLastApp);
         mPie.addItem(mMenu);
 
         if(mIsAssistantAvailable) {
