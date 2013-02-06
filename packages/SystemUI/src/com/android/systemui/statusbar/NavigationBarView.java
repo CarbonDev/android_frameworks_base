@@ -53,6 +53,7 @@ import android.widget.LinearLayout;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
+import com.android.systemui.TransparencyManager;
 import com.android.systemui.carbon.CarbonTarget;
 import com.android.systemui.statusbar.policy.ExtensibleKeyButtonView;
 import com.android.systemui.statusbar.policy.KeyButtonView;
@@ -103,8 +104,7 @@ public class NavigationBarView extends LinearLayout {
 
     int mNavigationBarColor = -1;
 
-    private float mNavigationBarAlpha;
-    public static final float KEYGUARD_ALPHA = 0.44f;
+    private TransparencyManager mTransparencyManager;
 
     public String[] mClickActions = new String[7];
     public String[] mLongpressActions = new String[7];
@@ -244,6 +244,10 @@ public class NavigationBarView extends LinearLayout {
         mCarbonTarget = new CarbonTarget(context);
     }
 
+    public void setTransparencyManager(TransparencyManager tm) {
+        mTransparencyManager = tm;
+    }
+
     private void makeBar() {
 
         ((LinearLayout) rot0.findViewById(R.id.nav_buttons)).removeAllViews();
@@ -323,7 +327,9 @@ public class NavigationBarView extends LinearLayout {
                     mNavigationBarColor > 0 ? mNavigationBarColor : ((ColorDrawable) bg).getColor());
             setBackground(bacd);
         }
-        setBackgroundAlpha(mNavigationBarAlpha);
+        if(mTransparencyManager != null) {
+            mTransparencyManager.update();
+        }
     }
 
     private void addLightsOutButton(LinearLayout root, View v, boolean landscape, boolean empty) {
@@ -479,7 +485,6 @@ public class NavigationBarView extends LinearLayout {
         			(0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_NOP)) ? 0.5f : 1.0f);
         }
         setDisabledFlags(mDisabledFlags, true);
-        updateKeyguardAlpha();
     }
 
     public void setDisabledFlags(int disabledFlags) {
@@ -495,16 +500,6 @@ public class NavigationBarView extends LinearLayout {
         if(km == null) return false;
 
         return km.isKeyguardLocked();
-    }
-
-    private void updateKeyguardAlpha() {
-        if((mNavigationIconHints & StatusBarManager.NAVIGATION_HINT_BACK_ALT) != 0) {
-            // keyboard up, always darken it
-            setBackgroundAlpha(1);
-        } else {
-            // if the user set alpha is below what the keygaurd alpha, match the keyguard alpha and be pretty
-            setBackgroundAlpha(isKeyguardEnabled() && mNavigationBarAlpha < KEYGUARD_ALPHA ? KEYGUARD_ALPHA : mNavigationBarAlpha);
-        }
     }
 
     public void setDisabledFlags(int disabledFlags, boolean force) {
@@ -546,7 +541,6 @@ public class NavigationBarView extends LinearLayout {
             }
         }
         getSearchLight().setVisibility(keygaurdProbablyEnabled ? View.VISIBLE : View.GONE);
-        updateKeyguardAlpha();
     }
 
     public void setSlippery(boolean newSlippery) {
@@ -823,8 +817,6 @@ public class NavigationBarView extends LinearLayout {
             ContentResolver resolver = mContext.getContentResolver();
 
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_ALPHA), false, this);
-            resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_COLOR), false, this);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.MENU_LOCATION), false,
@@ -865,7 +857,7 @@ public class NavigationBarView extends LinearLayout {
     /*
      * ]0 < alpha < 1[
      */
-    private void setBackgroundAlpha(float alpha) {
+    public void setBackgroundAlpha(float alpha) {
         Drawable bg = getBackground();
         if(bg == null) return;
 
@@ -888,10 +880,6 @@ public class NavigationBarView extends LinearLayout {
 
         mMenuLocation = Settings.System.getInt(resolver,
                 Settings.System.MENU_LOCATION, SHOW_RIGHT_MENU);
-        mNavigationBarAlpha = Settings.System.getFloat(resolver,
-                Settings.System.NAVIGATION_BAR_ALPHA,
-                new Float(mContext.getResources().getInteger(
-                        R.integer.navigation_bar_transparency) / 255));
         mNavigationBarColor = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_COLOR, -1);
         mMenuVisbility = Settings.System.getInt(resolver,
