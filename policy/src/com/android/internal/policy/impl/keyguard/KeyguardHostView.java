@@ -47,6 +47,7 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Slog;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -76,9 +77,11 @@ public class KeyguardHostView extends KeyguardViewBase {
     private AppWidgetHost mAppWidgetHost;
     private AppWidgetManager mAppWidgetManager;
     private KeyguardWidgetPager mAppWidgetContainer;
+    private KeyguardWidgetPager mAppWidgetContainerHidden;
     private KeyguardSecurityViewFlipper mSecurityViewContainer;
     private KeyguardSelectorView mKeyguardSelectorView;
     private KeyguardTransportControlView mTransportControl;
+    private View mExpandChallengeView;
     private boolean mIsVerifyUnlockOnly;
     private boolean mEnableFallback; // TODO: This should get the value from KeyguardPatternView
     private SecurityMode mCurrentSecuritySelection = SecurityMode.Invalid;
@@ -103,10 +106,6 @@ public class KeyguardHostView extends KeyguardViewBase {
     private boolean mCameraDisabled;
 
     private boolean mSafeModeEnabled;
-
-
-     // We can use the profile manager to override security
-     private ProfileManager mProfileManager;
 
      /*package*/ interface TransportCallback {
         void onListenerDetached();
@@ -139,8 +138,6 @@ public class KeyguardHostView extends KeyguardViewBase {
         mSecurityModel = new KeyguardSecurityModel(context);
 
         mViewStateManager = new KeyguardViewStateManager(this);
-
-        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
 
         DevicePolicyManager dpm =
             (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -210,8 +207,17 @@ public class KeyguardHostView extends KeyguardViewBase {
         // Grab instances of and make any necessary changes to the main layouts. Create
         // view state manager and wire up necessary listeners / callbacks.
         View deleteDropTarget = findViewById(R.id.keyguard_widget_pager_delete_target);
-        mAppWidgetContainer = (KeyguardWidgetPager) findViewById(R.id.app_widget_container);
+        if (Settings.System.getBoolean(getContext().getContentResolver(),
+                Settings.System.LOCKSCREEN_USE_WIDGET_CONTAINER_CAROUSEL, false)) {
+            mAppWidgetContainerHidden = (KeyguardWidgetPager) findViewById(R.id.app_widget_container);
+            mAppWidgetContainer = (KeyguardWidgetPager) findViewById(R.id.app_widget_container_carousel);
+        }
+        else {
+            mAppWidgetContainerHidden = (KeyguardWidgetPager) findViewById(R.id.app_widget_container_carousel);
+            mAppWidgetContainer = (KeyguardWidgetPager) findViewById(R.id.app_widget_container);
+        }
         mAppWidgetContainer.setVisibility(VISIBLE);
+        mAppWidgetContainerHidden.setVisibility(GONE);
         mAppWidgetContainer.setCallbacks(mWidgetCallbacks);
         mAppWidgetContainer.setDeleteDropTarget(deleteDropTarget);
         mAppWidgetContainer.setMinScale(0.5f);
@@ -250,8 +256,26 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         showPrimarySecurityScreen(false);
         updateSecurityViews();
+
+        mExpandChallengeView = (View) findViewById(R.id.expand_challenge_handle);
+        if (mExpandChallengeView != null) {
+            mExpandChallengeView.setOnLongClickListener(mFastUnlockClickListener);
+        }
+
         minimizeChallengeIfDesired();
     }
+
+    private final OnLongClickListener mFastUnlockClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if (mLockPatternUtils.isTactileFeedbackEnabled()) {
+                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            }
+            showNextSecurityScreenOrFinish(false);
+            return true;
+        }
+    };
 
     private int getDisabledFeatures(DevicePolicyManager dpm) {
         int disabledFeatures = DevicePolicyManager.KEYGUARD_DISABLE_FEATURES_NONE;
@@ -863,31 +887,11 @@ public class KeyguardHostView extends KeyguardViewBase {
         showPrimarySecurityScreen(false);
     }
 
-    private boolean isSecure() {
-        SecurityMode mode = mSecurityModel.getSecurityMode();
-        switch (mode) {
-            case Pattern:
-                return mLockPatternUtils.isLockPatternEnabled()
-                        && mProfileManager.getActiveProfile().getScreenLockMode()!= Profile.LockMode.INSECURE;
-            case Password:
-            case PIN:
-                return mLockPatternUtils.isLockPasswordEnabled()
-                        && mProfileManager.getActiveProfile().getScreenLockMode() != Profile.LockMode.INSECURE;
-            case SimPin:
-            case SimPuk:
-            case Account:
-                return true;
-            case None:
-                return false;
-            default:
-                throw new IllegalStateException("Unknown security mode " + mode);
-        }
-    }
 
     @Override
     public void wakeWhenReadyTq(int keyCode) {
         if (DEBUG) Log.d(TAG, "onWakeKey");
-        if (keyCode == KeyEvent.KEYCODE_MENU && isSecure()) {
+        if (keyCode == KeyEvent.KEYCODE_MENU && mSecurityModel.getSecurityMode() != SecurityMode.None) {
             if (DEBUG) Log.d(TAG, "switching screens to unlock screen because wake key was MENU");
             showSecurityScreen(SecurityMode.None);
         } else {
