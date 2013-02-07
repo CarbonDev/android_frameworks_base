@@ -345,6 +345,8 @@ public class PieMenu extends FrameLayout {
 
         mNotificationPaint.setColor(getResources().getColor(R.color.status));
         mSnapBackground.setColor(getResources().getColor(R.color.snap_background));
+        mStatusPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_STATUS, COLOR_STATUS));
 
         if (mEnableColor) {
             mPieBackground.setColor(Settings.System.getInt(mContext.getContentResolver(),
@@ -357,8 +359,6 @@ public class PieMenu extends FrameLayout {
                         Settings.System.PIE_STATUS_CLOCK, COLOR_STATUS));
             mAmPmPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.PIE_STATUS_CLOCK, COLOR_STATUS));
-            mStatusPaint.setColor(Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_STATUS, COLOR_STATUS));
             mChevronBackgroundLeft.setColor(Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.PIE_CHEVRON_LEFT, COLOR_CHEVRON_LEFT));
             mChevronBackgroundRight.setColor(Settings.System.getInt(mContext.getContentResolver(),
@@ -374,7 +374,6 @@ public class PieMenu extends FrameLayout {
             mPieOutlines.setColor(getResources().getColor(R.color.pie_outlines));
             mClockPaint.setColor(getResources().getColor(R.color.status));
             mAmPmPaint.setColor(getResources().getColor(R.color.status));
-            mStatusPaint.setColor(getResources().getColor(R.color.status));
             mChevronBackgroundLeft.setColor(getResources().getColor(R.color.chevron_left));
             mChevronBackgroundRight.setColor(getResources().getColor(R.color.chevron_right));
             mBatteryJuice.setColorFilter(null);
