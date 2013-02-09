@@ -598,9 +598,8 @@ public class PieMenu extends FrameLayout {
     }
 
     private boolean canItemDisplay(PieItem item) {
-        return !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp) &&
-                !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
-                !(item.getName().equals(PieControl.SEARCH_BUTTON) && !mUseSearch);
+        return !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
+                !(item.getName().equals(PieControl.SEARCH_BUTTON) && !mUseSearch) && !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp);
     }
 
     private void layoutPie() {
