@@ -119,16 +119,16 @@ public class PieControl implements OnClickListener {
         mLastApp = makeItem(R.drawable.ic_sysbar_lastapp_side, 1, LAST_APP_BUTTON, true);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, true);
         mPie.addItem(mMenu);
+        mPie.addItem(mLastApp);
 
         if(mIsAssistantAvailable) {
             mSearch = makeItem(R.drawable.ic_sysbar_search_side, 1, SEARCH_BUTTON, true);
             mPie.addItem(mSearch);
         }
 
+        mPie.addItem(mRecent);
         mPie.addItem(mHome);
         mPie.addItem(mBack);
-        mPie.addItem(mRecent);
-        mPie.addItem(mLastApp);
     }
 
     @Override
