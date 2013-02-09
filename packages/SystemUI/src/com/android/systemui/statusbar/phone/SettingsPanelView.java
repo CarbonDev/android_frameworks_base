@@ -32,7 +32,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 
 public class SettingsPanelView extends PanelView {
 
-    private QuickSettingsController mQS;
+    private QuickSettings mQS;
     private QuickSettingsContainerView mQSContainer;
 
     Drawable mHandleBar;
@@ -58,7 +58,7 @@ public class SettingsPanelView extends PanelView {
 
     }
 
-    public void setQuickSettings(QuickSettingsController qs) {
+    public void setQuickSettings(QuickSettings qs) {
         mQS = qs;
     }
 
