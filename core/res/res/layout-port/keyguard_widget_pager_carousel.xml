@@ -27,5 +27,5 @@
     android:paddingTop="25dp"
     android:paddingBottom="@dimen/kg_widget_pager_bottom_padding"
     android:clipToPadding="false"
-    androidprv:pageSpacing="0dp">
+    androidprv:pageSpacing="10dp">
 </com.android.internal.policy.impl.keyguard.KeyguardWidgetCarousel>
