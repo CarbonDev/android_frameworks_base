@@ -27,7 +27,6 @@ import android.util.SparseIntArray;
 import android.os.SystemProperties;
 import android.util.FloatMath;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
