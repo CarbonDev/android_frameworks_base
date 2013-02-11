@@ -100,8 +100,7 @@ public class PieMenu extends FrameLayout {
 
     // Special purpose
     private static int ANIMATOR_BATTERY_METER = 21;
-    private static int ANIMATOR_SNAP_WOBBLE = 22;
-    private static int ANIMATOR_SNAP_GROW = 23;
+    private static int ANIMATOR_SNAP_GROW = 22;
 
     private static final int COLOR_ALPHA_MASK = 0xaa000000;
     private static final int COLOR_OPAQUE_MASK = 0xff000000;
@@ -445,12 +444,6 @@ public class PieMenu extends FrameLayout {
         mAnimators[ANIMATOR_BATTERY_METER].duration = (int)(mOverallSpeed * 1.5);
         mAnimators[ANIMATOR_BATTERY_METER].animator.setInterpolator(new DecelerateInterpolator());
 
-        mAnimators[ANIMATOR_SNAP_WOBBLE].manual = true;
-        mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setDuration(400);
-        mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setInterpolator(new DecelerateInterpolator());
-        mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setRepeatMode(ValueAnimator.REVERSE);
-        mAnimators[ANIMATOR_SNAP_WOBBLE].animator.setRepeatCount(ValueAnimator.INFINITE);
-
         mAnimators[ANIMATOR_SNAP_GROW].manual = true;
         mAnimators[ANIMATOR_SNAP_GROW].animator.setDuration(1000);
         mAnimators[ANIMATOR_SNAP_GROW].animator.setInterpolator(new AccelerateInterpolator());
@@ -459,12 +452,12 @@ public class PieMenu extends FrameLayout {
             @Override public void onAnimationRepeat(Animator animation) {}
             @Override public void onAnimationStart(Animator animation) {}
             @Override public void onAnimationEnd(Animator animation) {
-                android.util.Log.d("PARANOID", "hhh");
                 if (mAnimators[ANIMATOR_SNAP_GROW].fraction == 1) {
                     for (int i = 0; i < 3; i++) {
                         SnapPoint snap = mSnapPoint[i];
                         if (snap.active) {
                             if(mHapticFeedback) mVibrator.vibrate(2);
+                            mStatusPanel.hidePanels(true);
                             deselect();
                             animateOut();
                             mPanel.reorient(snap.gravity);
@@ -765,12 +758,7 @@ public class PieMenu extends FrameLayout {
                     SnapPoint snap = mSnapPoint[i];
                     mSnapBackground.setAlpha((int)(snap.alpha + (snap.active ? mAnimators[ANIMATOR_SNAP_GROW].fraction * 80 : 0)));
 
-                    int wobble = 0;
-                    if (snap.active) {
-                        wobble = (int)(mAnimators[ANIMATOR_SNAP_WOBBLE].fraction * mSnapRadius / 2);
-                        wobble = mSnapRadius + wobble;
-                    }
-                    canvas.drawCircle (snap.x, snap.y, snap.radius + wobble + (snap.active ? mAnimators[ANIMATOR_SNAP_GROW].fraction *
+                    canvas.drawCircle (snap.x, snap.y, snap.radius + (snap.active ? mAnimators[ANIMATOR_SNAP_GROW].fraction *
                             Math.max(getWidth(), getHeight()) : 0), mSnapBackground);
 
                     mSnapBackground.setAlpha((int)(snap.alpha * 2.15f  + (snap.active ? mAnimators[ANIMATOR_SNAP_GROW].fraction * 80 : 0)));
@@ -965,8 +953,6 @@ public class PieMenu extends FrameLayout {
                 if (snapDistance < mSnapRadius) {
                     snap.alpha = 60;
                     if (!snap.active) {
-                        mAnimators[ANIMATOR_SNAP_WOBBLE].cancel();
-                        mAnimators[ANIMATOR_SNAP_WOBBLE].animator.start();
                         mAnimators[ANIMATOR_SNAP_GROW].cancel();
                         mAnimators[ANIMATOR_SNAP_GROW].animator.start();
                         if(mHapticFeedback) mVibrator.vibrate(2);
@@ -978,7 +964,6 @@ public class PieMenu extends FrameLayout {
                     mGlowOffsetRight = 150;
                 } else {
                     if (snap.active) {
-                        mAnimators[ANIMATOR_SNAP_WOBBLE].cancel();
                         mAnimators[ANIMATOR_SNAP_GROW].cancel();
                     }
                     snap.alpha = 30;
