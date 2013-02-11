@@ -3538,6 +3538,12 @@ public final class Settings {
         public static final String PIE_SEARCH = "pie_search";
 
         /**
+         * Center Pie? Should default to 1 (yes, center)
+         * @hide
+         */
+        public static final String PIE_CENTER = "pie_center";
+
+        /**
          * Pie last app, should default to 0 (no, show only when needed)
          * @hide
          */
