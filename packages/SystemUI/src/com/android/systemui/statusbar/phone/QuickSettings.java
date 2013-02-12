@@ -110,25 +110,24 @@ class QuickSettings {
     private static final int WIFI_TILE = 3;
     private static final int SIGNAL_TILE = 4;
     private static final int ROTATE_TILE = 5;
-    private static final int CLOCK_TILE = 6;
-    private static final int GPS_TILE = 7;
-    private static final int IME_TILE = 8;
-    private static final int BATTERY_TILE = 9;
-    private static final int AIRPLANE_TILE = 10;
-    private static final int BLUETOOTH_TILE = 11;
-    private static final int VIBRATE_TILE = 12;
-    private static final int SILENT_TILE = 13;
-    private static final int FCHARGE_TILE = 14;
-    private static final int SYNC_TILE = 15;
-    private static final int NFC_TILE = 16;
-    private static final int TORCH_TILE = 17;
-    private static final int WIFI_TETHER_TILE = 18;
-    private static final int USB_TETHER_TILE = 19;
-    private static final int TWOG_TILE = 20;
-    private static final int LTE_TILE = 21;
-    private static final int FAV_CONTACT_TILE = 22;
-   // private static final int BT_TETHER_TILE = 23;
-    private static final int SOUND_STATE_TILE = 24;
+    private static final int GPS_TILE = 6;
+    private static final int IME_TILE = 7;
+    private static final int BATTERY_TILE = 8;
+    private static final int AIRPLANE_TILE = 9;
+    private static final int BLUETOOTH_TILE = 10;
+    private static final int VIBRATE_TILE = 11;
+    private static final int SILENT_TILE = 12;
+    private static final int FCHARGE_TILE = 13;
+    private static final int SYNC_TILE = 14;
+    private static final int NFC_TILE = 15;
+    private static final int TORCH_TILE = 16;
+    private static final int WIFI_TETHER_TILE = 17;
+    private static final int USB_TETHER_TILE = 18;
+    private static final int TWOG_TILE = 19;
+    private static final int LTE_TILE = 20;
+    private static final int FAV_CONTACT_TILE = 21;
+   // private static final int BT_TETHER_TILE = 22;
+    private static final int SOUND_STATE_TILE = 22;
 
     public static final String USER_TOGGLE = "USER";
     public static final String BRIGHTNESS_TOGGLE = "BRIGHTNESS";
@@ -136,7 +135,6 @@ class QuickSettings {
     public static final String WIFI_TOGGLE = "WIFI";
     public static final String SIGNAL_TOGGLE = "SIGNAL";
     public static final String ROTATE_TOGGLE = "ROTATE";
-    public static final String CLOCK_TOGGLE = "CLOCK";
     public static final String GPS_TOGGLE = "GPS";
     public static final String IME_TOGGLE = "IME";
     public static final String BATTERY_TOGGLE = "BATTERY";
@@ -216,7 +214,6 @@ class QuickSettings {
             toggleMap.put(WIFI_TOGGLE, WIFI_TILE);
             toggleMap.put(SIGNAL_TOGGLE, SIGNAL_TILE);
             toggleMap.put(ROTATE_TOGGLE, ROTATE_TILE);
-            toggleMap.put(CLOCK_TOGGLE, CLOCK_TILE);
             toggleMap.put(GPS_TOGGLE, GPS_TILE);
             toggleMap.put(IME_TOGGLE, IME_TILE);
             toggleMap.put(BATTERY_TOGGLE, BATTERY_TILE);
@@ -520,34 +517,6 @@ class QuickSettings {
                         iv.setImageDrawable(us.avatar);
                         view.setContentDescription(mContext.getString(
                                 R.string.accessibility_quick_settings_user, state.label));
-                    }
-                });
-                break;
-            case CLOCK_TILE:
-                quick = (QuickSettingsTileView)
-                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
-                quick.setContent(R.layout.quick_settings_tile_time, inflater);
-                quick.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent("android.intent.action.MAIN");
-                        intent.setComponent(ComponentName.unflattenFromString("com.android.deskclock.AlarmProvider"));
-                        intent.addCategory("android.intent.category.LAUNCHER");
-                        startSettingsActivity(intent);
-                    }
-                });
-                quick.setOnLongClickListener(new View.OnLongClickListener() {
-                     @Override
-                    public boolean onLongClick(View v) {
-                        startSettingsActivity(Intent.ACTION_QUICK_CLOCK);
-                        return true;
-                    }
-                });
-                mModel.addTimeTile(quick, new QuickSettingsModel.RefreshCallback() {
-                     @Override
-                    public void refreshView(QuickSettingsTileView view, State alarmState) {
-                         TextView tv = (TextView) view.findViewById(R.id.clock_textview);
-                         tv.setTextSize(1, mTileTextSize);
                     }
                 });
                 break;
