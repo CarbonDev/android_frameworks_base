@@ -122,20 +122,16 @@ public class BatteryController extends BroadcastReceiver {
         final String action = intent.getAction();
         if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
             final int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            mBatteryPlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
-            final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
+            mBatteryPlugged = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
                     BatteryManager.BATTERY_STATUS_UNKNOWN);
 
             boolean plugged = false;
-            switch (status) {
+            switch (mBatteryPlugged) {
                 case BatteryManager.BATTERY_STATUS_CHARGING: 
                 case BatteryManager.BATTERY_STATUS_FULL:
                     plugged = true;
                     break;
             }
-
-            final int icon = plugged ? R.drawable.stat_sys_battery_charge
-                                     : R.drawable.stat_sys_battery;
 
             int N = mIconViews.size();
             for (int i=0; i<N; i++) {
@@ -152,7 +148,7 @@ public class BatteryController extends BroadcastReceiver {
             }
 
             for (BatteryStateChangeCallback cb : mChangeCallbacks) {
-                cb.onBatteryLevelChanged(level, mBatteryPlugged);
+                cb.onBatteryLevelChanged(level, plugged);
             }
             updateBattery();
         }
@@ -165,12 +161,12 @@ public class BatteryController extends BroadcastReceiver {
 
         if (mBatteryStyle == BATTERY_STYLE_NORMAL) {
             mIcon = (View.VISIBLE);
-            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE
+            mIconStyle = plugged ? BATTERY_ICON_STYLE_CHARGE
                     : BATTERY_ICON_STYLE_NORMAL;
         } else if (mBatteryStyle == BATTERY_STYLE_PERCENT) {
             mIcon = (View.VISIBLE);
             mText = (View.VISIBLE);
-            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE_MIN
+            mIconStyle = plugged ? BATTERY_ICON_STYLE_CHARGE_MIN
                     : BATTERY_ICON_STYLE_NORMAL_MIN;
         }
 
