@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.liquid;
+package com.android.systemui.carbon;
 
 import android.app.Activity;
 import android.os.Bundle;
