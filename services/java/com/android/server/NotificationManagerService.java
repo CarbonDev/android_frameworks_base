@@ -1106,12 +1106,12 @@ public class NotificationManagerService extends INotificationManager.Stub
             return;
         }
 
-        synchronized (mNotificationList) {
-            final boolean inQuietHours = inQuietHours();
         // Should this notification make noise, vibe, or use the LED?
         final boolean canInterrupt = (score >= SCORE_INTERRUPTION_THRESHOLD);
 
         synchronized (mNotificationList) {
+            final boolean inQuietHours = inQuietHours();
+
             NotificationRecord r = new NotificationRecord(pkg, tag, id, 
                     callingUid, callingPid, userId,
                     score,
@@ -1211,26 +1211,18 @@ public class NotificationManagerService extends INotificationManager.Stub
 
                 final AudioManager audioManager = (AudioManager) mContext
                 .getSystemService(Context.AUDIO_SERVICE);
+
                 // sound
                 final boolean useDefaultSound =
                     (notification.defaults & Notification.DEFAULT_SOUND) != 0;
-
-                Uri soundUri = null;
-                boolean hasValidSound = false;
-
-                if (useDefaultSound) {
-                    soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
-
-                    // check to see if the default notification sound is silent
-                    ContentResolver resolver = mContext.getContentResolver();
-                    hasValidSound = Settings.System.getString(resolver,
-                           Settings.System.NOTIFICATION_SOUND) != null;
-                } else if (notification.sound != null) {
-                    soundUri = notification.sound;
-                    hasValidSound = (soundUri != null);
-                }
-
-                if (hasValidSound) {
+                if (!(inQuietHours && mQuietHoursMute)
+                        && (useDefaultSound || notification.sound != null)) {
+                    Uri uri;
+                    if (useDefaultSound) {
+                        uri = Settings.System.DEFAULT_NOTIFICATION_URI;
+                    } else {
+                        uri = notification.sound;
+                    }
                     boolean looping = (notification.flags & Notification.FLAG_INSISTENT) != 0;
                     int audioStreamType;
                     if (notification.audioStreamType >= 0) {
