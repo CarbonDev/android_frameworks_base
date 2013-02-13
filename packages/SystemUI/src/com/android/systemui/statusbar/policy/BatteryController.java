@@ -122,16 +122,7 @@ public class BatteryController extends BroadcastReceiver {
         final String action = intent.getAction();
         if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
             final int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            mBatteryPlugged = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
-                    BatteryManager.BATTERY_STATUS_UNKNOWN);
-
-            boolean plugged = false;
-            switch (mBatteryPlugged) {
-                case BatteryManager.BATTERY_STATUS_CHARGING: 
-                case BatteryManager.BATTERY_STATUS_FULL:
-                    plugged = true;
-                    break;
-            }
+            mBatteryPlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
 
             int N = mIconViews.size();
             for (int i=0; i<N; i++) {
@@ -148,7 +139,7 @@ public class BatteryController extends BroadcastReceiver {
             }
 
             for (BatteryStateChangeCallback cb : mChangeCallbacks) {
-                cb.onBatteryLevelChanged(level, plugged);
+                cb.onBatteryLevelChanged(level, mBatteryPlugged);
             }
             updateBattery();
         }
@@ -161,12 +152,12 @@ public class BatteryController extends BroadcastReceiver {
 
         if (mBatteryStyle == BATTERY_STYLE_NORMAL) {
             mIcon = (View.VISIBLE);
-            mIconStyle = plugged ? BATTERY_ICON_STYLE_CHARGE
+            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE
                     : BATTERY_ICON_STYLE_NORMAL;
         } else if (mBatteryStyle == BATTERY_STYLE_PERCENT) {
             mIcon = (View.VISIBLE);
             mText = (View.VISIBLE);
-            mIconStyle = plugged ? BATTERY_ICON_STYLE_CHARGE_MIN
+            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE_MIN
                     : BATTERY_ICON_STYLE_NORMAL_MIN;
         }
 
