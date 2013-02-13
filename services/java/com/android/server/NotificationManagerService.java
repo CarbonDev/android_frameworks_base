@@ -1231,6 +1231,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                         soundUri = notification.sound;
                         hasValidSound = (soundUri != null);
                     }
+                }
 
                 if (hasValidSound) {
                     boolean looping = (notification.flags & Notification.FLAG_INSISTENT) != 0;
