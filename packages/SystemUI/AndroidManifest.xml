@@ -284,7 +284,7 @@
         <activity
             android:name="com.android.systemui.CreateShortcut"
             android:label="@string/shortcut_label"
-            android:icon="@drawable/ic_settings_about.png">
+            android:icon="@drawable/ic_settings_about">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.DEFAULT" />
