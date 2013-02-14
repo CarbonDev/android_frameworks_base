@@ -129,8 +129,9 @@ public class StorageNotification extends StorageEventListener {
     }
 
     private void onStorageStateChangedAsync(String path, String oldState, String newState) {
+        boolean isPrimary = mStorageManager.getPrimaryVolume().getPath().equals(path);
         if (DEBUG) Slog.i(TAG, String.format(
-                "Media {%s} state changed from {%s} -> {%s}", path, oldState, newState));
+                "Media {%s} state changed from {%s} -> {%s} (primary = %b)", path, oldState, newState, isPrimary));
         if (newState.equals(Environment.MEDIA_SHARED)) {
             /*
              * Storage is now shared. Modify the UMS notification
