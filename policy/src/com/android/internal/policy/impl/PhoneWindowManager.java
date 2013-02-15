@@ -1347,6 +1347,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                 .getDimensionPixelSize(
                                         com.android.internal.R.dimen.navigation_bar_width));
 
+        // Set the navigation bar's dimensions to 0 in expanded desktop mode
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                       Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1) {
+            mNavigationBarWidthForRotation[mPortraitRotation] =
+            mNavigationBarWidthForRotation[mUpsideDownRotation] =
+            mNavigationBarWidthForRotation[mLandscapeRotation] =
+            mNavigationBarWidthForRotation[mSeascapeRotation] =
+            mNavigationBarHeightForRotation[mPortraitRotation] =
+            mNavigationBarHeightForRotation[mUpsideDownRotation] =
+            mNavigationBarHeightForRotation[mLandscapeRotation] =
+            mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+
         // SystemUI (status bar) layout policy
         int shortSizeDp = shortSize * DisplayMetrics.DENSITY_DEFAULT / density;
 
