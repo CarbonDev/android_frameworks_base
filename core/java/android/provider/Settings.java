@@ -4452,12 +4452,22 @@ public final class Settings {
          * 7 == bounce_interpolator
          */
         public static final String LISTVIEW_INTERPOLATOR = "listview_interpolator";
+
         /**
          * Volume key controls ringtone or media sound stream
          *
          * @hide
          */
         public static final String VOLUME_KEYS_CONTROL_RING_STREAM = "volume_keys_control_ring_stream";
+
+         /**
+          * Swap volume buttons when the screen is rotated
+          * 0 - Disabled
+          * 1 - Enabled (screen is rotated by 90 or 180 degrees: phone, hybrid)
+          * 2 - Enabled (screen is rotated by 180 or 270 degrees: tablet)
+          * @hide
+          */
+         public static final String SWAP_VOLUME_KEYS_ON_ROTATION = "swap_volume_keys_on_rotation";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
