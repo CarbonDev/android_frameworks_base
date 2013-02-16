@@ -162,7 +162,11 @@ status_t BootAnimation::initTexture(void* buffer, size_t len)
     codec->setDitherImage(false);
     if (codec) {
         codec->decode(&stream, &bitmap,
+                #ifdef USE_565
+                SkBitmap::kRGB_565_Config,
+                #else
                 SkBitmap::kARGB_8888_Config,
+                #endif
                 SkImageDecoder::kDecodePixels_Mode);
         delete codec;
     }
@@ -549,7 +553,7 @@ bool BootAnimation::movie()
                 const Animation::Frame& frame(part.frames[j]);
                 nsecs_t lastFrame = systemTime();
 
-                if (r > 0) {
+                if (r > 0 && !noTextureCache) {
                     glBindTexture(GL_TEXTURE_2D, frame.tid);
                 } else {
                     if (part.count != 1) {
@@ -594,6 +598,9 @@ bool BootAnimation::movie()
                 }
 
                 checkExit();
+
+                if (noTextureCache)
+                    glDeleteTextures(1, &frame.tid);
             }
 
             usleep(part.pause * ns2us(frameDuration));
@@ -604,7 +611,7 @@ bool BootAnimation::movie()
         }
 
         // free the textures for this part
-        if (part.count != 1) {
+        if (part.count != 1 && !noTextureCache) {
             for (size_t j=0 ; j<fcount ; j++) {
                 const Animation::Frame& frame(part.frames[j]);
                 glDeleteTextures(1, &frame.tid);
