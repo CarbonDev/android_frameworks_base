@@ -3761,6 +3761,12 @@ public final class Settings {
        // PIE COLORS EVERYWHERE! //
 
         /**
+         * Swap volume buttons when the screen is rotated by 90 or 180 degrees
+         * @hide
+         */
+        public static final String SWAP_VOLUME_KEYS = "swap_volume_keys";
+
+        /**
          *
          * @hide
          */
