@@ -17,6 +17,7 @@
 package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -25,24 +26,33 @@ import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.View;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.GestureRecorder;
 
 public class NotificationPanelView extends PanelView {
 
-    private static final float STATUS_BAR_SETTINGS_LEFT_PERCENTAGE = 0.8f;
-    private static final float STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE = 0.2f;
+    private static final float STATUS_BAR_SETTINGS_FLIP_PERCENTAGE_RIGHT = 0.15f;
+    private static final float STATUS_BAR_SETTINGS_FLIP_PERCENTAGE_LEFT = 0.85f;
     private static final float STATUS_BAR_SWIPE_TRIGGER_PERCENTAGE = 0.05f;
     private static final float STATUS_BAR_SWIPE_VERTICAL_MAX_PERCENTAGE = 0.025f;
     private static final float STATUS_BAR_SWIPE_MOVE_PERCENTAGE = 0.2f;
 
-    private Drawable mHandleBar;
-    private float mHandleBarHeight;
-    private View mHandleView;
-    private int mFingers;
-    private PhoneStatusBar mStatusBar;
-    private boolean mOkToFlip;
+    Drawable mHandleBar;
+    int mHandleBarHeight;
+    View mHandleView;
+    int mFingers;
+    PhoneStatusBar mStatusBar;
+    boolean mOkToFlip;
+    boolean mFastToggleEnabled;
+    int mFastTogglePos;
+    ContentObserver mEnableObserver;
+    ContentObserver mChangeSideObserver;
+    int mToggleStyle;
+    Handler mHandler = new Handler();
 
     private float mGestureStartX;
     private float mGestureStartY;
@@ -68,12 +78,59 @@ public class NotificationPanelView extends PanelView {
         mHandleBarHeight = resources.getDimensionPixelSize(R.dimen.close_handle_height);
         mHandleView = findViewById(R.id.handle);
 
-        setContentDescription(resources.getString(R.string.accessibility_desc_notification_shade));
+        setContentDescription(resources.getString(
+                R.string.accessibility_desc_notification_shade));
+
+        final ContentResolver resolver = getContext().getContentResolver();
+        mEnableObserver = new ContentObserver(mHandler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                mFastToggleEnabled = Settings.System.getBoolean(resolver,
+                        Settings.System.FAST_TOGGLE, false);
+                mToggleStyle = Settings.System.getInt(resolver,
+                        Settings.System.TOGGLES_STYLE, 0);
+            }
+        };
+
+        mChangeSideObserver = new ContentObserver(mHandler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                mFastTogglePos = Settings.System.getInt(resolver,
+                        Settings.System.CHOOSE_FASTTOGGLE_SIDE, 1);
+            }
+        };
+
+        // Initialization
+        mFastToggleEnabled = Settings.System.getBoolean(resolver,
+                Settings.System.FAST_TOGGLE, false);
+        mFastTogglePos = Settings.System.getInt(resolver,
+                Settings.System.CHOOSE_FASTTOGGLE_SIDE, 1);
+        mToggleStyle = Settings.System.getInt(resolver,
+                Settings.System.TOGGLES_STYLE, 0);
+
+        resolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.FAST_TOGGLE),
+                true, mEnableObserver);
+        resolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.TOGGLES_STYLE),
+                true, mEnableObserver);
+
+        resolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.CHOOSE_FASTTOGGLE_SIDE),
+                true, mChangeSideObserver);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        getContext().getContentResolver().unregisterContentObserver(mEnableObserver);
+        getContext().getContentResolver().unregisterContentObserver(mChangeSideObserver);
+        super.onDetachedFromWindow();
     }
 
     @Override
     public void fling(float vel, boolean always) {
-        GestureRecorder gr = ((PhoneStatusBarView) mBar).mBar.getGestureRecorder();
+        GestureRecorder gr =
+                ((PhoneStatusBarView) mBar).mBar.getGestureRecorder();
         if (gr != null) {
             gr.tag(
                 "fling " + ((vel > 0) ? "open" : "closed"),
@@ -82,7 +139,8 @@ public class NotificationPanelView extends PanelView {
         super.fling(vel, always);
     }
 
-    // We draw the handle ourselves so that it's always glued to the bottom of the window.
+    // We draw the handle ourselves so that it's
+    // always glued to the bottom of the window.
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -106,14 +164,11 @@ public class NotificationPanelView extends PanelView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean shouldRecycleEvent = false;
-        if (PhoneStatusBar.SETTINGS_DRAG_SHORTCUT && mStatusBar.mHasFlipSettings) {
-            boolean flip = false;
+        if (PhoneStatusBar.SETTINGS_DRAG_SHORTCUT
+                && mStatusBar.mHasFlipSettings) {
+            boolean shouldFlip = false;
             boolean swipeFlipJustFinished = false;
             boolean swipeFlipJustStarted = false;
-            boolean noNotificationPulldown = Settings.System.getInt(getContext().getContentResolver(),
-                                    Settings.System.QS_NO_NOTIFICATION_PULLDOWN, 0) == 1;
-            int quickPulldownMode = Settings.System.getInt(getContext().getContentResolver(),
-                                    Settings.System.QS_QUICK_PULLDOWN, 0);
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     mGestureStartX = event.getX(0);
@@ -122,14 +177,27 @@ public class NotificationPanelView extends PanelView {
                         // Pointer is at the handle portion of the view?
                         mGestureStartY > getHeight() - mHandleBarHeight - getPaddingBottom();
                     mOkToFlip = getExpandedHeight() == 0;
-                    if (event.getX(0) > getWidth() * (1.0f - STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE) &&
-                            quickPulldownMode == 1) {
-                        flip = true;
-                    } else if (event.getX(0) < getWidth() * (1.0f - STATUS_BAR_SETTINGS_LEFT_PERCENTAGE) &&
-                            quickPulldownMode == 2) {
-                        flip = true;
-                    } else if (!mStatusBar.hasClearableNotifications() && noNotificationPulldown) {
-                        flip = true;
+                    if(mToggleStyle != 0) {
+                        // don't allow settings panel with non-tile toggles
+                        shouldFlip = false;
+                        break;
+                    }
+                    if (mFastTogglePos == 1) {
+                        if ((event.getX(0) > getWidth()
+                                * (1.0f - STATUS_BAR_SETTINGS_FLIP_PERCENTAGE_RIGHT)
+                                && mFastToggleEnabled)
+                            || (mStatusBar.skipToSettingsPanel())
+                                && !mFastToggleEnabled) {
+                            shouldFlip = true;
+                        }
+                    } else if (mFastTogglePos == 2) {
+                        if ((event.getX(0) < getWidth()
+                                * (1.0f - STATUS_BAR_SETTINGS_FLIP_PERCENTAGE_LEFT)
+                                && mFastToggleEnabled)
+                            || (mStatusBar.skipToSettingsPanel())
+                                && !mFastToggleEnabled) {
+                            shouldFlip = true;
+                        }
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
@@ -164,8 +232,20 @@ public class NotificationPanelView extends PanelView {
                         swipeFlipJustStarted = true;
                     }
                     break;
+
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    flip = true;
+                    if (mOkToFlip) {
+                        float miny = event.getY(0);
+                        float maxy = miny;
+                        for (int i=1; i<event.getPointerCount(); i++) {
+                            final float y = event.getY(i);
+                            if (y < miny) miny = y;
+                            if (y > maxy) maxy = y;
+                        }
+                        if (maxy - miny < mHandleBarHeight) {
+                            shouldFlip = true;
+                        }
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
                     swipeFlipJustFinished = mSwipeTriggered;
@@ -173,16 +253,8 @@ public class NotificationPanelView extends PanelView {
                     mTrackingSwipe = false;
                     break;
             }
-            if (mOkToFlip && flip) {
-                float miny = event.getY(0);
-                float maxy = miny;
-                for (int i=1; i<event.getPointerCount(); i++) {
-                    final float y = event.getY(i);
-                    if (y < miny) miny = y;
-                    if (y > maxy) maxy = y;
-                }
-                if (maxy - miny < mHandleBarHeight) {
-                    if (getMeasuredHeight() < mHandleBarHeight) {
+            if(mOkToFlip && shouldFlip) {
+                if (getMeasuredHeight() < mHandleBarHeight) {
                     mStatusBar.switchToSettings();
                 } else {
                     // Do not flip if the drag event started within the top bar
@@ -192,8 +264,7 @@ public class NotificationPanelView extends PanelView {
                         mStatusBar.flipToSettings();
                     }
                 }
-                mOkToFlip = false;
-            }
+                mOkToFlip = false;            
             } else if (mSwipeTriggered) {
                 final float deltaX = (event.getX(0) - mGestureStartX) * mSwipeDirection;
                 mStatusBar.partialFlip(mFlipOffset +
@@ -204,7 +275,6 @@ public class NotificationPanelView extends PanelView {
             } else if (swipeFlipJustFinished) {
                 mStatusBar.completePartialFlip();
             }
-
             if (swipeFlipJustStarted || swipeFlipJustFinished) {
                 // Made up event: finger at the middle bottom of the view.
                 MotionEvent original = event;
