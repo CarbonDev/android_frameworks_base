@@ -1573,13 +1573,23 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // Height of the navigation bar when presented horizontally at bottom
                 mNavigationBarHeightForRotation[mPortraitRotation]
                         = mNavigationBarHeightForRotation[mUpsideDownRotation]
+<<<<<<< HEAD
                         = Settings.System.getInt(mContext.getContentResolver(),
+=======
+                          = Settings.System.getInt(mContext.getContentResolver(),
+>>>>>>> 4c099c4... Fix build errors
                                 Settings.System.NAVIGATION_BAR_HEIGHT,
                                 mContext.getResources().getDimensionPixelSize(
                                         com.android.internal.R.dimen.navigation_bar_height));
+<<<<<<< HEAD
                 mNavigationBarHeightForRotation[mLandscapeRotation]
                         = mNavigationBarHeightForRotation[mSeascapeRotation]
                         = Settings.System.getInt(mContext.getContentResolver(),
+=======
+                        mNavigationBarHeightForRotation[mLandscapeRotation]
+                        = mNavigationBarHeightForRotation[mSeascapeRotation]
+                          = Settings.System.getInt(mContext.getContentResolver(),
+>>>>>>> 4c099c4... Fix build errors
                                 Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE,
                                 mContext.getResources().getDimensionPixelSize(
                                         com.android.internal.R.dimen.navigation_bar_height_landscape));
@@ -1589,7 +1599,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         = mNavigationBarWidthForRotation[mUpsideDownRotation]
                         = mNavigationBarWidthForRotation[mLandscapeRotation]
                         = mNavigationBarWidthForRotation[mSeascapeRotation]
+<<<<<<< HEAD
                         = Settings.System.getInt(mContext.getContentResolver(),
+=======
+                          = Settings.System.getInt(mContext.getContentResolver(),
+>>>>>>> 4c099c4... Fix build errors
                                 Settings.System.NAVIGATION_BAR_WIDTH,
                                 mContext.getResources().getDimensionPixelSize(
                                         com.android.internal.R.dimen.navigation_bar_width));
