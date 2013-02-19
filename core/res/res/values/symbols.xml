@@ -1887,6 +1887,19 @@
   <java-symbol type="array" name="config_notificationNoAlertsVibePattern" />
   <java-symbol type="bool" name="config_show_cmIMESwitcher"/>
 
+ <!-- Navigation Ring -->
+  <java-symbol type="drawable" name="ic_navbar_blank" />
+  <java-symbol type="drawable" name="ic_navbar_blank_activated" />
+  <java-symbol type="drawable" name="ic_action_empty" />
+  <java-symbol type="drawable" name="ic_action_ime_switcher" />
+  <java-symbol type="drawable" name="ic_action_killtask" />
+  <java-symbol type="drawable" name="ic_action_power" />
+  <java-symbol type="drawable" name="ic_action_screenshot" />
+  <java-symbol type="drawable" name="ic_action_lastapp" />
+  <java-symbol type="drawable" name="ic_action_ring_vib_silent" />
+  <java-symbol type="drawable" name="ic_action_silent" />
+  <java-symbol type="drawable" name="ic_action_vib" />
+
   <!-- Power menu -->
   <java-symbol type="string" name="global_action_screenshot" />
   <java-symbol type="string" name="global_action_choose_profile" />
