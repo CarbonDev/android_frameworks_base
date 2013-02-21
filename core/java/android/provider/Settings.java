@@ -2617,6 +2617,12 @@ public final class Settings {
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
 
         /**
+         * Stores value for lock before unlock
+         * @hide
+         */
+        public static final String LOCK_BEFORE_UNLOCK = "lock_before_unlock";
+
+        /**
          * Stores values for custom lockscreen targets
          * @hide
          */
@@ -3626,6 +3632,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_VIBRATE_ENABLED = "lockscreen.vibrate_enabled";
+
+        /**
+          * Stores used unsecure lockscreen for normal mode and unlock before unlock
+          * @hide
+          */
+         public static final String LOCKSCREEN_UNSECURE_USED = "lockscreen_unsecure_used";
 
         public static final String THEME_WALLPAPER = "theme_wallpaper";
 
