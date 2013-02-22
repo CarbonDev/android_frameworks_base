@@ -36,16 +36,11 @@ import com.android.systemui.statusbar.GestureRecorder;
 
 public class NotificationPanelView extends PanelView {
 
-<<<<<<< HEAD
     private static final float STATUS_BAR_SETTINGS_FLIP_PERCENTAGE_RIGHT = 0.15f;
     private static final float STATUS_BAR_SETTINGS_FLIP_PERCENTAGE_LEFT = 0.85f;
-=======
-    private static final float STATUS_BAR_SETTINGS_LEFT_PERCENTAGE = 0.8f;
-    private static final float STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE = 0.2f;
     private static final float STATUS_BAR_SWIPE_TRIGGER_PERCENTAGE = 0.05f;
     private static final float STATUS_BAR_SWIPE_VERTICAL_MAX_PERCENTAGE = 0.025f;
     private static final float STATUS_BAR_SWIPE_MOVE_PERCENTAGE = 0.2f;
->>>>>>> 6bbe7b7... Quick Settings: Swipe to switch
 
     Drawable mHandleBar;
     int mHandleBarHeight;
@@ -270,7 +265,12 @@ public class NotificationPanelView extends PanelView {
                 if (getMeasuredHeight() < mHandleBarHeight) {
                     mStatusBar.switchToSettings();
                 } else {
-                    mStatusBar.flipToSettings();
+                    // Do not flip if the drag event started within the top bar
+                    if (MotionEvent.ACTION_DOWN == event.getActionMasked() && event.getY(0) < mHandleBarHeight ) {
+                        mStatusBar.switchToSettings();
+                    } else {
+                        mStatusBar.flipToSettings();
+                    }
                 }
                 mOkToFlip = false;
             } else if (mSwipeTriggered) {
