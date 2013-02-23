@@ -2908,7 +2908,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             public void run() {
                     doubleClickCounter = 0;
                     animateCollapsePanels();
-                    AwesomeAction.getInstance(mContext).launchAction(mClockActions[shortClick]);
+                    AwesomeAction.launchAction(mContext, mClockActions[shortClick]);
             }
         };
 
@@ -2925,7 +2925,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                     mHandler.removeCallbacks(DelayShortPress);
                     vibrate();
                     animateCollapsePanels();
-                    AwesomeAction.getInstance(mContext).launchAction(mClockActions[doubleClick]);
+                    AwesomeAction.launchAction(mContext, mClockActions[doubleClick]);
                     mHandler.postDelayed(ResetDoubleClickCounter, 50);
                 } else {
                     doubleClickCounter = doubleClickCounter + 1;
@@ -2935,7 +2935,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             } else {
                 vibrate();
                 animateCollapsePanels();
-                AwesomeAction.getInstance(mContext).launchAction(mClockActions[shortClick]);
+                AwesomeAction.launchAction(mContext, mClockActions[shortClick]);
             }
 
         }
@@ -2945,7 +2945,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         @Override
         public boolean onLongClick(View v) {
             animateCollapsePanels();
-            AwesomeAction.getInstance(mContext).launchAction(mClockActions[longClick]);
+            AwesomeAction.launchAction(mContext, mClockActions[longClick]);
             return true;
         }
     };
