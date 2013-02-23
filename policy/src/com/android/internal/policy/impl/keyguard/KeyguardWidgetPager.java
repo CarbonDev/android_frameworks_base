@@ -53,6 +53,7 @@ public class KeyguardWidgetPager extends PagedView implements PagedView.PageSwit
     private static final boolean PERFORM_OVERSCROLL_ROTATION = true;
 
     private static final String[] CLOCK_WIDGET_PACKAGES = new String[] {
+        "net.nurik.roman.dashclock",
         "com.cyanogenmod.lockclock",
         "com.android.deskclock"
     };
