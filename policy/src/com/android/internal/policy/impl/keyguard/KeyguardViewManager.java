@@ -134,7 +134,6 @@ public class KeyguardViewManager {
     class ViewManagerHost extends FrameLayout {
         public ViewManagerHost(Context context) {
             super(context);
-            setFitsSystemWindows(true);
         }
 
         @Override
