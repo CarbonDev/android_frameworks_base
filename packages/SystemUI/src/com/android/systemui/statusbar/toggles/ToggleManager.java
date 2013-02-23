@@ -93,10 +93,8 @@ public class ToggleManager {
     public static final String QUICKRECORD_TOGGLE = "QUICKRECORD";
     public static final String QUIETHOURS_TOGGLE = "QUIETHOURS";
     public static final String STATUSBAR_TOGGLE = "STATUSBAR";
-    public static final String PIE_TOGGLE = "PIE";
     public static final String SLEEP_TOGGLE = "SLEEP";
     public static final String CARBON_TOGGLE = "CARBON";
-    public static final String TRDS_TOGGLE = "TRDS";
     public static final String POWERMENU_TOGGLE = "POWERMENU";
     public static final String PROFILE_TOGGLE = "PROFILE";
     public static final String SCREENSHOT_TOGGLE = "SCREENSHOT";
@@ -104,7 +102,6 @@ public class ToggleManager {
     public static final String STAYAWAKE_TOGGLE = "STAYAWAKE";
     public static final String WIRELESS_ADB_TOGGLE = "WIRELESSADB";
     public static final String MUSIC_TOGGLE = "MUSIC";
-    public static final String HALO_TOGGLE = "HALO";
 
     private int mStyle;
 
@@ -168,10 +165,8 @@ public class ToggleManager {
             toggleMap.put(QUICKRECORD_TOGGLE, QuickRecordToggle.class);
             toggleMap.put(QUIETHOURS_TOGGLE, QuietHoursToggle.class);
             toggleMap.put(STATUSBAR_TOGGLE, StatusbarToggle.class);
-            toggleMap.put(PIE_TOGGLE, PieToggle.class);
             toggleMap.put(SLEEP_TOGGLE, SleepToggle.class);
             toggleMap.put(CARBON_TOGGLE, CarbonToggle.class);
-            toggleMap.put(TRDS_TOGGLE, TRDSToggle.class);
             toggleMap.put(POWERMENU_TOGGLE, PowerMenuToggle.class);
             toggleMap.put(PROFILE_TOGGLE, ProfileToggle.class);
             toggleMap.put(SCREENSHOT_TOGGLE, ScreenshotToggle.class);
@@ -179,7 +174,6 @@ public class ToggleManager {
             toggleMap.put(STAYAWAKE_TOGGLE, StayAwakeToggle.class);
             toggleMap.put(WIRELESS_ADB_TOGGLE, WirelessAdbToggle.class);
             toggleMap.put(MUSIC_TOGGLE, MusicToggle.class);
-            toggleMap.put(HALO_TOGGLE, HaloToggle.class);
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;
