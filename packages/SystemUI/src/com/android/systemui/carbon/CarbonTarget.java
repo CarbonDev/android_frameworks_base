@@ -112,7 +112,6 @@ public class CarbonTarget {
     public final static int INT_ACTION_SEARCH = 20;
     public final static int INT_ACTION_LAST_APP = 21;
     public final static int INT_ACTION_NULL = 22;
-    public final static int INT_ACTION_RECENTS_GB = 23;
 
     private HashMap<String, Integer> actionMap;
 
@@ -142,7 +141,6 @@ public class CarbonTarget {
             actionMap.put(ACTION_SEARCH, INT_ACTION_SEARCH);
             actionMap.put(ACTION_LAST_APP, INT_ACTION_LAST_APP);
             actionMap.put(ACTION_NULL, INT_ACTION_NULL);
-            actionMap.put(ACTION_RECENTS_GB, INT_ACTION_RECENTS_GB);
         }
         return actionMap;
     }
@@ -202,9 +200,6 @@ public class CarbonTarget {
                 break;
             case INT_ACTION_SEARCH:
                 injectKeyDelayed(KeyEvent.KEYCODE_SEARCH);
-                break;
-            case INT_ACTION_RECENTS_GB:
-                injectKeyDelayed(KeyEvent.KEYCODE_APP_SWITCH);
                 break;
             case INT_ACTION_KILL:
                 mHandler.post(mKillTask);
