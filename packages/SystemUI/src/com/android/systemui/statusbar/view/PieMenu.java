@@ -406,7 +406,7 @@ public class PieMenu extends FrameLayout {
             mChevronBackgroundRight.setColor(getResources().getColor(R.color.chevron_right));
             mBatteryJuice.setColorFilter(null);
             for (PieItem item: mItems) {
-                item.setColor(getResources().getColor(R.color.status);
+                item.setColor(getResources().getColor(R.color.status));
             }
         }
 
