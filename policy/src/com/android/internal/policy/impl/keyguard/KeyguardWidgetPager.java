@@ -632,9 +632,6 @@ public class KeyguardWidgetPager extends PagedView implements PagedView.PageSwit
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        android.util.Log.d("PARANOID", "hi there");
-
         mLastWidthMeasureSpec = widthMeasureSpec;
         mLastHeightMeasureSpec = heightMeasureSpec;
 
