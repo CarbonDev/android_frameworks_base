@@ -192,8 +192,8 @@
                 android:text="@string/status_bar_settings_settings_button"
                 />
 
-            <ImageView
-                android:id="@+id/battery"
+            <include layout="@layout/battery_cluster_view"
+                android:id="@+id/battery_cluster"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
