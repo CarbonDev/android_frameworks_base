@@ -138,9 +138,9 @@ public class BatteryBarController extends LinearLayout {
 
         ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) getLayoutParams();
 
-        if (isVertical)
+        if (isVertical) {
             params.width = pixels;
-        else
+        } else {
             params.height = pixels;
         }
 

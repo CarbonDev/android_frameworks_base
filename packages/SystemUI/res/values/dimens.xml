@@ -244,9 +244,6 @@
     <!-- Constant for hidden navbar drag handle -->
     <dimen name="drag_handle_height">10dp</dimen>
 
-    <!-- Height of the pie controls bar trigger -->
-    <dimen name="pie_trigger_height">10dp</dimen>
-
     <!-- PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE -->
     <dimen name="pie_trigger_height">12dp</dimen>
 

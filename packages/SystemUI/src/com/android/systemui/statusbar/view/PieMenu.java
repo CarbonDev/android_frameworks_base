@@ -222,6 +222,7 @@ public class PieMenu extends FrameLayout {
     private boolean mEnableColor;
     private boolean mUseMenuAlways;
     private boolean mUseSearch;
+    private boolean mUseLastApp;
     private boolean mHapticFeedback;
 
     // Animations
@@ -621,7 +622,6 @@ public class PieMenu extends FrameLayout {
 
             // De-select all items
             mCurrentItem = null;
-            mOpenItem = null;
             for (PieItem item : mItems) {
                 item.setSelected(false);
             }
@@ -641,7 +641,8 @@ public class PieMenu extends FrameLayout {
     }
 
     private boolean canItemDisplay(PieItem item) {
-        return !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
+        return !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp) &&
+                !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
                 !(item.getName().equals(PieControl.SEARCH_BUTTON) && !mUseSearch);
     }
 

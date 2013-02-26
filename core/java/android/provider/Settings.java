@@ -3658,12 +3658,6 @@ public final class Settings {
 
        // PIE COLORS EVERYWHERE! //
 
-       /**
-        * Key to store Torch state.
-        * @hide 
-        */
-        public static final String TORCH_STATE = "torch_state";
-
         /**
          *
          * @hide

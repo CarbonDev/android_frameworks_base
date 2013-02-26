@@ -173,8 +173,16 @@ public class NotificationPanelView extends PanelView {
                     mTrackingSwipe = false;
                     break;
             }
-            if(mOkToFlip && shouldFlip) {
-                if (getMeasuredHeight() < mHandleBarHeight) {
+            if (mOkToFlip && flip) {
+                float miny = event.getY(0);
+                float maxy = miny;
+                for (int i=1; i<event.getPointerCount(); i++) {
+                    final float y = event.getY(i);
+                    if (y < miny) miny = y;
+                    if (y > maxy) maxy = y;
+                }
+                if (maxy - miny < mHandleBarHeight) {
+                    if (getMeasuredHeight() < mHandleBarHeight) {
                     mStatusBar.switchToSettings();
                 } else {
                     // Do not flip if the drag event started within the top bar
@@ -185,6 +193,7 @@ public class NotificationPanelView extends PanelView {
                     }
                 }
                 mOkToFlip = false;
+            }
             } else if (mSwipeTriggered) {
                 final float deltaX = (event.getX(0) - mGestureStartX) * mSwipeDirection;
                 mStatusBar.partialFlip(mFlipOffset +
