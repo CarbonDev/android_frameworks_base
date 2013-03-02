@@ -281,8 +281,8 @@ public class PieMenu extends FrameLayout {
         boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         mUseMenuAlways = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_MENU, 1) == 1;
-        mUseSearch = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_SEARCH, 1) == 1;
         mUseLastApp = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_LAST_APP, 0) == 1;
+        mUseSearch = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_SEARCH, 1) == 1;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MODE, 2);
         mPieSize = Settings.System.getFloat(mContext.getContentResolver(),
@@ -657,6 +657,7 @@ public class PieMenu extends FrameLayout {
         int itemCount = mItems.size();
         if (!mPanel.currentAppUsesMenu() && !mUseMenuAlways) itemCount--;
         if (!mUseSearch) itemCount--;
+        if (!mUseLastApp) itemCount--;
 
         int totalCount = 0;
         int lesserSweepCount = 0;
