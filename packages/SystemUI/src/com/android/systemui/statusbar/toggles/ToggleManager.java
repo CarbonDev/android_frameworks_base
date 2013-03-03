@@ -82,6 +82,7 @@ public class ToggleManager {
     public static final String SOUND_STATE_TOGGLE = "SOUNDSTATE";
     public static final String NAVBAR_HIDE_TOGGLE = "NAVBARHIDE";
     public static final String QUICKRECORD_TOGGLE = "QUICKRECORD";
+    public static final String PIE_TOGGLE = "PIE";
 
     private int mStyle;
 
@@ -127,6 +128,7 @@ public class ToggleManager {
             toggleMap.put(SOUND_STATE_TOGGLE, SoundStateToggle.class);
             toggleMap.put(NAVBAR_HIDE_TOGGLE, NavbarHideToggle.class);
             toggleMap.put(QUICKRECORD_TOGGLE, QuickRecordToggle.class);
+            toggleMap.put(PIE_TOGGLE, PieToggle.class);
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;
