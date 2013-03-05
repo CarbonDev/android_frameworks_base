@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Vibrator;
@@ -297,7 +298,7 @@ public class KeyguardViewManager {
         return false;
     }
 
-    private static boolean runAction(Context context, String uri) {
+    private boolean runAction(Context context, String uri) {
         if ("FLASHLIGHT".equals(uri)) {
             context.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
             return true;
@@ -312,6 +313,14 @@ public class KeyguardViewManager {
             return true;
         } else if ("SOUND".equals(uri)) {
             toggleSilentMode(context);
+            return true;
+        } else if ("CAMERA".equals(uri)) {
+            dismiss();
+            context.sendBroadcast(new Intent(Intent.ACTION_CAMERA_BUTTON, null));
+            return true;
+        } else if ("POWER".equals(uri)) {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            pm.goToSleep(SystemClock.uptimeMillis());
             return true;
         }
 
