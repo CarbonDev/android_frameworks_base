@@ -7,9 +7,9 @@ import android.database.ContentObserver;
 import android.os.Handler;
 import android.provider.Settings;
 
-import static com.android.internal.util.aokp.AwesomeConstants.*;
+import static com.android.internal.util.carbon.AwesomeConstants.*;
 import com.android.systemui.R;
-import com.android.systemui.aokp.AwesomeAction;
+import com.android.systemui.carbon.AwesomeAction;
 
 public class TorchToggle extends StatefulToggle {
     TorchObserver mObserver = null;

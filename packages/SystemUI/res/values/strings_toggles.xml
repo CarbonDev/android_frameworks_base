@@ -27,7 +27,6 @@
     <string name="toggle_BATTERY">Battery</string>
     <string name="toggle_AIRPLANE_MODE">Airplane mode</string>
     <string name="toggle_BLUETOOTH">Bluetooth</string>
-    <string name="toggle_SWAGGER">Swagger</string>
     <string name="toggle_VIBRATE">Vibrate</string>
     <string name="toggle_SILENT">Silent</string>
     <string name="toggle_FCHARGE">Fast charge</string>

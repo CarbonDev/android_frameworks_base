@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.systemui.R;
-import com.android.systemui.aokp.AwesomeAction;
+import com.android.systemui.carbon.AwesomeAction;
 import com.android.systemui.recent.RecentTasksLoader;
 
 public class RecentsKeyButtonView extends ExtensibleKeyButtonView {

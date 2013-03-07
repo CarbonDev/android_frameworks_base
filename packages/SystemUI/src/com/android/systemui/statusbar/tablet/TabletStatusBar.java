@@ -75,7 +75,7 @@ import android.widget.SlidingDrawer.OnDrawerScrollListener;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
-import com.android.systemui.carbon.CarbonTarget;
+import com.android.systemui.carbon.AwesomeAction;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.DoNotDisturb;

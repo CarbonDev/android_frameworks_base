@@ -67,7 +67,6 @@ public class ToggleManager {
     public static final String BATTERY_TOGGLE = "BATTERY";
     public static final String AIRPLANE_TOGGLE = "AIRPLANE_MODE";
     public static final String BLUETOOTH_TOGGLE = "BLUETOOTH";
-    public static final String SWAGGER_TOGGLE = "SWAGGER";
     public static final String VIBRATE_TOGGLE = "VIBRATE";
     public static final String SILENT_TOGGLE = "SILENT";
     public static final String FCHARGE_TOGGLE = "FCHARGE";
@@ -114,7 +113,6 @@ public class ToggleManager {
             toggleMap.put(BATTERY_TOGGLE, BatteryToggle.class);
             toggleMap.put(AIRPLANE_TOGGLE, AirplaneModeToggle.class);
             toggleMap.put(BLUETOOTH_TOGGLE, BluetoothToggle.class);
-            toggleMap.put(SWAGGER_TOGGLE, SwaggerToggle.class);
             toggleMap.put(VIBRATE_TOGGLE, VibrateToggle.class);
             toggleMap.put(SILENT_TOGGLE, SilentToggle.class);
             toggleMap.put(FCHARGE_TOGGLE, FastChargeToggle.class);
