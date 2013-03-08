@@ -913,7 +913,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                             ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
                         } catch (RemoteException e) {
                         }
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+                                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                                | Intent.FLAG_ACTIVITY_NO_HISTORY);
                         mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
                     }
                 });
@@ -931,7 +934,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                             ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
                         } catch (RemoteException e) {
                         }
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+                                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                                | Intent.FLAG_ACTIVITY_NO_HISTORY);
                         mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
                         return true;
                     }
