@@ -3035,6 +3035,12 @@ public final class Settings {
         public static final String NOTIF_ALPHA = "notif_alpha";
 
         /**
+         * Automatic keyboard rotation timeout.  0 to disable completely.
+         * @hide
+         */
+        public static final String KEYBOARD_ROTATION_TIMEOUT = "keyboard_rotation_timeout";
+
+        /**
          * Whether to use the custom quick unlock screen control
          * @hide
          */
