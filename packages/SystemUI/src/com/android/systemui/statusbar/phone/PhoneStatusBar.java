@@ -227,6 +227,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     QuickSettingsContainerView mSettingsContainer;
     int mSettingsPanelGravity;
 
+    // Dark Carbon
+    boolean mUiModeIsToggled;
+
     // top bar
     View mNotificationPanelHeader;
     View mDateTimeView; 
@@ -528,6 +531,10 @@ public class PhoneStatusBar extends BaseStatusBar {
         mDateView = (DateView)mStatusBarWindow.findViewById(R.id.date);
 
         mHasSettingsPanel = res.getBoolean(R.bool.config_hasSettingsPanel);
+
+        mUiModeIsToggled = Settings.Secure.getInt(mContext.getContentResolver(),
+                              Settings.Secure.UI_MODE_IS_TOGGLED, 0) == 1;
+
         mHasFlipSettings = res.getBoolean(R.bool.config_hasFlipSettingsPanel);
 
         mDateTimeView = mNotificationPanelHeader.findViewById(R.id.datetime);
@@ -2948,11 +2955,25 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NAV_HIDE_TIMEOUT), false, this);
         }
 
-         @Override
+        @Override
         public void onChange(boolean selfChange) {
+            boolean uiModeIsToggled = Settings.Secure.getInt(mContext.getContentResolver(),
+                                    Settings.Secure.UI_MODE_IS_TOGGLED, 0) == 1;
+            if (uiModeIsToggled != mUiModeIsToggled) {
+                 recreateStatusBar();
+            }
             updateSettings();
         }
     }
+
+        public void startObserving() {
+            final ContentResolver cr = mContext.getContentResolver();
+
+            cr.registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.UI_MODE_IS_TOGGLED),
+                    false, this);
+        }
+
     protected void updateSettings() {
         ContentResolver cr = mContext.getContentResolver();
 
