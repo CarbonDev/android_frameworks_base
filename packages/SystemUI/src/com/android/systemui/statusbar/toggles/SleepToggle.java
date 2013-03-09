@@ -15,7 +15,7 @@ public class SleepToggle extends BaseToggle {
     protected void init(Context c, int style) {
         super.init(c, style);
         setIcon(R.drawable.ic_qs_sleep);
-        setLabel(R.string.quick_settings_sleep);
+        setLabel(R.string.quick_settings_sleep_label);
     }
 
     @Override

@@ -44,4 +44,5 @@
     <string name="toggle_QUIETHOURS">Quiet hours</string>
     <string name="toggle_PIE">Pie</string>
     <string name="toggle_SLEEP">Sleep</string>
+    <string name="toggle_CARBON">Carbon</string>
 </resources>

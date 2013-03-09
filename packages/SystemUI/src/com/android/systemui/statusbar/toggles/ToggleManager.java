@@ -85,7 +85,7 @@ public class ToggleManager {
     public static final String QUIETHOURS_TOGGLE = "QUIETHOURS";
     public static final String PIE_TOGGLE = "PIE";
     public static final String SLEEP_TOGGLE = "SLEEP";
-
+    public static final String CARBON_TOGGLE = "CARBON";
 
     private int mStyle;
 
@@ -134,6 +134,7 @@ public class ToggleManager {
             toggleMap.put(QUIETHOURS_TOGGLE, QuietHoursToggle.class);
             toggleMap.put(PIE_TOGGLE, PieToggle.class);
             toggleMap.put(SLEEP_TOGGLE, SleepToggle.class);
+            toggleMap.put(CARBON_TOGGLE, CarbonToggle.class);
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;
