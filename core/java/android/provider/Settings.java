@@ -4323,13 +4323,6 @@ public final class Settings {
             Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
 
         /**
-         * Navigation bar alpha while in homescreen and lockscreen.
-         *
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_ALPHA = "navigation_bar_alpha";
-
-        /**
          * @hide
          */
         public static final String STATUS_BAR_BRIGHTNESS_SLIDER = "statusbar_brightness_slider";
