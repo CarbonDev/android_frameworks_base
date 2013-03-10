@@ -49,4 +49,5 @@
     <string name="toggle_TRDS">Dark Carbon</string>
     <string name="toggle_POWERMENU">Power Menu</string>
     <string name="toggle_XPOSED">Xposed</string>
+    <string name="toggle_SCREENSHOT">Screenshot</string>
 </resources>

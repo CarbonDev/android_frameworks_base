@@ -20,6 +20,11 @@
     <!-- Name of the status bar as seen in the applications info settings page. [CHAR LIMIT=12] -->
     <string name="app_label">System UI</string>
 
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_screenshot">Capture screenshot</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_screenshot">Allows the app to cature a screenshot. This is protected by SystemUI.</string>
+
     <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. [CHAR LIMIT=10]-->
     <string name="status_bar_clear_all_button">Clear</string>
@@ -553,6 +558,7 @@
     <string name="toggle_ring_silent">Ring/Silent - Toggle</string>
     <string name="toggle_ring_vib_silent">Ring/Vib/Silent - Toggle</string>
     <string name="app_killed_message">App Killed</string>
+    <string name="screenshot_toast">Screenshot in %1$d seconds</string>
 
     <!--  Quick Settings -->
     <string name="quick_settings_vibrate_on_label">Vibrate On</string>
@@ -600,6 +606,7 @@
     <string name="quick_settings_trds_off_label">Dark Carbon Off</string>
     <string name="quick_settings_powermenu_label">Power Menu</string>
     <string name="quick_settings_xposed_label">Xposed</string>
+    <string name="quick_settings_screenshot_label">Screenshot</string>
 
     <!-- Recents Ram Bar -->
     <string name="memory">RAM</string>
