@@ -2030,4 +2030,13 @@
 
   <!-- Stylus gestures -->
   <java-symbol type="bool" name="config_stylusGestures" />
+
+  <!-- Power widget -->
+  <java-symbol type="string" name="hour" />
+  <java-symbol type="string" name="hours" />
+  <java-symbol type="string" name="minute" />
+  <java-symbol type="string" name="minutes" />
+  <java-symbol type="string" name="second" />
+  <java-symbol type="string" name="seconds" />
+
 </resources>
