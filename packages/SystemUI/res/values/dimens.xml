@@ -35,9 +35,9 @@
     <!-- Size of application description text -->
     <dimen name="status_bar_recents_app_description_text_size">14dip</dimen>
     <!-- Size of fading edge for text -->
-    <dimen name="status_bar_recents_text_fading_edge_length">20dip</dimen>
+    <dimen name="status_bar_recents_text_fading_edge_length">0dip</dimen>
     <!-- Size of fading edge for scrolling -->
-    <dimen name="status_bar_recents_scroll_fading_edge_length">10dip</dimen>
+    <dimen name="status_bar_recents_scroll_fading_edge_length">0dip</dimen>
     <!-- Margin between recents container and glow on the right -->
     <dimen name="status_bar_recents_right_glow_margin">100dip</dimen>
     <!-- How far the thumbnail for a recent app appears from left edge -->
