@@ -3944,6 +3944,12 @@ public final class Settings {
          */
         public static final String MMS_BREATH = "mms_breath";
 
+        /**	
+         * Give MMS Notifications a breathing effect
+         * @hide
+         */
+        public static final String MISSED_CALL_BREATH = "missed_call_breath";
+
         /**
          * Battery warning preferences
          *
