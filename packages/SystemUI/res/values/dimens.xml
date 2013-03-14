@@ -164,9 +164,6 @@
     <!-- Height of the notification panel widget bar -->
     <dimen name="notification_panel_widget_height">48dp</dimen>
 
-    <!-- Height of the notification panel header and widget -->
-    <dimen name="notification_panel_header_and_widget">96dp</dimen>
-
     <!-- Extra space above the panel -->
     <dimen name="notification_panel_padding_top">0dp</dimen>
 
@@ -250,7 +247,7 @@
     <!-- Constant for hidden navbar drag handle -->
     <dimen name="drag_handle_height">10dp</dimen>
 
-    <!-- PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE -->
+    <!-- PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE -->
     <dimen name="pie_trigger_height">12dp</dimen>
 
     <dimen name="pie_radius_start">65dp</dimen>
@@ -264,7 +261,6 @@
     <dimen name="pie_battery_increment">10dp</dimen>
     <dimen name="pie_status_start">155dp</dimen>
     <dimen name="pie_notifications_start">250dp</dimen>
-
     <dimen name="pie_clock_size">58dp</dimen>
     <dimen name="pie_clock_offset">-20dp</dimen>
     <dimen name="pie_ampm_size">15dp</dimen>
@@ -274,14 +270,11 @@
     <dimen name="pie_notification_size">13dp</dimen>
     <dimen name="pie_notification_row_size">16dp</dimen>
     <dimen name="pie_notification_icon_size">15dp</dimen>
-
     <dimen name="pie_snap_radius">30dp</dimen>
     <dimen name="pie_snap_thickness">6dp</dimen>
-
     <dimen name="pie_touch_offset">15dp</dimen>
     <dimen name="pie_tab_title_height">24dp</dimen>
     <dimen name="pie_item_size">40dp</dimen>
-
     <dimen name="pie_panel_padding">20dp</dimen>
-    <!-- PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE -->
+
 </resources>

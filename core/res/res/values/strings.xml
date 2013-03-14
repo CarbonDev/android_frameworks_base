@@ -317,7 +317,8 @@
     
     <!-- label for item that screenshots in phone options dialog -->
     <string name="global_action_screenshot">Screenshot</string>
-
+    <!-- label for item that torches in phone options dialog -->
+    <string name="global_action_torch">Torch</string>
     <!-- label for item that toggles expand desktop mode -->
     <string name="global_actions_toggle_expanded_desktop_mode">Expanded desktop</string>
     <!-- status message in phone options dialog for when expand desktop mode is on -->
