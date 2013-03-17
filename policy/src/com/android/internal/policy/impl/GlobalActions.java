@@ -361,11 +361,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mItems.add(mAirplaneModeOn);
         }
 
-        // Next NavBar Hide
-        if(mEnableNavBarHideToggle) {
-            mItems.add(mNavBarHideToggle);
-        }
-
         // next: bug report, if enabled
         if (Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.BUGREPORT_IN_POWER_MENU, 0) != 0) {
@@ -468,20 +463,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 });
         }
 
-        // next: optionally add a list of users to switch to
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_USER_ENABLED, 0) == 1) {
-            addUsersToMenu(mItems);
-        }
-
-        // next: silent mode
-        if ((Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_SOUND_ENABLED, 1) == 1) &&
-                (SHOW_SILENT_TOGGLE)) {
-            mItems.add(mSilentModeAction);
-        }
-
-        // last: Torch
+        // next: Torch
         if (mEnableTorchToggle) {
             Slog.e(TAG, "Adding torch");
             mItems.add(new SinglePressAction(com.android.internal.R.drawable.ic_lock_torch,
@@ -502,6 +484,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             });
         } else {
             Slog.e(TAG, "Not adding torch");
+        }
+
+        // Next NavBar Hide
+        if(mEnableNavBarHideToggle) {
+            mItems.add(mNavBarHideToggle);
+        }
+
+        // next: optionally add a list of users to switch to
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_USER_ENABLED, 0) == 1) {
+            addUsersToMenu(mItems);
+        }
+
+        // last: silent mode
+        if ((Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_SOUND_ENABLED, 1) == 1) &&
+                (SHOW_SILENT_TOGGLE)) {
+            mItems.add(mSilentModeAction);
         }
 
         mAdapter = new MyAdapter();
