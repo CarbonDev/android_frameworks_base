@@ -596,6 +596,8 @@
     <string name="quick_settings_sleep_label">Sleep</string>
     <string name="quick_settings_volume_label">Volume</string>
     <string name="quick_settings_carbon_label">Carbon</string>
+    <string name="quick_settings_trds_on_label">Dark Carbon On</string>
+    <string name="quick_settings_trds_off_label">Dark Carbon Off</string>
 
     <!-- Recents Ram Bar -->
     <string name="memory">RAM</string>
