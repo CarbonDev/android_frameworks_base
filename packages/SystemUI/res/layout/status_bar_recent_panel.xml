@@ -37,7 +37,7 @@
             android:id="@+id/recents_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="0dp"
             android:divider="@null"
             android:stackFromBottom="true"
             android:fadingEdge="vertical"
@@ -64,8 +64,6 @@
             android:layout_height="50dp"
             android:scaleType="center"
             android:layout_gravity="bottom|right"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="25dp"
             android:src="@drawable/ic_recents_clear" />
 
     </FrameLayout>
