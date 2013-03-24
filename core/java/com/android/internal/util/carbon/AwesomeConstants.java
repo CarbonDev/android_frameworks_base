@@ -49,7 +49,6 @@ public class AwesomeConstants {
         ACTION_CLOCKOPTIONS  { @Override public String value() { return "**clockoptions**";}},
         ACTION_VOICEASSIST   { @Override public String value() { return "**voiceassist**";}},
         ACTION_LAST_APP      { @Override public String value() { return "**lastapp**";}},
-        ACTION_RECENTS_GB    { @Override public String value() { return "**recentsgb**";}},
         ACTION_TORCH         { @Override public String value() { return "**torch**";}},
         ACTION_IME           { @Override public String value() { return "**ime**";}},
         ACTION_KILL          { @Override public String value() { return "**kill**";}},
@@ -131,9 +130,6 @@ public class AwesomeConstants {
             case ACTION_RECENTS:
                 value = res.getString(com.android.internal.R.string.action_recents);
                 break;
-            case ACTION_RECENTS_GB:
-                value = res.getString(com.android.internal.R.string.action_recents_gb);
-                break;
             case ACTION_SEARCH:
                 value = res.getString(com.android.internal.R.string.action_search);
                 break;
@@ -213,9 +209,6 @@ public class AwesomeConstants {
                 break;
             case ACTION_RECENTS:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_recent");
-                break;
-            case ACTION_RECENTS_GB:
-                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_recent_gb");
                 break;
             case ACTION_SEARCH:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_search");
