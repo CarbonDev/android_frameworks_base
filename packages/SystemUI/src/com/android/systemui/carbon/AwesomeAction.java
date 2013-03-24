@@ -105,9 +105,6 @@ public class AwesomeAction {
             case ACTION_SEARCH:
                 injectKeyDelayed(KeyEvent.KEYCODE_SEARCH);
                 break;
-            case ACTION_RECENTS_GB:
-                injectKeyDelayed(KeyEvent.KEYCODE_APP_SWITCH);
-                break;
             case ACTION_KILL:
                 KillTask mKillTask = new KillTask(mContext);
                 mHandler.post(mKillTask);
