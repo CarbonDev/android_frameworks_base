@@ -78,7 +78,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dip"
-        />
+            />
+
+        <LinearLayout
+            android:id="@+id/ribbon_qs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@*android:dimen/notification_ribbon_padding"
+            android:paddingRight="@*android:dimen/notification_ribbon_padding"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            />
+
+        <LinearLayout
+            android:id="@+id/ribbon_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@*android:dimen/notification_ribbon_padding"
+            android:paddingRight="@*android:dimen/notification_ribbon_padding"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            />
 
         <TextView
             android:id="@+id/emergency_calls_only"

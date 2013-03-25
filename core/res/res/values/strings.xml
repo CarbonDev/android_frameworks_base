@@ -4118,6 +4118,8 @@
     <string name="action_unlock">Unlock</string>
     <string name="action_camera">Camera</string>
     <string name="action_null">Blank</string>
+    <string name="action_widgets">Nav Widgets</string>
+    <string name="action_ribbon">AOKP Ribbon</string>
     <string name="action_app">Custom App/Shortcut</string>
 
     <!-- Options that show upon long-pressing a key on the physical keyboard -->

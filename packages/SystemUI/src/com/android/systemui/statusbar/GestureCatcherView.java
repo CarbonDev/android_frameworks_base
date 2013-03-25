@@ -1,9 +1,11 @@
 package com.android.systemui.statusbar;
 
 import com.android.systemui.R;
+import com.android.systemui.aokp.AokpSwipeRibbon;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.PixelFormat;
@@ -103,7 +105,11 @@ public class GestureCatcherView extends LinearLayout{
             @Override
             public boolean onLongClick(View v) {
                 performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                mBar.showBar(true);
+                Log.d(TAG, "Long pressed sending broadcast");
+                Intent toggleRibbon = new Intent(
+                        AokpSwipeRibbon.RibbonReceiver.ACTION_TOGGLE_RIBBON);
+                toggleRibbon.putExtra("action", "bottom");
+                mContext.sendBroadcast(toggleRibbon);
                 return true;
                 }
             });

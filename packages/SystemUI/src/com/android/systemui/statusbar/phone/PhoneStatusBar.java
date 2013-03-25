@@ -120,8 +120,9 @@ import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.Prefs;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
-import com.android.systemui.carbon.AwesomeAction;
 import com.android.systemui.statusbar.toggles.ToggleManager;
+import com.android.systemui.carbon.AwesomeAction;
+import com.android.internal.util.carbon.AokpRibbonHelper;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -212,6 +213,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     // viewgroup containing the normal contents of the statusbar
     LinearLayout mStatusBarContents;
 
+    LinearLayout mRibbonNotif;
+    LinearLayout mRibbonQS;
+    
     // right-hand icons
     LinearLayout mSystemIconArea;
 
@@ -426,6 +430,30 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NAV_HIDE_ENABLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_HIDE_TIMEOUT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_RIBBON_TEXT[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_SIZE[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_RIBBON_TEXT[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_SIZE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
             update();
         }
 
@@ -465,6 +493,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mClockDoubleClicked = true;
             }
             mCurrentUIMode = Settings.System.getInt(resolver, Settings.System.CURRENT_UI_MODE, 0);
+            mNavBarAutoHide = Settings.System.getBoolean(resolver, Settings.System.NAV_HIDE_ENABLE, false);
+            mAutoHideTimeOut = Settings.System.getInt(resolver, Settings.System.NAV_HIDE_TIMEOUT, mAutoHideTimeOut);
+            mToggleStyle = Settings.System.getInt(resolver, Settings.System.TOGGLES_STYLE,ToggleManager.STYLE_TILE);
             mNotificationShortcutsToggle = Settings.System.getIntForUser(resolver,
                     Settings.System.NOTIFICATION_SHORTCUTS_TOGGLE, 0, UserHandle.USER_CURRENT) != 0;
             mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(resolver,
@@ -474,14 +505,12 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
             updateStatusBarVisibility();
 
-            mNavBarAutoHide = Settings.System.getBoolean(resolver, Settings.System.NAV_HIDE_ENABLE, false);
-            mAutoHideTimeOut = Settings.System.getInt(resolver, Settings.System.NAV_HIDE_TIMEOUT, mAutoHideTimeOut);
-            mToggleStyle = Settings.System.getInt(resolver, Settings.System.TOGGLES_STYLE,ToggleManager.STYLE_TILE);
             if (mNavBarAutoHide) {
                 setupAutoHide();
             } else if (mGesturePanel != null) {
                 disableAutoHide();
             }
+            updateRibbonTargets();
         }
     }
 
@@ -599,7 +628,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         mStatusBarView.setBar(this);
 
         mBarView = (ViewGroup) mStatusBarView;
-
 
         PanelHolder holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
         mStatusBarView.setPanelHolder(holder);
@@ -974,6 +1002,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         updatePropFactorValue();
 
         mTransparencyManager.setStatusbar(mStatusBarView);
+        updateRibbonTargets();
         return mStatusBarView;
     }
 
@@ -2080,10 +2109,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 updateCarrierAndWifiLabelVisibility(false);
             }
         }, FLIP_DURATION - 150);
+        updateRibbon(false);
 
         if (mNotificationShortcutsToggle)
             updateNotificationShortcutsVisibility(true);
-
     }
 
     @Override
@@ -2108,6 +2137,68 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (false) postStartTracing();
     }
 
+
+    public void updateRibbonTargets() {
+            ContentResolver cr = mContext.getContentResolver();
+            mRibbonNotif = (LinearLayout) mNotificationPanel.findViewById(R.id.ribbon_notif);
+            if (!mHasFlipSettings) {
+                if (mSettingsPanel != null) {
+                    mRibbonQS = (LinearLayout) mSettingsPanel.findViewById(R.id.ribbon_settings);
+                }
+            } else {
+                mRibbonQS = (LinearLayout) mNotificationPanel.findViewById(R.id.ribbon_qs);
+            }
+            if (mRibbonQS != null) {
+                mRibbonQS.removeAllViews();
+                mRibbonQS.addView(AokpRibbonHelper.getRibbon(mContext,
+                    Settings.System.getArrayList(cr,
+                         Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.QUICK_SETTINGS]),
+                    Settings.System.getArrayList(cr,
+                         Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.QUICK_SETTINGS]),
+                    Settings.System.getArrayList(cr,
+                         Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.QUICK_SETTINGS]),
+                    Settings.System.getBoolean(cr,
+                         Settings.System.ENABLE_RIBBON_TEXT[AokpRibbonHelper.QUICK_SETTINGS], true),
+                    Settings.System.getInt(cr,
+                         Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.QUICK_SETTINGS], -1),
+                    Settings.System.getInt(cr,
+                         Settings.System.RIBBON_ICON_SIZE[AokpRibbonHelper.QUICK_SETTINGS], 0)));
+            }
+            mRibbonNotif.removeAllViews();
+            mRibbonNotif.addView(AokpRibbonHelper.getRibbon(mContext,
+                Settings.System.getArrayList(cr,
+                     Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.NOTIFICATIONS]),
+                Settings.System.getArrayList(cr,
+                     Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.NOTIFICATIONS]),
+                Settings.System.getArrayList(cr,
+                     Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.NOTIFICATIONS]),
+                Settings.System.getBoolean(cr,
+                     Settings.System.ENABLE_RIBBON_TEXT[AokpRibbonHelper.NOTIFICATIONS], true),
+                Settings.System.getInt(cr,
+                     Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.NOTIFICATIONS], -1),
+                Settings.System.getInt(cr,
+                     Settings.System.RIBBON_ICON_SIZE[AokpRibbonHelper.NOTIFICATIONS], 0)));
+    }
+
+    public void updateRibbon() {
+        if (mHasFlipSettings) {
+            boolean ribbonSettings = mNotificationButton.getVisibility() == View.VISIBLE;
+            updateRibbon(ribbonSettings);
+        }
+    }
+
+    public void updateRibbon(boolean settings) {
+        if (mHasFlipSettings) {
+            if (settings) {
+                mRibbonNotif.setVisibility(View.GONE);
+                mRibbonQS.setVisibility(View.VISIBLE);
+            } else {
+                mRibbonQS.setVisibility(View.GONE);
+                mRibbonNotif.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     public void switchToSettings() {
         // Settings are not available in setup
         if (!mUserSetup) return;
@@ -2121,6 +2212,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mNotificationButton.setVisibility(View.VISIBLE);
         mNotificationButton.setAlpha(1f);
         mClearButton.setVisibility(View.GONE);
+        updateRibbon(true);
     }
 
     public boolean isShowingSettings() {
@@ -2228,6 +2320,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 updateCarrierAndWifiLabelVisibility(false);
             }
         }, FLIP_DURATION - 150);
+        updateRibbon(true);
 
         if (mNotificationShortcutsToggle) {
             mNotificationPanel.postDelayed(new Runnable() {
