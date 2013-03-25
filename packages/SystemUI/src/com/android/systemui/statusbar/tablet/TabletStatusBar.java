@@ -206,6 +206,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     KeyEvent mSpaceBarKeyEvent = null;
 
     View mCompatibilityHelpDialog = null;
+    View mDummyView ;
 
     // for disabling the status bar
     int mDisabled = 0;
@@ -556,6 +557,10 @@ public class TabletStatusBar extends BaseStatusBar implements
             }
         } catch (RemoteException ex) {
         }
+
+        // Create a dummy view to force the screen to redraw
+        mDummyView = new View(mContext);
+        mWindowManager.addView(mDummyView, getDummyTriggerLayoutParams(mContext,Gravity.TOP));
 
         mBarContents = (ViewGroup) sb.findViewById(R.id.bar_contents);
 
@@ -1710,7 +1715,8 @@ public class TabletStatusBar extends BaseStatusBar implements
         // If the device hasn't been through Setup, we only show system notifications
         for (int i=0; i<N; i++) {
             Entry ent = mNotificationData.get(N-i-1);
-            if (provisioned || showNotificationEvenIfUnprovisioned(ent.notification)) {
+            if (provisioned || showNotificationEvenIfUnprovisioned(ent.notification)
+                && !notificationIsForCurrentUser(ent.notification)) {
                 toShow.add(ent.row);
             }
         }
