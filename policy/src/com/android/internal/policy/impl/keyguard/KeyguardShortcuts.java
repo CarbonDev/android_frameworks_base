@@ -18,7 +18,6 @@ package com.android.internal.policy.impl.keyguard;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -40,12 +39,10 @@ import com.android.internal.R;
 public class KeyguardShortcuts extends LinearLayout {
 
     private static final int INNER_PADDING = 20;
-    public final static String ICON_FILE = "icon_file";
 
     private KeyguardSecurityCallback mCallback;
     private PackageManager mPackageManager;
     private Context mContext;
-    KeyguardActivityLauncher mActivityLauncher;
 
     public KeyguardShortcuts(Context context) {
         this(context, null);
@@ -79,7 +76,14 @@ public class KeyguardShortcuts extends LinearLayout {
         final String[] shortcuts = apps.split("\\|");
         Resources res = mContext.getResources();
         for(int j = 0; j < shortcuts.length; j++) {
+            String target = shortcuts[j];
+            String packageName = null;
             String resourceString = null;
+            String[] data = target.split(":");
+            packageName = data[0];
+            if(data.length > 1) {
+                resourceString = data[1];
+            }
             ImageView i = new ImageView(mContext);
             int dimens = Math.round(res.getDimensionPixelSize(
                     R.dimen.app_icon_size));
@@ -88,18 +92,13 @@ public class KeyguardShortcuts extends LinearLayout {
             i.setLayoutParams(vp);
             Drawable img = null;
             try {
-                final Intent launchIntent = Intent.parseUri(shortcuts[j], 0);
+                final Intent launchIntent = mPackageManager
+                        .getLaunchIntentForPackage(packageName);
                 if(launchIntent == null) { // No intent found
                     throw new NameNotFoundException();
                 }
-                resourceString = launchIntent.getStringExtra(ICON_FILE);
                 if(resourceString == null) {
-                    ActivityInfo aInfo = launchIntent.resolveActivityInfo(mPackageManager, PackageManager.GET_ACTIVITIES);
-                    if (aInfo != null) {
-                        img = aInfo.loadIcon(mPackageManager);
-                    } else {
-                        img = mContext.getResources().getDrawable(android.R.drawable.sym_def_app_icon).mutate();
-                    }
+                    img = mPackageManager.getApplicationIcon(packageName);
                 } else { // Custom icon
                     img = getDrawable(res, resourceString);
                 }
@@ -109,7 +108,7 @@ public class KeyguardShortcuts extends LinearLayout {
                     i.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            mActivityLauncher.launchActivity(launchIntent, false, true, null, null);
+                            mContext.startActivity(launchIntent);
                             if(mCallback != null) mCallback.dismiss(false);
                             return true;
                         }
@@ -118,17 +117,18 @@ public class KeyguardShortcuts extends LinearLayout {
                     i.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mActivityLauncher.launchActivity(launchIntent, false, true, null, null);
+                            mContext.startActivity(launchIntent);
                             if(mCallback != null) mCallback.dismiss(false);
                         }
                     });
                 }
                 addView(i);
                 if(j+1 < shortcuts.length) addSeparator();
-            } catch(Exception e) {
-                e.printStackTrace();
+            } catch(NameNotFoundException e) {
                 // No custom icon is set and PackageManager fails to found
                 // default application icon. Or maybe it was uninstalled
+            } catch(NullPointerException e) {
+                // Something is null?, we better avoid adding the target
             }
         }
     }
@@ -164,10 +164,6 @@ public class KeyguardShortcuts extends LinearLayout {
         boolean isScreenLarge = screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
                 screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
         return isScreenLarge;
-    }
-
-    public void setLauncher(KeyguardActivityLauncher launcher) {
-        mActivityLauncher = launcher;
     }
 
 }
