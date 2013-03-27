@@ -68,6 +68,7 @@ import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
 import android.util.ExtendedPropertiesUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 import android.view.Display;
