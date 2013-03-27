@@ -37,6 +37,7 @@ import android.provider.Settings;
 import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ColorUtils;
 import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -48,6 +49,8 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ImageView;
 
 import java.math.BigInteger;
@@ -75,6 +78,9 @@ public class KeyButtonView extends ImageView {
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
     Context mContext;
+
+    private ColorUtils.ColorSettingInfo mLastButtonColor;
+    private ColorUtils.ColorSettingInfo mLastGlowColor;
 
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -122,49 +128,64 @@ public class KeyButtonView extends ImageView {
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BUTTON_COLOR), false, new ContentObserver(new Handler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    updateButtonColor(false);
-                }});
-
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_GLOW_COLOR), false, new ContentObserver(new Handler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    updateGlowColor();
-                }});
-
-        updateButtonColor(true);
-    }
-
-    private void updateButtonColor(boolean defaults) {
-        if (defaults) {
-            setColorFilter(0);
-            BUTTON_QUIESCENT_ALPHA = 0.70f;
-            setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
-            return;
-        }
-
-        String setting = Settings.System.getString(mContext.getContentResolver(),
-                Settings.System.NAV_BUTTON_COLOR);
-
-        String[] buttonColors = (setting == null || setting.equals("") ?
-                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
-                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBUTTON] : setting).split(
-                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        String currentColor = buttonColors[Integer.parseInt(buttonColors[2])];
-
-        setColorFilter(new BigInteger("FF" + currentColor.substring(2), 16).intValue(),
-                PorterDuff.Mode.SRC_ATOP);
-
-        BUTTON_QUIESCENT_ALPHA = (float)new BigInteger(currentColor.substring(0, 2), 16).intValue() / 255f;
+        clearColorFilter();
+        BUTTON_QUIESCENT_ALPHA = 0.70f;
         setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
 
-        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-        settingsObserver.observe();
+        // Only watch for per app color changes when the setting is in check
+        if (ColorUtils.getPerAppColorState(mContext)) {
+
+            mLastGlowColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_GLOW_COLOR);
+            mLastButtonColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BUTTON_COLOR);
+
+            updateButtonColor();
+
+            mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.NAV_BUTTON_COLOR), false, new ContentObserver(new Handler()) {
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        updateButtonColor();
+                    }});
+
+            mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.NAV_GLOW_COLOR), false, new ContentObserver(new Handler()) {
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        updateGlowColor();
+                    }});
+        }
     }
+
+    private void updateButtonColor() {
+        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                Settings.System.NAV_BUTTON_COLOR);
+        if (!colorInfo.lastColorString.equals(mLastButtonColor.lastColorString)) {
+            if (colorInfo.isLastColorNull) {
+                clearColorFilter();
+                BUTTON_QUIESCENT_ALPHA = 0.70f;
+                setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
+            } else {
+                setColorFilter(ColorUtils.extractRGB(colorInfo.lastColor) | 0xFF000000, PorterDuff.Mode.SRC_ATOP);
+                BUTTON_QUIESCENT_ALPHA = (float)ColorUtils.extractAlpha(colorInfo.lastColor) / 255f;
+                setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
+            }
+            mLastButtonColor = colorInfo;
+        }
+    }
+
+    private void updateGlowColor() {
+        if (mGlowBG == null) return;
+        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                Settings.System.NAV_GLOW_COLOR);
+        if (!colorInfo.lastColorString.equals(mLastGlowColor.lastColorString)) {
+            if (colorInfo.isLastColorNull) {
+                mGlowBG.clearColorFilter();
+            } else {
+                mGlowBG.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_ATOP);
+            }
+            mLastGlowColor = colorInfo;
+        }
+     }
 
     public void setSupportsLongPress(boolean supports) {
         mSupportsLongpress = supports;
@@ -198,20 +219,6 @@ public class KeyButtonView extends ImageView {
             }
         }
     }
-
-    private void updateGlowColor() {
-        String setting = Settings.System.getString(mContext.getContentResolver(),
-                Settings.System.NAV_GLOW_COLOR);
-
-        String[] glowColors = (setting == null || setting.equals("") ?
-                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
-                ExtendedPropertiesUtils.PARANOID_COLORS_NAVGLOW] : setting).split(
-                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        String currentColor = glowColors[Integer.parseInt(glowColors[2])];
-
-        mGlowBG.setColorFilter(new BigInteger(currentColor, 16).intValue(),
-                PorterDuff.Mode.SRC_ATOP);
-     }
 
     @Override
     protected void onDraw(Canvas canvas) {
