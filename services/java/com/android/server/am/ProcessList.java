@@ -109,7 +109,7 @@ class ProcessList {
         // or fetch from the system property
         MemInfoReader mi = new MemInfoReader();
         MAX_HIDDEN_APPS = SystemProperties.getInt("sys.mem.max_hidden_apps",
-                mi.getTotalSize() > 1572864 ? 40 : 24);
+                mi.getTotalSize() > 1572864 ? 55 : 24);
     }
 
     // We allow empty processes to stick around for at most 30 minutes.
