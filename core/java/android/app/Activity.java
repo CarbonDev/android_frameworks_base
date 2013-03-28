@@ -2539,16 +2539,12 @@ public class Activity extends ContextThemeWrapper
      * Activity don't need to deal with feature codes.
      */
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        CharSequence titleCondensed = item.getTitleCondensed();
-
         switch (featureId) {
             case Window.FEATURE_OPTIONS_PANEL:
                 // Put event logging here so it gets called even if subclass
                 // doesn't call through to superclass's implmeentation of each
                 // of these methods below
-                if(titleCondensed != null) {
-                    EventLog.writeEvent(50000, 0, titleCondensed.toString());
-                }
+                EventLog.writeEvent(50000, 0, item.getTitleCondensed());
                 if (onOptionsItemSelected(item)) {
                     return true;
                 }
@@ -2566,9 +2562,7 @@ public class Activity extends ContextThemeWrapper
                 return false;
                 
             case Window.FEATURE_CONTEXT_MENU:
-                if(titleCondensed != null) {
-                    EventLog.writeEvent(50000, 1, titleCondensed.toString());
-                }
+                EventLog.writeEvent(50000, 1, item.getTitleCondensed());
                 if (onContextItemSelected(item)) {
                     return true;
                 }
