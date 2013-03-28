@@ -593,6 +593,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         mStatusBarView.setStatusBar(this);
         mStatusBarView.setBar(this);
 
+        mBarView = (ViewGroup) mStatusBarView;
+
 
         PanelHolder holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
         mStatusBarView.setPanelHolder(holder);
