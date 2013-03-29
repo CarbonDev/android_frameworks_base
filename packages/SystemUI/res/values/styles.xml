@@ -144,12 +144,12 @@
     </style>
 
     <style name="Battery_Offset">
-      <item name="android:layout_marginRight">4dp</item>
+      <item name="android:layout_marginRight">9.5dp</item>
       <item name="android:paddingBottom">1dp</item>
       <item name="android:layout_gravity">left|bottom</item>
-      <item name="android:textSize">11dp</item>
-      <item name="android:textStyle">bold</item>
-      <item name="android:shadowColor">#FF000000</item>
+      <item name="android:textSize">12dp</item>
+      <item name="android:textStyle">normal</item>
+      <item name="android:textColor">@android:color/holo_blue_light</item>
       <item name="android:shadowDx">0</item>
       <item name="android:shadowDy">0</item>
       <item name="android:shadowRadius">2.5</item>
