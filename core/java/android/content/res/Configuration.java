@@ -467,7 +467,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * value that corresponds to the
      * inverted framework
      * resource qualifier. */
-    public static final int UI_MODE_TYPE_INVERTED = 0x06;
+    public static final int UI_MODE_TYPE_INVERTED = 0x45;
 
     /** Constant for {@link #uiMode}: bits that encode the night mode. */
     public static final int UI_MODE_NIGHT_MASK = 0x30;

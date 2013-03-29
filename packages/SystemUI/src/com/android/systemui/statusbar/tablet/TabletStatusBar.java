@@ -575,6 +575,8 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         mBarView = (ViewGroup) mStatusBarView;
 
+        mBarView = (ViewGroup) mStatusBarView;
+
         mNavigationArea = (ViewGroup) sb.findViewById(R.id.navigationArea);
         mNavBarView = (NavigationBarView) sb.findViewById(R.id.navigationBar);
         mNavBarView.setDisabledFlags(mDisabled);
