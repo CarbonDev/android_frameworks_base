@@ -1456,4 +1456,41 @@
     <string name="enable_accessibility_canceled" msgid="3833923257966635673">"접근성이 취소되었습니다."</string>
     <string name="user_switched" msgid="3768006783166984410">"현재 사용자는 <xliff:g id="NAME">%1$s</xliff:g>님입니다."</string>
     <string name="owner_name" msgid="2716755460376028154">"소유자"</string>
+    <!-- label for item that reboots the phone in phone options dialog -->
+    <string name="global_action_reboot">재시작</string>
+
+    <!-- label for item that opens the profile choosing dialog -->
+    <string name="global_action_choose_profile">프로필</string>
+
+    <!-- Hardware Rotation lock string -->
+    <string name="toast_rotation_unlocked">화면 회전 가능</string>
+    <string name="toast_rotation_locked">화면 회전 잠김</string>
+
+    <!-- In WiFi notification -->
+    <string name="notify_turn_wifi_off_title">Wi-Fi 끄기</string>
+
+    <!-- Awesome Action Stuff-->
+    <string name="action_home">홈으로 가기</string>
+    <string name="action_back">뒤로가기</string>
+    <string name="action_recents">최근앱 창</string>
+    <string name="action_search">검색</string>
+    <string name="action_screenshot">스크린샷 찍기</string>
+    <string name="action_menu">메뉴</string>
+    <string name="action_ime">IME 변경기 열기</string>
+    <string name="action_kill">어플 종료하기</string>
+    <string name="action_lastapp">최근 실행 앱</string>
+    <string name="action_power">전원</string>
+    <string name="action_notifications">알림창</string>
+    <string name="action_assist">검색 (Google Now)</string>
+    <string name="action_clockoptions">시계 옵션</string>
+    <string name="action_voiceassist">음성 검색</string>
+    <string name="action_torch">손전등</string>
+    <string name="action_silent">소리/무음</string>
+    <string name="action_vib">소리/진동</string>
+    <string name="action_silent_vib">소리/진동/무음</string>
+    <string name="action_event">이벤트</string>
+    <string name="action_today">오늘</string>
+    <string name="action_alarm">알람</string>
+    <string name="action_null">없음</string>
+    <string name="action_app">사용자 앱/바로가기</string>
 </resources>
