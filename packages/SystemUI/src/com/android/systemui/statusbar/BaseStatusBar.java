@@ -157,7 +157,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     public PieControlPanel mPieControlPanel;
     public View mPieControlsTrigger;
     public PieExpandPanel mContainer;
-    public View mPieDummytrigger;
+    public View[] mPieDummyTrigger = new View[4];
     int mIndex;
 
     // Policy
@@ -318,7 +318,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         public boolean onTouch(View v, MotionEvent event) {
             final int action = event.getAction();
 
-            if (!mPieControlPanel.isShowing()) {
+            if (!mPieControlPanel.isShowing() && ! mPieControlPanel.getKeyguardStatus()) {
                 switch(action) {
                     case MotionEvent.ACTION_DOWN:
                         centerPie = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_CENTER, 1) == 1;
@@ -535,7 +535,11 @@ public abstract class BaseStatusBar extends SystemUI implements
     public void updatePieControls() {
         if (mPieControlsTrigger != null) mWindowManager.removeView(mPieControlsTrigger);
         if (mPieControlPanel != null)  mWindowManager.removeView(mPieControlPanel);
-        if (mPieDummytrigger != null)  mWindowManager.removeView(mPieDummytrigger);
+
+        for (int i = 0; i < 4; i++) {
+            if (mPieDummyTrigger[i] != null)  mWindowManager.removeView(mPieDummyTrigger[i]);
+        }
+
         attachPie();
     }
 
@@ -573,14 +577,13 @@ public abstract class BaseStatusBar extends SystemUI implements
         } else {
             mPieControlsTrigger = null;
             mPieControlPanel = null;
-            mPieDummytrigger = null;
+            for (int i = 0; i < 4; i++) {
+                mPieDummyTrigger[i] = null;
+            }
         }
     }
 
-    private void addPieInLocation(int gravity) {        
-        // Create a dummy view to force the screen to redraw
-        mPieDummytrigger = new View(mContext);
-
+    private void addPieInLocation(int gravity) {                
         // Quick navigation bar panel
         mPieControlPanel = (PieControlPanel) View.inflate(mContext,
                 R.layout.pie_control_panel, null);
@@ -589,8 +592,13 @@ public abstract class BaseStatusBar extends SystemUI implements
         mPieControlsTrigger = new View(mContext);
         mPieControlsTrigger.setOnTouchListener(new PieControlsTouchListener());
         mWindowManager.addView(mPieControlsTrigger, getPieTriggerLayoutParams(mContext, gravity));
-        mWindowManager.addView(mPieDummytrigger, getDummyTriggerLayoutParams(mContext,
-            gravity==Gravity.LEFT ? Gravity.RIGHT : Gravity.LEFT));
+
+        // Overload screen with views that literally do nothing, thank you Google
+        int dummyGravity[] = {Gravity.LEFT, Gravity.TOP, Gravity.RIGHT, Gravity.BOTTOM};  
+        for (int i = 0; i < 4; i++) {
+            mPieDummyTrigger[i] = new View(mContext);
+            mWindowManager.addView(mPieDummyTrigger[i], getDummyTriggerLayoutParams(mContext, dummyGravity[i]));
+        }
 
         // Init Panel
         mPieControlPanel.init(mHandler, this, mPieControlsTrigger, gravity);
@@ -632,8 +640,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     public static WindowManager.LayoutParams getDummyTriggerLayoutParams(Context context, int gravity) {
         final Resources res = context.getResources();
-        final float mPieSize = Settings.System.getFloat(context.getContentResolver(),
-                Settings.System.PIE_TRIGGER, 1f);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
               (gravity == Gravity.TOP || gravity == Gravity.BOTTOM ?
                     ViewGroup.LayoutParams.MATCH_PARENT : 1),
@@ -642,6 +648,7 @@ public abstract class BaseStatusBar extends SystemUI implements
               WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
                       WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                       | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                      | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                       | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
                       | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
               PixelFormat.TRANSLUCENT);

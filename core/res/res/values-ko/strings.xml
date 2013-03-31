@@ -162,7 +162,7 @@
     <string name="global_action_silent_mode_off_status" msgid="1506046579177066419">"소리 켜짐"</string>
     <string name="global_actions_toggle_airplane_mode" msgid="5884330306926307456">"비행기 모드"</string>
     <string name="global_actions_airplane_mode_on_status" msgid="2719557982608919750">"비행기 모드 사용중"</string>
-    <string name="global_actions_airplane_mode_off_status" msgid="5075070442854490296">"비행기 모드 사용중이 아님"</string>
+    <string name="global_actions_airplane_mode_off_status" msgid="5075070442854490296">"비행기 모드 해제됨"</string>
     <string name="status_bar_notification_info_overflow" msgid="5301981741705354993">"999+"</string>
     <string name="safeMode" msgid="2788228061547930246">"안전 모드"</string>
     <string name="android_system_label" msgid="6577375335728551336">"Android 시스템"</string>
@@ -1456,4 +1456,77 @@
     <string name="enable_accessibility_canceled" msgid="3833923257966635673">"접근성이 취소되었습니다."</string>
     <string name="user_switched" msgid="3768006783166984410">"현재 사용자는 <xliff:g id="NAME">%1$s</xliff:g>님입니다."</string>
     <string name="owner_name" msgid="2716755460376028154">"소유자"</string>
+    
+    <!-- Button to reboot the phone, within the Phone Options dialog -->
+    <string name="reboot_system" product="tablet">태블릿 재시작</string>
+    <string name="reboot_system" product="default">재시작</string>
+    <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
+    
+    <!-- label for item that screenshots in phone options dialog -->
+    <string name="global_action_screenshot">스크린샷 찍기</string>
+    <!-- label for item that torches in phone options dialog -->
+    <string name="global_action_torch">손전등</string>
+    <!-- label for item that toggles expand desktop mode -->
+    <string name="global_actions_toggle_expanded_desktop_mode">데스크톱 확장</string>
+    <!-- status message in phone options dialog for when expand desktop mode is on -->
+    <string name="global_actions_expanded_desktop_mode_on_status">켜짐</string>
+    <!-- status message in phone options dialog for when expand desktop mode is off -->
+    <string name="global_actions_expanded_desktop_mode_off_status">꺼짐</string>
+
+    <!-- Button to reboot the phone, within the Reboot Options dialog -->
+    <string name="reboot_reboot">재시작</string>
+    <!-- Button to reboot the phone into recovery, within the Reboot Options dialog -->
+    <string name="reboot_recovery">리커버리</string>
+    <!-- Button to reboot the phone into bootloader, within the Reboot Options dialog -->
+    <string name="reboot_bootloader">부트로더</string>
+    <!-- Button to reboot the phone into bootmenu, within the Reboot Options dialog -->
+    <string name="reboot_bootmenu">부트메뉴</string>
+    <!-- Button to reboot the phone into fastboot, within the Reboot Options dialog -->
+    <string name="reboot_fastboot">패스트붓</string>
+    <!-- Button to reboot the phone into download, within the Reboot Options dialog -->
+    <string name="reboot_download">다운로드</string>
+
+    <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
+    <string name="reboot_progress">재시작 중\u2026</string>
+    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will be a confirmation dialog.  This is the message. -->
+    <string name="reboot_confirm" product="tablet">태블릿이 재시작 됩니다.</string>
+    <string name="reboot_confirm" product="default">기기가 재시작 됩니다.</string>
+
+    <!-- label for item that reboots the phone in phone options dialog -->
+    <string name="global_action_reboot">재시작</string>
+
+    <!-- label for item that opens the profile choosing dialog -->
+    <string name="global_action_choose_profile">프로필</string>
+
+    <!-- Hardware Rotation lock string -->
+    <string name="toast_rotation_unlocked">화면 회전 가능</string>
+    <string name="toast_rotation_locked">화면 회전 잠김</string>
+
+    <!-- In WiFi notification -->
+    <string name="notify_turn_wifi_off_title">Wi-Fi 끄기</string>
+
+    <!-- Awesome Action Stuff-->
+    <string name="action_home">홈으로 가기</string>
+    <string name="action_back">뒤로가기</string>
+    <string name="action_recents">최근앱 창</string>
+    <string name="action_search">검색</string>
+    <string name="action_screenshot">스크린샷 찍기</string>
+    <string name="action_menu">메뉴</string>
+    <string name="action_ime">IME 변경기 열기</string>
+    <string name="action_kill">어플 종료하기</string>
+    <string name="action_lastapp">최근 실행 앱</string>
+    <string name="action_power">전원</string>
+    <string name="action_notifications">알림창</string>
+    <string name="action_assist">검색 (Google Now)</string>
+    <string name="action_clockoptions">시계 옵션</string>
+    <string name="action_voiceassist">음성 검색</string>
+    <string name="action_torch">손전등</string>
+    <string name="action_silent">소리/무음</string>
+    <string name="action_vib">소리/진동</string>
+    <string name="action_silent_vib">소리/진동/무음</string>
+    <string name="action_event">이벤트</string>
+    <string name="action_today">오늘</string>
+    <string name="action_alarm">알람</string>
+    <string name="action_null">없음</string>
+    <string name="action_app">사용자 앱/바로가기</string>
 </resources>
