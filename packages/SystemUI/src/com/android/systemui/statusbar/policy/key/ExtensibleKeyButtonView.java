@@ -14,7 +14,6 @@ import com.android.systemui.statusbar.policy.KeyButtonView;
 public class ExtensibleKeyButtonView extends KeyButtonView {
 
     public String mClickAction, mLongpress;
-    public Context mContext;
 
     public ExtensibleKeyButtonView(Context context, AttributeSet attrs, String clickAction,
             String longPress) {

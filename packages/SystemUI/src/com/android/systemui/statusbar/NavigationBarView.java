@@ -16,8 +16,6 @@
 
 package com.android.systemui.statusbar;
 
-import java.io.File;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
@@ -57,6 +55,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 
 import static com.android.internal.util.carbon.AwesomeConstants.*;
