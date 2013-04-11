@@ -1019,6 +1019,23 @@ public class WifiP2pManager {
         checkChannel(c);
         c.mAsyncChannel.sendMessage(CANCEL_CONNECT, 0, c.putListener(listener));
     }
+    /**
+     * Cancel any ongoing p2p group negotiation
+     *
+     * <p> The function call immediately returns after sending a connection cancellation request
+     * to the framework. The application is notified of a success or failure to initiate
+     * cancellation through listener callbacks {@link ActionListener#onSuccess} or
+     * {@link ActionListener#onFailure}.
+     *
+     * @param c is the channel created at {@link #initialize}
+     * @param d is the P2P device we are operating on
+     * @param listener for callbacks on success or failure. Can be null.
+     * @hide
+     */
+    public void cancelConnect(Channel c, WifiP2pDevice d, ActionListener listener) {
+        checkChannel(c);
+        c.mAsyncChannel.sendMessage(CANCEL_CONNECT, 0, c.putListener(listener), d);
+    }
 
     /**
      * Create a p2p group with the current device as the group owner. This essentially creates

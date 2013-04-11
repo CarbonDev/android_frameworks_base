@@ -1641,6 +1641,17 @@ public class WifiP2pService extends IWifiP2pManager.Stub {
                     }
                     // TODO: figure out updating the status to declined when invitation is rejected
                     break;
+               case WifiP2pManager.CANCEL_CONNECT:
+                   device = (WifiP2pDevice) message.obj;
+                   if (mPeers.remove(device)) {
+                           sendP2pPeersChangedBroadcast();
+                           replyToMessage(message, WifiP2pManager.CANCEL_CONNECT_SUCCEEDED);
+                           sendMessage(WifiP2pManager.DISCOVER_PEERS);
+                   } else {
+                           replyToMessage(message, WifiP2pManager.CANCEL_CONNECT_FAILED,
+                                           WifiP2pManager.BUSY);
+                   }
+                    break;
                 case WifiMonitor.P2P_INVITATION_RESULT_EVENT:
                     P2pStatus status = (P2pStatus)message.obj;
                     logd("===> INVITATION RESULT EVENT : " + status);
