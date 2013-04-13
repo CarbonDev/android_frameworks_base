@@ -621,10 +621,14 @@ public class SearchPanelView extends FrameLayout implements
                 resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVRING_ICON[i]), false, this);
             }
+<<<<<<< HEAD
+
+=======
         }
 
         void unobserve() {
             mContext.getContentResolver().unregisterContentObserver(this);
+>>>>>>> 9ab3e99... SystemUI: fix memory leaks
         }
 
         @Override
