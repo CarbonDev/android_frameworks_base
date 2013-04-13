@@ -410,9 +410,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mVolBtnMusicControls;
     boolean mIsLongPress;
 
-    // Behavior expanded desktop mode
+    // Behavior of expanded desktop mode
     int mExpandedState;
     int mExpandedMode;
+
+    boolean mHideStatusBar;
 
     // HW overlays state
     int mDisableOverlays = 0;
@@ -794,6 +796,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_WIDTH), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HIDE_STATUSBAR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USER_UI_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -4172,8 +4176,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
+                mHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.HIDE_STATUSBAR, 0) == 1;
                 if (topIsFullscreen || (mExpandedState == 1 &&
-                                        (mExpandedMode == 2 || mExpandedMode == 3)) ||
+                                        (mExpandedMode == 2 || mExpandedMode == 3) || mHideStatusBar) ||
                                         Settings.System.getBoolean(mContext.getContentResolver(),
                                         Settings.System.STATUSBAR_HIDDEN, false) == true) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
