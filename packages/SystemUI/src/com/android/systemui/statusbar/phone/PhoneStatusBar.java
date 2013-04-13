@@ -1291,6 +1291,18 @@ public class PhoneStatusBar extends BaseStatusBar {
         refreshAllStatusBarIcons();
     }
 
+    private void updateStatusBarVisibility() {
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.AUTO_HIDE_STATUSBAR, 0) == 1) {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.HIDE_STATUSBAR,
+                    (mNotificationData.size() == 0) ? 1 : 0);
+        } else {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.HIDE_STATUSBAR, 0);
+        }
+    }
+
     private void loadNotificationShade() {
         if (mPile == null) return;
 
@@ -1488,6 +1500,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 })
                 .start();
         }
+
+        if (mNotificationData.size() < 2) updateStatusBarVisibility();
 
         updateCarrierLabelVisibility(false);
     }
@@ -3090,6 +3104,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.AUTO_HIDE_STATUSBAR), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_HIDE_ENABLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_HIDE_TIMEOUT), false, this);
@@ -3138,6 +3154,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
         mBrightnessControl = !autoBrightness && Settings.System.getInt(
                     cr, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
+
+        updateStatusBarVisibility();
     }
 
     public boolean skipToSettingsPanel() {
