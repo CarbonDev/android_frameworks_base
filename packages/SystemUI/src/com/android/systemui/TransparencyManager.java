@@ -1,12 +1,6 @@
 
 package com.android.systemui;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
@@ -16,15 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
 
-import com.android.internal.util.carbon.BackgroundAlphaColorDrawable;
 import com.android.systemui.statusbar.NavigationBarView;
 import com.android.systemui.statusbar.phone.PanelBar;
 
@@ -49,12 +42,7 @@ public class TransparencyManager {
     boolean mIsHomeShowing;
     boolean mIsKeyguardShowing;
 
-    KeyguardManager km;
-    ActivityManager am;
-
-    private static class SomeInfo {
-        ValueAnimator anim;
-        int color;
+    private class SomeInfo {
         float keyguardAlpha;
         float homeAlpha;
         boolean tempDisable;
@@ -70,9 +58,6 @@ public class TransparencyManager {
     public TransparencyManager(Context context) {
         mContext = context;
 
-        km = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
-        am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(new BroadcastReceiver() {
@@ -83,7 +68,7 @@ public class TransparencyManager {
             }
         }, intentFilter);
 
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
     }
 
@@ -108,71 +93,49 @@ public class TransparencyManager {
         mNavbarInfo.tempDisable = state;
     }
 
-    private ValueAnimator createAnimation(final SomeInfo info, View v) {
-        if (info.anim != null) {
-            info.anim.cancel();
-            info.anim = null;
-        }
-
-        float a = 1;
-
-        if (info.tempDisable) {
-            info.tempDisable = false;
-        } else if (mIsKeyguardShowing) {
-            a = info.keyguardAlpha;
-        } else if (mIsHomeShowing) {
-            a = info.homeAlpha;
-        }
-
-        final float alpha = a;
-
-        final BackgroundAlphaColorDrawable bg = (BackgroundAlphaColorDrawable) v.getBackground();
-        ValueAnimator anim = ValueAnimator.ofObject(new ArgbEvaluator(), info.color, BackgroundAlphaColorDrawable.applyAlphaToColor(info.color, alpha));
-        anim.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                info.color = (Integer)animation.getAnimatedValue();
-                bg.setColor(info.color);
-            }
-        });
-        anim.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                info.anim = null;
-            }
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                info.anim = null;
-            }
-        });
-        info.anim = anim;
-        return anim;
-    }
-
     private void doTransparentUpdate() {
-        mIsKeyguardShowing = isKeyguardShowing();
-        mIsHomeShowing = isLauncherShowing();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                mIsHomeShowing = isLauncherShowing();
+                mIsKeyguardShowing = isKeyguardShowing();
+                return null;
+            }
 
-        ValueAnimator navAnim = null, sbAnim = null;
-        if (mNavbar != null) {
-            navAnim = createAnimation(mNavbarInfo, mNavbar);
-        }
-        if (mStatusbar != null) {
-            sbAnim = createAnimation(mStatusbarInfo, mStatusbar);
-        }
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(navAnim, sbAnim);
-        set.start();
+            @Override
+            protected void onPostExecute(Void v) {
+                // TODO animate alpha~
+                if (mNavbar != null) {
+                    if (mNavbarInfo.tempDisable) {
+                        mNavbar.setBackgroundAlpha(1);
+                        mNavbarInfo.tempDisable = false;
+                    } else if (mIsKeyguardShowing) {
+                        mNavbar.setBackgroundAlpha(mNavbarInfo.keyguardAlpha);
+                    } else if (mIsHomeShowing) {
+                        mNavbar.setBackgroundAlpha(mNavbarInfo.homeAlpha);
+                    } else {
+                        mNavbar.setBackgroundAlpha(1);
+                    }
+                }
+                if (mStatusbar != null) {
+                    if (mStatusbarInfo.tempDisable) {
+                        mStatusbar.setBackgroundAlpha(1);
+                        mStatusbarInfo.tempDisable = false;
+                    } else if (mIsKeyguardShowing) {
+                        mStatusbar.setBackgroundAlpha(mStatusbarInfo.keyguardAlpha);
+                    } else if (mIsHomeShowing) {
+                        mStatusbar.setBackgroundAlpha(mStatusbarInfo.homeAlpha);
+                    } else {
+                        mStatusbar.setBackgroundAlpha(1);
+                    }
+                }
+            }
+        }.execute();
     }
 
     private boolean isLauncherShowing() {
         try {
+            ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
             final List<ActivityManager.RecentTaskInfo> recentTasks = am
                     .getRecentTasksForUser(
                             1, ActivityManager.RECENT_WITH_EXCLUDED,
@@ -193,6 +156,7 @@ public class TransparencyManager {
     }
 
     private boolean isKeyguardShowing() {
+        KeyguardManager km = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
         if (km == null)
             return false;
         return km.isKeyguardLocked();

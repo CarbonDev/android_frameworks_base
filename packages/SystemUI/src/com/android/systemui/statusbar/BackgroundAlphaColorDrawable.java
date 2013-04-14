@@ -1,5 +1,5 @@
 
-package com.android.internal.util.carbon;
+package com.android.systemui.statusbar;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
