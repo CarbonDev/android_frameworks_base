@@ -58,9 +58,9 @@ public class AwesomeConstants {
         ACTION_EVENT         { @Override public String value() { return "**event**";}},
         ACTION_TODAY         { @Override public String value() { return "**today**";}},
         ACTION_ALARM         { @Override public String value() { return "**alarm**";}},
-        ACTION_NULL          { @Override public String value() { return "**null**";}},
         ACTION_UNLOCK        { @Override public String value() { return "**unlock**";}},
         ACTION_CAMERA        { @Override public String value() { return "**camera**";}},
+        ACTION_NULL          { @Override public String value() { return "**null**";}},
         ACTION_APP           { @Override public String value() { return "**app**";}};
         public String value() { return this.value(); }
     }
