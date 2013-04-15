@@ -25,7 +25,7 @@ import android.util.Slog;
 import android.view.View;
 import android.view.MotionEvent;
 
-import com.android.internal.util.aokp.BackgroundAlphaColorDrawable;
+import com.android.internal.util.carbon.BackgroundAlphaColorDrawable;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.PanelBar;
 
