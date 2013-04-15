@@ -1215,22 +1215,20 @@ public class NotificationManagerService extends INotificationManager.Stub
                 // sound
                 final boolean useDefaultSound =
                     (notification.defaults & Notification.DEFAULT_SOUND) != 0;
+
                 Uri soundUri = null;
                 boolean hasValidSound = false;
-                if (!(inQuietHours && mQuietHoursMute)
-                        && (useDefaultSound || notification.sound != null)) {
-                    Uri uri;
-                    if (useDefaultSound) {
-                        soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
 
-                        // check to see if the default notification sound is silent
-                        ContentResolver resolver = mContext.getContentResolver();
-                        hasValidSound = Settings.System.getString(resolver,
-                               Settings.System.NOTIFICATION_SOUND) != null;
-                    } else if (notification.sound != null) {
+                if (!(inQuietHours && mQuietHoursMute) && useDefaultSound) {
+                    soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
+
+                    // check to see if the default notification sound is silent
+                    ContentResolver resolver = mContext.getContentResolver();
+                    hasValidSound = Settings.System.getString(resolver,
+                            Settings.System.NOTIFICATION_SOUND) != null;
+                } else if (!(inQuietHours && mQuietHoursMute) && notification.sound != null) {
                         soundUri = notification.sound;
                         hasValidSound = (soundUri != null);
-                    }
                 }
 
                 if (hasValidSound) {
@@ -1267,7 +1265,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 // and no other vibration is specified, we fall back to vibration
                 final boolean convertSoundToVibration =
                            !hasCustomVibrate
-                        && (useDefaultSound || notification.sound != null)
+                        && hasValidSound
                         && (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
                         && (Settings.System.getInt(mContext.getContentResolver(), Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, 1) != 0);
 
