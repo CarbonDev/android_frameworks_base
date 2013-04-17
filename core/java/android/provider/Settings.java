@@ -4194,6 +4194,15 @@ public final class Settings {
          */
         public static final String USER_UI_MODE = "user_ui_mode";
 
+       /**
+        * MediaScanner behavior on boot.
+        * 0 = enabled
+        * 1 = ask (notification)
+        * 2 = disabled
+        * @hide
+        */
+        public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot";
+
         /**
          * Allows to show the background activity back the lockscreen
          * @hide
