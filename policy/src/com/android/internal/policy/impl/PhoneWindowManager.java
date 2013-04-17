@@ -4020,7 +4020,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                         Settings.System.EXPANDED_DESKTOP_MODE, 0);
                 if (topIsFullscreen || (Settings.System.getInt(mContext.getContentResolver(),
                                         Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 &&
-                                        (expandedMode == 2 || expandedMode == 3)) ||
+                                        (expandedMode == 2 || expandedMode == 3)) &&
                                         Settings.System.getBoolean(mContext.getContentResolver(),
                                         Settings.System.STATUSBAR_HIDDEN, false) == true) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
