@@ -142,6 +142,7 @@
                 android:theme="@style/RecentsStyle"
                 android:excludeFromRecents="true"
                 android:launchMode="singleInstance"
+                android:hardwareAccelerated="true"
                 android:exported="true">
           <intent-filter>
             <action android:name="com.android.systemui.TOGGLE_RECENTS" />
@@ -244,19 +245,6 @@
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="com.android.systemui.INTENT_NAVBAR_TOGGLE" />
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.android.systemui.SHORTCUT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.android.systemui.carbon.StatusbarToggle"
-            android:label="@string/toggle_statusbar"
-            android:icon="@drawable/toggle_statusbar"
-            android:theme="@android:style/Theme.Holo.Panel"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTop" >
-            <intent-filter>
-                <action android:name="com.android.systemui.INTENT_STATUSBAR_TOGGLE" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.android.systemui.SHORTCUT" />
             </intent-filter>

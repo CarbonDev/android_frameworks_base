@@ -248,7 +248,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
+                PixelFormat.TRANSPARENT);
 
         if (ActivityManager.isHighEndGfx()) {
             lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
@@ -682,6 +682,10 @@ public class TabletStatusBar extends BaseStatusBar implements
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
         updateSettings();
+        mNavBarView.setTransparencyManager(mTransparencyManager);
+        mTransparencyManager.setStatusbar(mStatusBarView);
+        mTransparencyManager.setNavbar(mNavBarView);
+        mTransparencyManager.update();
         return sb;
     }
 
@@ -1110,6 +1114,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                 mHandler.sendEmptyMessage(MSG_CLOSE_RECENTS_PANEL);
            }
         }
+        mTransparencyManager.update();
     }
 
     private void setNavigationVisibility(int visibility) {
@@ -1257,6 +1262,7 @@ public class TabletStatusBar extends BaseStatusBar implements
             Slog.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");
         }
         mNavBarView.setMenuVisibility(showMenu);
+        mTransparencyManager.update();
 
         // See above re: lights-out policy for legacy apps.
         if (showMenu) setLightsOn(true);

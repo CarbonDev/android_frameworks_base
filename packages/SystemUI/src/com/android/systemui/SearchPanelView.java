@@ -609,7 +609,6 @@ public class SearchPanelView extends FrameLayout implements
                 resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVRING_ICON[i]), false, this);
             }
-
         }
 
         @Override

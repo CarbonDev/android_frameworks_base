@@ -1936,7 +1936,6 @@
 
   <!-- Hide Navbar -->
   <java-symbol type="layout" name="global_actions_navbar_mode" />
-  <java-symbol type="id" name="navbarstatus" />
   <java-symbol type="id" name="navbartoggle" />
   <java-symbol type="id" name="navbarhome" />
   <java-symbol type="id" name="navbarback" />
@@ -1965,6 +1964,8 @@
   <java-symbol type="string" name="action_event"/>
   <java-symbol type="string" name="action_today"/>
   <java-symbol type="string" name="action_alarm"/>
+  <java-symbol type="string" name="action_unlock"/>
+  <java-symbol type="string" name="action_camera"/>
   <java-symbol type="string" name="action_null"/>
   <java-symbol type="string" name="action_app"/>
 

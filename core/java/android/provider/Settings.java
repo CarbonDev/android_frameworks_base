@@ -55,6 +55,7 @@ import android.view.WindowOrientationListener;
 import com.android.internal.widget.ILockSettings;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -1196,6 +1197,36 @@ public final class Settings {
          */
         public static boolean putBoolean(ContentResolver cr, String name, boolean value) {
             return putString(cr, name, value ? "1" : "0");
+        }
+
+        /**
+         * @hide
+         * Methods to handle storing and retrieving arraylists
+         *
+         * @param cr The ContentResolver to access.
+         * @param name The name of the setting to modify.
+         * @param value The new value for the setting.
+         * @return true if the value was set, false on database errors
+         */
+        public static boolean putArrayList(ContentResolver cr, String name, ArrayList<String> list) {
+            if (list.size() > 0) {
+                String joined = TextUtils.join("|",list);
+                return putString(cr, name, joined);
+            }
+            return false;
+        }
+
+
+        public static ArrayList<String> getArrayList(ContentResolver cr, String name) {
+            String v = getString(cr, name);
+            ArrayList<String> list = new ArrayList<String>();
+            if (v != null) {
+                String[] split = v.split("\\|");
+                for (String i : split) {
+                    list.add(i);
+                }
+            }
+            return list;
         }
 
         /**
@@ -2987,6 +3018,27 @@ public final class Settings {
         public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
 
         /**
+         * Whether Status bar should be hiidden when there are no
+         * notifications
+         * @hide
+         */
+        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
+
+        /**
+         * Whether Status Bar is currently hidden or not
+         * @hide
+         */
+        public static final String HIDE_STATUSBAR = "hide_statusbar";
+
+        /**
+         * Whether Status Bar is currently hidden or not for notification
+         * toggle notification shade
+         *
+         * @hide
+         */
+        public static final String TOGGLE_NOTIFICATION_SHADE = "toggle_notification_shade";
+
+        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
@@ -3622,19 +3674,7 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_SHOW_NOW = "navigation_bar_show_now";
 
-        /**
-         * Used as a flag to determine if we have statusbar hidden
-         * @hide
-         */
-        public static final String STATUSBAR_HIDDEN = "statusbar_hidden";
-
-        /**
-         * Statusbar toggle for quick settings
-         * &hide
-         */
-        public static final String STATUSBAR_QUICK_TOGGLE = "statusbar_quick_toggle";
-
-        /**
+		/**
          * Show the NavBar dialog in Power menu
          * @hide
          */
@@ -4182,6 +4222,11 @@ public final class Settings {
         public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
 
         /**
+         * @hide
+          */
+        public static final String KG_CAMERA_WIDGET = "kg_camera_widget";
+        
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4613,6 +4658,13 @@ public final class Settings {
          * @hide
          */
         public static final String TOGGLES_STYLE = "toggls_style";
+
+        /**
+         * toggle to "fix" the following: (found in NotificationManagerService)
+         *  new in 4.2: if there was supposed to be a sound and we're in vibrate mode,
+         *  we always vibrate, even if no vibration was specified
+         */
+        public static final String NOTIFICATION_CONVERT_SOUND_TO_VIBRATION = "convert_sound_to_vibration";
     }
 
     /**
