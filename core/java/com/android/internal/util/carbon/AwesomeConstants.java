@@ -47,7 +47,7 @@ public class AwesomeConstants {
         ACTION_RECENTS       { @Override public String value() { return "**recents**";}},
         ACTION_ASSIST        { @Override public String value() { return "**assist**";}},
         ACTION_POWER         { @Override public String value() { return "**power**";}},
-        ACTION_WIDGETS       { @Override public String value() { return "**widgets**";}},
+        ACTION_WIDGETS        { @Override public String value() { return "**widgets**";}},
         ACTION_NOTIFICATIONS { @Override public String value() { return "**notifications**";}},
         ACTION_CLOCKOPTIONS  { @Override public String value() { return "**clockoptions**";}},
         ACTION_VOICEASSIST   { @Override public String value() { return "**voiceassist**";}},

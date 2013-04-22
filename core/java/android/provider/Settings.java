@@ -4223,16 +4223,11 @@ public final class Settings {
         public static final String CUSTOM_TOGGLE_REVERT = "custom_toggle_revert";
 
         /**
-<<<<<<< HEAD
          * @hide
          */
         public static final String DCLICK_TOGGLE_REVERT = "dclick_toggle_revert";
 
         /**
-=======
-         * enabled and order of quick toggles
-         * 
->>>>>>> c73e5be... FW: Lockscreen rework WIP
          * @hide
          */
         public static final String MATCH_ACTION_ICON = "match_action_icon";
