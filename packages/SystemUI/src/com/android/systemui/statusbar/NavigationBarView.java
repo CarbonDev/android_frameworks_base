@@ -124,8 +124,6 @@ public class NavigationBarView extends LinearLayout {
      */
     int mCurrentUIMode = 0;
 
-    int mNavigationBarColor = -1;
-
     private TransparencyManager mTransparencyManager;
 
     public String[] mClickActions = new String[7];
@@ -403,15 +401,6 @@ public class NavigationBarView extends LinearLayout {
                     addButton(navButtonLayout, generateKey(landscape, KEY_ARROW_LEFT), !landscape);
                     addButton(navButtonLayout, generateKey(landscape, KEY_ARROW_RIGHT), landscape);
             }
-        }
-        Drawable bg = mContext.getResources().getDrawable(R.drawable.nav_bar_bg);
-        if(bg instanceof ColorDrawable) {
-            BackgroundAlphaColorDrawable bacd = new BackgroundAlphaColorDrawable(
-                    mNavigationBarColor > 0 ? mNavigationBarColor : ((ColorDrawable) bg).getColor());
-            setBackground(bacd);
-        }
-        if(mTransparencyManager != null) {
-            mTransparencyManager.update();
         }
     }
 
@@ -1034,8 +1023,6 @@ public class NavigationBarView extends LinearLayout {
             ContentResolver resolver = mContext.getContentResolver();
 
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_COLOR), false, this);
-            resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_ALLCOLOR), false, this);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.MENU_LOCATION), false,
@@ -1077,34 +1064,11 @@ public class NavigationBarView extends LinearLayout {
         }
     }
 
-    /*
-     * ]0 < alpha < 1[
-     */
-    public void setBackgroundAlpha(float alpha) {
-        Drawable bg = getBackground();
-        if(bg == null) return;
-
-        if(bg instanceof BackgroundAlphaColorDrawable) {
-         // if there's a custom color while the lockscreen is on, clear it momentarily, otherwise it won't match.
-            if(mNavigationBarColor > 0) {
-                if(isKeyguardEnabled()) {
-                    ((BackgroundAlphaColorDrawable) bg).setBgColor(-1);
-                } else {
-                    ((BackgroundAlphaColorDrawable) bg).setBgColor(mNavigationBarColor);
-                }
-            }
-        }
-        int a = Math.round(alpha * 255);
-        bg.setAlpha(a);
-    }
-
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
         mMenuLocation = Settings.System.getInt(resolver,
                 Settings.System.MENU_LOCATION, SHOW_RIGHT_MENU);
-        mNavigationBarColor = Settings.System.getInt(resolver,
-                Settings.System.NAVIGATION_BAR_COLOR, -1);
         mColorAllIcons = Settings.System.getBoolean(resolver,
                 Settings.System.NAVIGATION_BAR_ALLCOLOR, false);
         mMenuVisbility = Settings.System.getInt(resolver,
