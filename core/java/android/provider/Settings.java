@@ -1809,134 +1809,22 @@ public final class Settings {
         public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = 1;
 
         /**
-         * Indicates that custom light sensor settings has changed.
-         * The value is random and changes reloads light settings.
-         *
-         * @hide
-         */
-        public static final String LIGHTS_CHANGED = "lights_changed";
-
-        /**
-         * Whether custom light sensor levels & values are enabled. The value is
-         * boolean (1 or 0).
-         *
-         * @hide
-         */
-        public static final String LIGHT_SENSOR_CUSTOM = "light_sensor_custom";
-
-        /**
-         * Screen dim value to use if LIGHT_SENSOR_CUSTOM is set. The value is int.
-         * Default is android.os.BRIGHTNESS_DIM.
-         *
-         * @hide
-         */
-        public static final String LIGHT_SCREEN_DIM = "light_screen_dim";
-
-        /**
-         * Custom light sensor levels. The value is a comma separated int array
-         * with length N.
+         * Custom automatic brightness light sensor levels.
+         * The value is a comma separated int array with length N.
          * Example: "100,300,3000".
          *
          * @hide
          */
-        public static final String LIGHT_SENSOR_LEVELS = "light_sensor_levels";
+        public static final String AUTO_BRIGHTNESS_LUX = "auto_brightness_lux";
 
         /**
-         * Custom light sensor lcd values. The value is a comma separated int array
-         * with length N+1.
+         * Custom automatic brightness display backlight brightness values.
+         * The value is a comma separated int array with length N+1.
          * Example: "10,50,100,255".
          *
          * @hide
          */
-        public static final String LIGHT_SENSOR_LCD_VALUES = "light_sensor_lcd_values";
-
-        /**
-         * Custom light sensor lcd values. The value is a comma separated int array
-         * with length N+1.
-         * Example: "10,50,100,255".
-         *
-         * @hide
-         */
-        public static final String LIGHT_SENSOR_BUTTON_VALUES = "light_sensor_button_values";
-
-        /**
-         * Custom light sensor lcd values. The value is a comma separated int array
-         * with length N+1.
-         * Example: "10,50,100,255".
-         *
-         * @hide
-         */
-        public static final String LIGHT_SENSOR_KEYBOARD_VALUES = "light_sensor_keyboard_values";
-
-        /**
-         * Whether light sensor is allowed to decrease when calculating automatic
-         * backlight. The value is boolean (1 or 0).
-         *
-         * @hide
-         */
-        public static final String LIGHT_DECREASE = "light_decrease";
-
-        /**
-         * Light sensor hysteresis for decreasing backlight. The value is
-         * int (0-99) representing % (0-0.99 as float). Example:
-         *
-         * Levels     Output
-         * 0 - 100    50
-         * 100 - 200  100
-         * 200 - Inf  255
-         *
-         * Current sensor value is 150 which gives light value 100. Hysteresis is 50.
-         * Current level lower bound is 100 and previous lower bound is 0.
-         * Sensor value must drop below 100-(100-0)*(50/100)=50 for output to become 50
-         * (corresponding to the 0 - 100 level).
-         * @hide
-         */
-        public static final String LIGHT_HYSTERESIS = "light_hysteresis";
-
-        /**
-         * Whether light sensor used when calculating automatic backlight should
-         * be filtered through an moving average filter.
-         * The value is boolean (1 or 0).
-         *
-         * @hide
-         */
-        public static final String LIGHT_FILTER = "light_filter";
-
-        /**
-         * Window length of filter used when calculating automatic backlight.
-         * One minute means that the average sensor value last minute is used.
-         * The value is integer (milliseconds)
-         *
-         * @hide
-         */
-        public static final String LIGHT_FILTER_WINDOW = "light_filter_window";
-
-        /**
-         * Reset threshold of filter used when calculating automatic backlight.
-         * Sudden large jumps in sensor value resets the filter. This is used
-         * to make the filter respond quickly to large enough changes in input
-         * while still filtering small changes. Example:
-         *
-         * Current filter value (average) is 100 and sensor value is changing to
-         * 10, 150, 100, 30, 50. The filter is continously taking the average of
-         * the samples. Now the user goes outside and the value jumps over 1000.
-         * The difference between current average and new sample is larger than
-         * the reset threshold and filter is reset. It begins calculating a new
-         * average on samples around 1000 (say, 800, 1200, 1000, 1100 etc.)
-         *
-         * The value is integer (lux)
-         *
-         * @hide
-         */
-        public static final String LIGHT_FILTER_RESET = "light_filter_reset";
-
-        /**
-         * Sample interval of filter used when calculating automatic backlight.
-         * The value is integer (milliseconds)
-         *
-         * @hide
-         */
-        public static final String LIGHT_FILTER_INTERVAL = "light_filter_interval";
+        public static final String AUTO_BRIGHTNESS_BACKLIGHT = "auto_brightness_backlight";
 
         /**
          * Whether to enable the electron beam animation when turning screen on
@@ -2001,24 +1889,6 @@ public final class Settings {
          * into an inaudible ringer mode.
          */
         public static final String MODE_RINGER_STREAMS_AFFECTED = "mode_ringer_streams_affected";
-
-        /**
-         * Custom automatic brightness light sensor levels.
-         * The value is a comma separated int array with length N.
-         * Example: "100,300,3000".
-         *
-         * @hide
-         */
-        public static final String AUTO_BRIGHTNESS_LUX = "auto_brightness_lux";
-
-        /**
-         * Custom automatic brightness display backlight brightness values.
-         * The value is a comma separated int array with length N+1.
-         * Example: "10,50,100,255".
-         *
-         * @hide
-         */
-        public static final String AUTO_BRIGHTNESS_BACKLIGHT = "auto_brightness_backlight";
 
          /**
           * Determines which streams are affected by mute. The
@@ -2093,7 +1963,7 @@ public final class Settings {
          * Whether to prevent loud volume levels when headset is first plugged in.
          * @hide
          */
-        public static final String SAFE_HEADSET_VOLUME_RESTORE = "safe_headset_volume_restore";
+        public static final String SAFE_HEADSET_VOLUME = "safe_headset_volume";
 
         /**
          * Master volume (float in the range 0.0f to 1.0f).
@@ -2632,32 +2502,6 @@ public final class Settings {
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
 
         /**
-         * Stores values for custom lockscreen targets
-         * @hide
-         */
-        public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
-
-        /**
-         * Wheter phone lockscreen uses 5 or 8 targets
-         * @hide
-         */
-        public static final String LOCKSCREEN_EIGHT_TARGETS = "lockscreen_eight_targets";
-
-        /**
-         * Defines the shortcuts to be shown on lockscreen
-         * Usage is like this: target:icon|target:icon|target:icon
-         * if :icon is not set, default application icon will be used
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS = "lockscreen_shortcuts";
-
-        /**
-         * Whether shorcuts open with normal or longpress
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS = "lockscreen_shortcuts_longpress";
-
-        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide
@@ -2762,69 +2606,6 @@ public final class Settings {
          * @hide
          */
         public static final String POINTER_SPEED = "pointer_speed";
-
-        /**
-         * Quick Settings Panel Tiles to Use
-         *
-         * @hide
-         */
-        public static final String QUICK_SETTINGS_TILES = "quick_settings_tiles";
-
-        /**
-         * Quick Settings Panel Dynamic Tiles
-         *
-         * @hide
-         */
-        public static final String QS_DYNAMIC_ALARM = "qs_dyanmic_alarm";
-
-        /**
-         * Quick Settings Panel Dynamic Tiles
-         *
-         * @hide
-         */
-        public static final String QS_DYNAMIC_BUGREPORT = "qs_dyanmic_bugreport";
-
-        /**
-         * Quick Settings Panel Dynamic Tiles
-         *
-         * @hide
-         */
-        public static final String QS_DYNAMIC_IME = "qs_dyanmic_ime";
-
-        /**
-         * Quick Settings Panel Dynamic Tiles
-         *
-         * @hide
-         */
-        public static final String QS_DYNAMIC_USBTETHER = "qs_dyanmic_usbtether";
-
-        /**
-         * Quick Settings Panel Dynamic Tiles
-         *
-         * @hide
-         */
-        public static final String QS_DYNAMIC_WIFI = "qs_dyanmic_wifi";
-
-        /**
-         * Quick Settings Quick Pulldown
-         *
-         * @hide
-         */
-        public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
-
-         /**
-         * Quick Settings Quick Pulldown if no notifications are present
-         *
-         * @hide
-         */
-        public static final String QS_NO_NOTIFICATION_PULLDOWN = "qs_no_notification_pulldown";
-
-        /**
-         * Quick Settings Collapse Pane
-         *
-         * @hide
-         */
-        public static final String QS_COLLAPSE_PANEL = "qs_collapse_panel";
 
         /**
          * Use the Notification Power Widget? (Who wouldn't!)
@@ -4007,6 +3788,186 @@ public final class Settings {
         public static final String QUICK_TOGGLE_FAV_CONTACT = "quick_toggle_fav_contact";
 
         /**
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS_LONGPRESS = "lockscreen_targets_longpress";
+
+        /**
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_TARGETS_SHORT = new String[] {
+            "lockscreen_targets_short_0",
+            "lockscreen_targets_short_1",
+            "lockscreen_targets_short_2",
+            "lockscreen_targets_short_3",
+            "lockscreen_targets_short_4",
+            "lockscreen_targets_short_5",
+            "lockscreen_targets_short_6",
+            "lockscreen_targets_short_7",
+        };
+
+        /**
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_TARGETS_LONG = new String[] {
+            "lockscreen_targets_long_0",
+            "lockscreen_targets_long_1",
+            "lockscreen_targets_long_2",
+            "lockscreen_targets_long_3",
+            "lockscreen_targets_long_4",
+            "lockscreen_targets_long_5",
+            "lockscreen_targets_long_6",
+            "lockscreen_targets_long_7",
+        };
+
+        /**
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_TARGETS_ICON = new String[] {
+            "lockscreen_targets_icon_0",
+            "lockscreen_targets_icon_1",
+            "lockscreen_targets_icon_2",
+            "lockscreen_targets_icon_3",
+            "lockscreen_targets_icon_4",
+            "lockscreen_targets_icon_5",
+            "lockscreen_targets_icon_6",
+            "lockscreen_targets_icon_7",
+        };
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] RIBBON_TARGETS_SHORT = new String[] {
+            "ribbon_targets_short_lockscreen",
+            "ribbon_targets_short_notification",
+            "ribbon_targets_short_swipe",
+            "ribbon_targets_short_quicksettings",
+        };
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] RIBBON_TARGETS_LONG = new String[] {
+            "ribbon_targets_long_lockscreen",
+            "ribbon_targets_long_notification",
+            "ribbon_targets_long_swipe",
+            "ribbon_targets_long_quicksettings",
+        };
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] RIBBON_TARGETS_ICONS = new String[] {
+            "ribbon_targets_icons_lockscreen",
+            "ribbon_targets_icons_notification",
+            "ribbon_targets_icons_swipe",
+            "ribbon_targets_icons_quicksettings",
+        };
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] ENABLE_RIBBON_TEXT = new String[] {
+            "ribbon_text_lockscreen",
+            "ribbon_text_notification",
+            "ribbon_text_swipe",
+            "ribbon_text_quicksettings",
+        };
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] RIBBON_TEXT_COLOR = new String[] {
+            "color_text_lockscreen",
+            "color_text_notification",
+            "color_text_swipe",
+            "color_text_quicksettings",
+        };
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] RIBBON_ICON_SIZE = new String[] {
+            "ribbon_icon_lockscreen",
+            "ribbon_icon_notification",
+            "ribbon_icon_swipe",
+            "ribbon_icon_quicksettings",
+        };
+
+        public static final String[] ENABLE_RIBBON_LOCATION = new String[] {
+            "ribbon_swipe_bottom",
+            "ribbon_swipe_left",
+            "ribbon_swipe_right",
+        };
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_HIDE_TIMEOUT = "ribbon_hide_timeout";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String SWIPE_RIBBON_OPACITY = "swipe_ribbon_opacity";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String SWIPE_RIBBON_COLOR = "swipe_ribbon_color";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_DRAG_HANDLE_WEIGHT = "ribbon_drag_handle_weight";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_DRAG_HANDLE_LOCATION = "ribbon_drag_handle_location";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_ICON_LOCATION = "ribbon_icon_location";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String SWIPE_RIBBON_VIBRATE = "swipe_ribbon_vibrate";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_DRAG_HANDLE_HEIGHT = "ribbon_drag_handle_height";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_DRAG_HANDLE_OPACITY = "ribbon_drag_handle_opacity";
+
+        /**
          * enable and disable fast toggle in settings
          *
          * @hide
@@ -4103,6 +4064,15 @@ public final class Settings {
          *  @hide
          */
         public static final String USER_UI_MODE = "user_ui_mode";
+
+       /**
+        * MediaScanner behavior on boot.
+        * 0 = enabled
+        * 1 = ask (notification)
+        * 2 = disabled
+        * @hide
+        */
+        public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot";
 
         /**
          * User Interface State

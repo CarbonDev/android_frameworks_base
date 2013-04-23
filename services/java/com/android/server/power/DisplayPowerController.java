@@ -389,6 +389,7 @@ final class DisplayPowerController {
 
         mUseSoftwareAutoBrightnessConfig = resources.getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
+
         if (mUseSoftwareAutoBrightnessConfig) {
             final ContentResolver cr = mContext.getContentResolver();
             final ContentObserver observer = new ContentObserver(mHandler) {
@@ -487,6 +488,7 @@ final class DisplayPowerController {
                 return null;
             }
         }
+
         return values;
     }
 
@@ -639,6 +641,7 @@ final class DisplayPowerController {
         boolean mustInitialize = false;
         boolean updateAutoBrightness = mTwilightChanged || mAutoBrightnessSettingsChanged;
         boolean wasDim = false;
+
         mTwilightChanged = false;
         mAutoBrightnessSettingsChanged = false;
 
@@ -854,6 +857,7 @@ final class DisplayPowerController {
                 mNotifier.onScreenOn();
             } else {
                 mLights.getLight(LightsService.LIGHT_ID_BUTTONS).setBrightness(0);
+                mLights.getLight(LightsService.LIGHT_ID_KEYBOARD).setBrightness(0);
                 mNotifier.onScreenOff();
             }
         }

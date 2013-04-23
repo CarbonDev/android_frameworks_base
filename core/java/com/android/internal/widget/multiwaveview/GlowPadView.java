@@ -23,7 +23,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -63,7 +62,7 @@ public class GlowPadView extends View {
     private static final int STATE_SNAP = 4;
     private static final int STATE_FINISH = 5;
 
-    //Lockscreen targets
+
     /**
      * @hide
      */
@@ -79,21 +78,7 @@ public class GlowPadView extends View {
      */
     public final static String ICON_FILE = "icon_file";
 
-    //Lockscreen targets
     /**
-     * Number of customizable lockscreen targets for tablets
-     * @hide
-     */
-    public final static int MAX_TABLET_TARGETS = 7;
-
-    /**
-     * Number of customizable lockscreen targets for phones
-     * @hide
-     */
-    public final static int MAX_PHONE_TARGETS = 4;
-
-    /**
-     * Empty target used to reference unused lockscreen targets
      *
      * @hide
      */
@@ -286,6 +271,7 @@ public class GlowPadView extends View {
         if (a.getValue(R.styleable.GlowPadView_targetDrawables, outValue)) {
             internalSetTargetResources(outValue.resourceId);
         }
+
         if (mTargetDrawables == null || mTargetDrawables.size() == 0) {
             throw new IllegalStateException("Must specify at least one target drawable");
         }
@@ -312,9 +298,7 @@ public class GlowPadView extends View {
 
         a.recycle();
 
-        final ContentResolver resolver = context.getContentResolver();
-        boolean vibrateEnabled = Settings.System.getInt(resolver,Settings.System.LOCKSCREEN_VIBRATE_ENABLED, 1) == 1;
-        setVibrateEnabled(vibrateEnabled ? mVibrationDuration > 0 : false);
+        setVibrateEnabled(mVibrationDuration > 0);
 
         assignDefaultsIfNeeded();
 
@@ -674,6 +658,14 @@ public class GlowPadView extends View {
         } else {
             internalSetTargetResources(resourceId);
         }
+    }
+
+    public void setMagneticTargets(boolean active) {
+        mMagneticTargets = active;
+    }
+
+    public void setOffset(float offset) {
+        mFirstItemOffset = (float) Math.toRadians(offset);
     }
 
     public void setTargetResources(ArrayList<TargetDrawable> drawList) {

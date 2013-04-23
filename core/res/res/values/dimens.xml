@@ -244,9 +244,6 @@
     <!-- Size of smaller notification text (see TextAppearance.StatusBar.EventContent.Line2, Info, Time) -->
     <dimen name="notification_subtext_size">12dp</dimen>
 
-    <!-- Lockscreen target insets -->
-    <item type="dimen" name="lockscreen_target_inset">30dp</item>
-
     <!-- Keyguard dimensions -->
     <!-- TEMP -->
     <dimen name="kg_security_panel_height">600dp</dimen>
@@ -351,5 +348,10 @@
 
     <!-- Left padding of num pad key on keyguard -->
     <dimen name="kg_num_pad_key_padding_left">10dp</dimen>
+
+    <dimen name="icon_size_20">20.0dip</dimen>
+    <dimen name="icon_size_15">15.0dip</dimen>
+    <dimen name="notification_ribbon_padding">16dp</dimen>
+    <dimen name="lockscreen_ribbon_padding">16dp</dimen>
 
 </resources>
