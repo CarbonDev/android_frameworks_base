@@ -833,9 +833,11 @@ android.util.AndroidRuntimeException
 android.util.AttributeSet
 android.util.Base64
 android.util.Base64$Coder
+android.util.ColorUtils
 android.util.DisplayMetrics
 android.util.EventLog
 android.util.EventLog$Event
+android.util.ExtendedPropertiesUtils
 android.util.FinitePool
 android.util.FloatMath
 android.util.FloatProperty

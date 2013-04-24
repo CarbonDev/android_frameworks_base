@@ -2039,4 +2039,10 @@
   <java-symbol type="string" name="second" />
   <java-symbol type="string" name="seconds" />
 
+  <!-- Color picker API -->
+  <public type="string" name="color_picker" />
+  <public type="string" name="color_picker_hint" />
+  <public type="string" name="color_picker_hex" />
+  <public type="string" name="color_picker_arrow_right" />
+
 </resources>

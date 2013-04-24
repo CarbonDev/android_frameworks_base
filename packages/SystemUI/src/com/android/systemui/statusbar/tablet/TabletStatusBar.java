@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
+ * This code has been modified. Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -190,7 +191,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     BluetoothController mBluetoothController;
     LocationController mLocationController;
     NetworkController mNetworkController;
-    BatteryController mBatteryController;
     DoNotDisturb mDoNotDisturb;
 
     ViewGroup mBarContents;
@@ -278,36 +278,8 @@ public class TabletStatusBar extends BaseStatusBar implements
         mNotificationPanel.setOnTouchListener(
                 new TouchOutsideListener(MSG_CLOSE_NOTIFICATION_PANEL, mNotificationPanel));
 
-        // the battery icon
-        mBatteryController.addIconView((ImageView)mNotificationPanel.findViewById(R.id.battery));
-        mBatteryController.addLabelView(
-                (TextView)mNotificationPanel.findViewById(R.id.battery_text));
-
-        // Bt
-        mBluetoothController.addIconView(
-                (ImageView)mNotificationPanel.findViewById(R.id.bluetooth));
-
-        // network icons: either a combo icon that switches between mobile and data, or distinct
-        // mobile and data icons
-        final ImageView mobileRSSI =
-                (ImageView)mNotificationPanel.findViewById(R.id.mobile_signal);
-        if (mobileRSSI != null) {
-            mNetworkController.addPhoneSignalIconView(mobileRSSI);
-        }
-        final ImageView wifiRSSI =
-                (ImageView)mNotificationPanel.findViewById(R.id.wifi_signal);
-        if (wifiRSSI != null) {
-            mNetworkController.addWifiIconView(wifiRSSI);
-        }
-        mNetworkController.addWifiLabelView(
-                (TextView)mNotificationPanel.findViewById(R.id.wifi_text));
-
-        mNetworkController.addDataTypeIconView(
-                (ImageView)mNotificationPanel.findViewById(R.id.mobile_type));
         mNetworkController.addMobileLabelView(
                 (TextView)mNotificationPanel.findViewById(R.id.mobile_text));
-        mNetworkController.addCombinedLabelView(
-                (TextView)mBarContents.findViewById(R.id.network_text));
 
         mStatusBarView.setIgnoreChildren(0, mNotificationTrigger, mNotificationPanel);
 
@@ -397,11 +369,11 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     private int getNotificationPanelHeight() {
-        final Resources res = mContext.getResources();
-        final Display d = mWindowManager.getDefaultDisplay();
-        final Point size = new Point();
-        d.getRealSize(size);
-        return Math.max(res.getDimensionPixelSize(R.dimen.notification_panel_min_height), size.y);
+        Resources res = mContext.getResources();
+        Display display = mWindowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.y - 25;
     }
 
     @Override
@@ -599,9 +571,12 @@ public class TabletStatusBar extends BaseStatusBar implements
         mBatteryController = new BatteryController(mContext);
 
         mNetworkController = new NetworkController(mContext);
-        final SignalClusterView signalCluster =
+        mSignalCluster =
                 (SignalClusterView)sb.findViewById(R.id.signal_cluster);
-        mNetworkController.addSignalCluster(signalCluster);
+        mNetworkController.addSignalCluster(mSignalCluster);
+        mSignalCluster.setNetworkController(mNetworkController);
+
+        mBarView = (ViewGroup) mStatusBarView;
 
         mBarView = (ViewGroup) mStatusBarView;
 
@@ -983,7 +958,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                     if (DEBUG) Slog.d(TAG, "opening notifications panel");
                     if (!mNotificationPanel.isShowing()) {
                         mNotificationPanel.show(true, true);
-                        mNotificationArea.setVisibility(View.INVISIBLE);
                         mTicker.halt();
                     }
                     break;
@@ -991,7 +965,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                     if (DEBUG) Slog.d(TAG, "closing notifications panel");
                     if (mNotificationPanel.isShowing()) {
                         mNotificationPanel.show(false, true);
-                        mNotificationArea.setVisibility(View.VISIBLE);
                     }
                     break;
                 case MSG_OPEN_INPUT_METHODS_PANEL:
