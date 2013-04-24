@@ -1918,7 +1918,6 @@
   <java-symbol type="drawable" name="ic_navbar_blank" />
   <java-symbol type="drawable" name="ic_navbar_blank_activated" />
   <java-symbol type="drawable" name="ic_action_empty" />
-  <java-symbol type="drawable" name="ic_empty" />
 
   <!-- Power menu -->
   <java-symbol type="string" name="global_action_screenshot" />
