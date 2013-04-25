@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2013 AOKP
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  	  
+      Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="toggle_USER">Тек.пользователь</string>
+    <string name="toggle_BRIGHTNESS">Яркость</string>
+    <string name="toggle_SETTINGS">Настройки</string>
+    <string name="toggle_WIFI">WiFi</string>
+    <string name="toggle_SIGNAL">Сигнал</string>
+    <string name="toggle_ROTATE">Автоповорот</string>
+    <string name="toggle_CLOCK">Часы</string>
+    <string name="toggle_GPS">GPS</string>
+    <string name="toggle_IME">IME</string>
+    <string name="toggle_BATTERY">Батарея</string>
+    <string name="toggle_AIRPLANE_MODE">Режим полета</string>
+    <string name="toggle_BLUETOOTH">Bluetooth</string>
+    <string name="toggle_VIBRATE">Вибрация</string>
+    <string name="toggle_SILENT">Без звука</string>
+    <string name="toggle_FCHARGE">Быстрая зарядка</string>
+    <string name="toggle_SYNC">Синхронизация</string>
+    <string name="toggle_NFC">NFC</string>
+    <string name="toggle_TORCH">Фонарик</string>
+    <string name="toggle_WIFITETHER">Раздача WiFi</string>
+    <string name="toggle_USBTETHER">Раздача USB</string>
+    <string name="toggle_2G">2G</string>
+    <string name="toggle_LTE">LTE</string>
+    <string name="toggle_FAVCONTACT">Избранный контакт</string>
+    <string name="toggle_SOUNDSTATE">Состояние звука</string>
+    <string name="toggle_VOLUME">Громкость</string>
+    <string name="toggle_NAVBARHIDE">Скрыть навиг. панель</string>
+    <string name="toggle_QUICKRECORD">Быстрая запись</string>
+    <string name="toggle_QUIETHOURS">Тихие часы</string>
+    <string name="toggle_PIE">Pie</string>
+    <string name="toggle_SLEEP">Сон</string>
+    <string name="toggle_CARBON">Carbon</string>
+    <string name="toggle_TRDS">Тёмный Carbon</string>
+    <string name="toggle_POWERMENU">Меню выключения</string>
+    <string name="toggle_SCREENSHOT">Снимок экрана</string>
+    <string name="toggle_CUSTOM">Свой переключатель</string>
+    <string name="toggle_STAYAWAKE">Бодрствование</string>
+</resources>
