@@ -3851,6 +3851,8 @@ public final class Settings {
             "ribbon_targets_short_notification",
             "ribbon_targets_short_swipe",
             "ribbon_targets_short_quicksettings",
+            "ribbon_targets_short_swipe_right",
+            "ribbon_targets_short_swipe_bottom",
         };
 
         /**
@@ -3863,6 +3865,8 @@ public final class Settings {
             "ribbon_targets_long_notification",
             "ribbon_targets_long_swipe",
             "ribbon_targets_long_quicksettings",
+            "ribbon_targets_long_swipe_right",
+            "ribbon_targets_long_swipe_bottom",
         };
 
         /**
@@ -3875,6 +3879,8 @@ public final class Settings {
             "ribbon_targets_icons_notification",
             "ribbon_targets_icons_swipe",
             "ribbon_targets_icons_quicksettings",
+            "ribbon_targets_icons_swipe_right",
+            "ribbon_targets_icons_swipe_bottom",
         };
 
         /**
@@ -3887,6 +3893,8 @@ public final class Settings {
             "ribbon_text_notification",
             "ribbon_text_swipe",
             "ribbon_text_quicksettings",
+            "ribbon_text_swipe_right",
+            "ribbon_text_swipe_bottom",
         };
 
         /**
@@ -3899,6 +3907,8 @@ public final class Settings {
             "color_text_notification",
             "color_text_swipe",
             "color_text_quicksettings",
+            "color_text_swipe_right",
+            "color_text_swipe_bottom",
         };
 
         /**
@@ -3911,6 +3921,8 @@ public final class Settings {
             "ribbon_icon_notification",
             "ribbon_icon_swipe",
             "ribbon_icon_quicksettings",
+            "ribbon_icon_swipe_right",
+            "ribbon_icon_swipe_bottom",
         };
 
         public static final String[] ENABLE_RIBBON_LOCATION = new String[] {
@@ -3926,15 +3938,11 @@ public final class Settings {
         public static final String[] RIBBON_ICON_SPACE = new String[] {
             "ribbon_icon_lockscreen_space",
             "ribbon_icon_notification_space",
-            "ribbon_icon_swipe_space",
+            "ribbon_icon_swipe_space_left",
             "ribbon_icon_quicksettings_space",
+            "ribbon_icon_swipe_space_right",
+            "ribbon_icon_swipe_space_bottom",
         };
-
-        /**
-         *
-         * @hide
-         */
-        public static final String RIBBON_ICON_SPACE_VERTICAL = "ribbon_icon_space_vertical";
 
         /**
          * Ribbon Targets
@@ -3946,6 +3954,8 @@ public final class Settings {
             "ribbon_icon_notification_vibrate",
             "ribbon_icon_swipe_vibrate",
             "ribbon_icon_quicksettings_vibrate",
+            "ribbon_icon_swipe_vibrate_right",
+            "ribbon_icon_swipe_vibrate_bottom",
         };
 
         /**
@@ -3958,25 +3968,39 @@ public final class Settings {
             "ribbon_icon_notification_colorize",
             "ribbon_icon_swipe_colorize",
             "ribbon_icon_quicksettings_colorize",
+            "ribbon_icon_swipe_colorize_right",
+            "ribbon_icon_swipe_colorize_bottom",
         };
 
         /**
          *
          * @hide
          */
-        public static final String RIBBON_HIDE_TIMEOUT = "ribbon_hide_timeout";
+        public static final String[] RIBBON_HIDE_TIMEOUT = new String[] {
+            "ribbon_hide_timeout_left",
+            "ribbon_hide_timeout_right",
+            "ribbon_hide_timeout_bottom",
+        };
 
         /**
          *
          * @hide
          */
-        public static final String SWIPE_RIBBON_OPACITY = "swipe_ribbon_opacity";
+        public static final String[] SWIPE_RIBBON_OPACITY = new String[] {
+            "swipe_ribbon_opacity_left",
+            "swipe_ribbon_opacity_right",
+            "swipe_ribbon_opacity_bottom",
+        };
 
         /**
          *
          * @hide
          */
-        public static final String SWIPE_RIBBON_COLOR = "swipe_ribbon_color";
+        public static final String[] SWIPE_RIBBON_COLOR = new String[] {
+            "swipe_ribbon_color_left",
+            "swipe_ribbon_color_right",
+            "swipe_ribbon_color_bottom",
+        };
 
         /**
          *
@@ -3994,7 +4018,10 @@ public final class Settings {
          *
          * @hide
          */
-        public static final String RIBBON_ICON_LOCATION = "ribbon_icon_location";
+        public static final String[] RIBBON_ICON_LOCATION = new String[] {
+            "ribbon_icon_location_left",
+            "ribbon_icon_location_right",
+        };
 
         /**
          *
