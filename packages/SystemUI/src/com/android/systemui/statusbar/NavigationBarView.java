@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * This code has been modified. Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +17,6 @@
 package com.android.systemui.statusbar;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -30,26 +27,18 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.ColorUtils;
-import android.util.ExtendedPropertiesUtils;
 import android.util.Slog;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -57,11 +46,10 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import java.math.BigInteger;
 
 import static com.android.internal.util.carbon.AwesomeConstants.*;
 import com.android.internal.util.carbon.BackgroundAlphaColorDrawable;
@@ -108,11 +96,6 @@ public class NavigationBarView extends LinearLayout {
     private SettingsObserver mSettingsObserver;
     private Context mContext;
 
-    private Canvas mCurrentCanvas;
-    private Canvas mNewCanvas;
-    private TransitionDrawable mTransition;
-    private ColorUtils.ColorSettingInfo mLastBackgroundColor;
-
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
     final static int MSG_CHECK_INVALID_LAYOUT = 8686;
@@ -127,6 +110,8 @@ public class NavigationBarView extends LinearLayout {
      * 2 = Phablet UI
      */
     int mCurrentUIMode = 0;
+
+    int mNavigationBarColor = -1;
 
     private TransparencyManager mTransparencyManager;
 
@@ -173,7 +158,7 @@ public class NavigationBarView extends LinearLayout {
     public static final int KEY_BACK_ALT = 1000;
 
 
-    public int mSystemUiLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
+
     private int mMenuVisbility;
     private int mMenuLocation;
 
@@ -281,57 +266,6 @@ public class NavigationBarView extends LinearLayout {
         mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable();
         mButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_key_width);
         mMenuWidth = res.getDimensionPixelSize(R.dimen.navigation_menu_key_width);
-
-        // Only watch for per app color changes when the setting is in check
-        if (ColorUtils.getPerAppColorState(mContext)) {
-
-            // Reset all colors
-            Bitmap currentBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            mCurrentCanvas = new Canvas(currentBitmap);
-            mCurrentCanvas.drawColor(0xFF000000);
-            BitmapDrawable currentBitmapDrawable = new BitmapDrawable(currentBitmap);
-
-            Bitmap newBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            mNewCanvas = new Canvas(newBitmap);
-            mNewCanvas.drawColor(0xFF000000);
-            BitmapDrawable newBitmapDrawable = new BitmapDrawable(newBitmap);
-
-            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});        
-            setBackground(mTransition);
-
-            mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
-            updateColor();
-
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateColor();
-                    }});
-        }
-    }
-
-    private void updateColor() {
-        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                Settings.System.NAV_BAR_COLOR);
-
-        if (!colorInfo.lastColorString.equals(mLastBackgroundColor.lastColorString)) {
-            // Only enable crossfade for transparent backdrops
-            mTransition.setCrossFadeEnabled(!colorInfo.isLastColorOpaque);
-
-            // Clear first layer, paint current color, reset mTransition to first layer
-            mCurrentCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            mCurrentCanvas.drawColor(mLastBackgroundColor.lastColor);
-            mTransition.resetTransition();
-
-            // Clear second layer, paint new color, start mTransition
-            mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            mNewCanvas.drawColor(colorInfo.lastColor);
-            mTransition.startTransition(colorInfo.speed);
-
-            // Remember color for later
-            mLastBackgroundColor = colorInfo;
-        }
     }
 
     public void setTransparencyManager(TransparencyManager tm) {
@@ -418,6 +352,15 @@ public class NavigationBarView extends LinearLayout {
                 navButtonLayout.addView(spacer, 0);
                 navButtonLayout.addView(spacer1);
             }
+        }
+        Drawable bg = mContext.getResources().getDrawable(R.drawable.nav_bar_bg);
+        if(bg instanceof ColorDrawable) {
+            BackgroundAlphaColorDrawable bacd = new BackgroundAlphaColorDrawable(
+                    mNavigationBarColor > 0 ? mNavigationBarColor : ((ColorDrawable) bg).getColor());
+            setBackground(bacd);
+        }
+        if(mTransparencyManager != null) {
+            mTransparencyManager.update();
         }
     }
 
@@ -861,11 +804,6 @@ public class NavigationBarView extends LinearLayout {
              ViewGroup group = (ViewGroup) v.findViewById(R.id.nav_buttons);
              group.setMotionEventSplittingEnabled(false);
          }
-
-         if (ColorUtils.getPerAppColorState(mContext)) {
-             updateColor();
-         }
-
          mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
          // this takes care of making the buttons
@@ -887,16 +825,16 @@ public class NavigationBarView extends LinearLayout {
     }
 
     public void reorient() {
-        int rot = mDisplay.getRotation();
-        for (int i=0; i<3; i++) {
+        final int rot = mDisplay.getRotation();
+        for (int i=0; i<4; i++) {
             mRotatedViews[i].setVisibility(View.GONE);
-           }
-           if (mSystemUiLayout != 360) { // this is either a tablet of Phablet.  Need to stay at Rot_0
-               mCurrentView = mRotatedViews[Surface.ROTATION_0];
-           } else {
-               mCurrentView = mRotatedViews[rot];
-           }
-           mCurrentView.setVisibility(View.VISIBLE);
+        }
+        if (mCurrentUIMode !=0) { // this is either a tablet of Phablet.  Need to stay at Rot_0
+            mCurrentView = mRotatedViews[Surface.ROTATION_0];
+        } else {
+            mCurrentView = mRotatedViews[rot];
+        }
+        mCurrentView.setVisibility(View.VISIBLE);
 
         // force the low profile & disabled states into compliance
         setLowProfile(mLowProfile, false, true /* force */);
@@ -1045,6 +983,8 @@ public class NavigationBarView extends LinearLayout {
             ContentResolver resolver = mContext.getContentResolver();
 
             resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_COLOR), false, this);
+            resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_ALLCOLOR), false, this);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.MENU_LOCATION), false,
@@ -1086,11 +1026,34 @@ public class NavigationBarView extends LinearLayout {
         }
     }
 
+    /*
+     * ]0 < alpha < 1[
+     */
+    public void setBackgroundAlpha(float alpha) {
+        Drawable bg = getBackground();
+        if(bg == null) return;
+
+        if(bg instanceof BackgroundAlphaColorDrawable) {
+         // if there's a custom color while the lockscreen is on, clear it momentarily, otherwise it won't match.
+            if(mNavigationBarColor > 0) {
+                if(isKeyguardEnabled()) {
+                    ((BackgroundAlphaColorDrawable) bg).setBgColor(-1);
+                } else {
+                    ((BackgroundAlphaColorDrawable) bg).setBgColor(mNavigationBarColor);
+                }
+            }
+        }
+        int a = Math.round(alpha * 255);
+        bg.setAlpha(a);
+    }
+
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
         mMenuLocation = Settings.System.getInt(resolver,
                 Settings.System.MENU_LOCATION, SHOW_RIGHT_MENU);
+        mNavigationBarColor = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_COLOR, -1);
         mColorAllIcons = Settings.System.getBoolean(resolver,
                 Settings.System.NAVIGATION_BAR_ALLCOLOR, false);
         mMenuVisbility = Settings.System.getInt(resolver,

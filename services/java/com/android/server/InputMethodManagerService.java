@@ -83,7 +83,6 @@ import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.AtomicFile;
 import android.util.EventLog;
-import android.util.ExtendedPropertiesUtils;
 import android.util.LruCache;
 import android.util.Pair;
 import android.util.PrintWriterPrinter;
@@ -864,9 +863,6 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
                 mStatusBar = statusBar;
                 statusBar.setIconVisibility("ime", false);
                 updateImeWindowStatusLocked();
-                mShowOngoingImeSwitcherForPhones = mRes.getBoolean(
-                        com.android.internal.R.bool.show_ongoing_ime_switcher) &&
-                                !ExtendedPropertiesUtils.isTablet();
                 if (mShowOngoingImeSwitcherForPhones) {
                     mWindowManagerService.setOnHardKeyboardStatusChangeListener(
                             mHardKeyboardListener);

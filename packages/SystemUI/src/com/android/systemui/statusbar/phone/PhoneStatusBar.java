@@ -40,18 +40,18 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.CustomTheme;
 import android.content.res.Resources;
-import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.IBinder;
@@ -67,7 +67,6 @@ import android.provider.Settings;
 import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
-import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
@@ -128,7 +127,6 @@ import com.android.internal.util.carbon.AokpRibbonHelper;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class PhoneStatusBar extends BaseStatusBar {
@@ -688,7 +686,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
 
         // figure out which pixel-format to use for the status bar.
-        mPixelFormat = PixelFormat.TRANSLUCENT;
+        mPixelFormat = PixelFormat.OPAQUE;
 
         mSystemIconArea = (LinearLayout) mStatusBarView.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout)mStatusBarView.findViewById(R.id.statusIcons);
@@ -1380,14 +1378,6 @@ public class PhoneStatusBar extends BaseStatusBar {
     public void addIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
         if (SPEW) Slog.d(TAG, "addIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " icon=" + icon);
-
-        Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (mLastIconColor == null || mLastIconColor.isLastColorNull) {
-            iconDrawable.clearColorFilter();
-        } else {
-            iconDrawable.setColorFilter(mLastIconColor.lastColor, PorterDuff.Mode.SRC_IN);
-        }
-
         StatusBarIconView view = new StatusBarIconView(mContext, slot, null);
         view.set(icon);
         mStatusIcons.addView(view, viewIndex, new LinearLayout.LayoutParams(mIconSize, mIconSize));
@@ -1398,14 +1388,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             StatusBarIcon old, StatusBarIcon icon) {
         if (SPEW) Slog.d(TAG, "updateIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " old=" + old + " icon=" + icon);
-
-        Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (mLastIconColor == null || mLastIconColor.isLastColorNull) {
-            iconDrawable.clearColorFilter();
-        } else {
-            iconDrawable.setColorFilter(mLastIconColor.lastColor, PorterDuff.Mode.SRC_IN);
-        }
-
         StatusBarIconView view = (StatusBarIconView)mStatusIcons.getChildAt(viewIndex);
         view.set(icon);
     }
@@ -2774,7 +2756,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void setLightsOn(boolean on) {
-        Slog.v(TAG, "setLightsOn(" + on + ")");
+        Log.v(TAG, "setLightsOn(" + on + ")");
         if (on) {
             setSystemUiVisibility(0, View.SYSTEM_UI_FLAG_LOW_PROFILE);
         } else {

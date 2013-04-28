@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
- * This code has been modified. Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +19,9 @@ package com.android.systemui.statusbar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
-import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.ColorUtils;
 import android.util.Slog;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,8 +58,6 @@ public class SignalClusterView
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane;
     View mSpacer;
 
-    private ColorUtils.ColorSettingInfo mColorInfo;
-
     Handler mHandler;
 
     class SettingsObserver extends ContentObserver {
@@ -93,7 +87,6 @@ public class SignalClusterView
 
     public SignalClusterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mColorInfo = ColorUtils.getColorSettingInfo(context, Settings.System.STATUS_ICON_COLOR);
 
         mHandler = new Handler();
 
@@ -174,33 +167,20 @@ public class SignalClusterView
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         // Standard group layout onPopulateAccessibilityEvent() implementations
         // ignore content description, so populate manually
-        if (mWifiVisible && mWifiGroup.getContentDescription() != null) {
+        if (mWifiVisible && mWifiGroup.getContentDescription() != null)
             event.getText().add(mWifiGroup.getContentDescription());
-        }
-        if (mMobileVisible && mMobileGroup.getContentDescription() != null) {
+        if (mMobileVisible && mMobileGroup.getContentDescription() != null)
             event.getText().add(mMobileGroup.getContentDescription());
-        }
         return super.dispatchPopulateAccessibilityEvent(event);
     }
 
-    public void setColor(ColorUtils.ColorSettingInfo colorInfo) {
-        mColorInfo = colorInfo;
-        apply();
-    }
-
     // Run after each indicator change.
-    public void apply() {
+    private void apply() {
         if (mWifiGroup == null) return;
 
         if (mWifiVisible) {
             mWifiGroup.setVisibility(View.VISIBLE);
-            Drawable wifiBitmap = mContext.getResources().getDrawable(mWifiStrengthId);
-            if (mColorInfo.isLastColorNull) {
-                 wifiBitmap.clearColorFilter();
-            } else {
-                wifiBitmap.setColorFilter(mColorInfo.lastColor, PorterDuff.Mode.SRC_IN);
-            }
-            mWifi.setImageDrawable(wifiBitmap);
+            mWifi.setImageResource(mWifiStrengthId);
             mWifiActivity.setImageResource(mWifiActivityId);
             mWifiGroup.setContentDescription(mWifiDescription);
         } else {
@@ -214,15 +194,6 @@ public class SignalClusterView
 
         if (mMobileVisible && !mIsAirplaneMode) {
             mMobileGroup.setVisibility(View.VISIBLE);
-            if(mMobileStrengthId != 0) {
-                Drawable mobileBitmap = mContext.getResources().getDrawable(mMobileStrengthId);
-                if (mColorInfo.isLastColorNull) {
-                     mobileBitmap.clearColorFilter();
-                } else {
-                    mobileBitmap.setColorFilter(mColorInfo.lastColor, PorterDuff.Mode.SRC_IN);
-                }
-                mMobile.setImageDrawable(mobileBitmap);
-            }
             mMobile.setImageResource(mMobileStrengthId);
             mMobileActivity.setImageResource(mMobileActivityId);
             mMobileType.setImageResource(mMobileTypeId);
@@ -233,15 +204,6 @@ public class SignalClusterView
 
         if (mIsAirplaneMode) {
             mAirplane.setVisibility(View.VISIBLE);
-            if(mAirplaneIconId != 0) {
-                Drawable AirplaneBitmap = mContext.getResources().getDrawable(mAirplaneIconId);
-                if (mColorInfo.isLastColorNull) {
-                     mAirplane.clearColorFilter();
-                } else {
-                    mAirplane.setColorFilter(mColorInfo.lastColor, PorterDuff.Mode.SRC_IN);
-                }
-                mAirplane.setImageDrawable(AirplaneBitmap);
-            }
             mAirplane.setImageResource(mAirplaneIconId);
         } else {
             mAirplane.setVisibility(View.GONE);
