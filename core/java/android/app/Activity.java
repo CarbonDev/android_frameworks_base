@@ -2412,6 +2412,8 @@ public class Activity extends ContextThemeWrapper
      * @return boolean Return true if this event was consumed.
      */
     public boolean dispatchTouchEvent(MotionEvent ev) {
+            boolean mHiddenStatusbarPulldown = (Settings.System.getInt(getContentResolver(),
+                Settings.System.HIDDEN_STATUSBAR_PULLDOWN, 0) == 1);
             switch (ev.getAction())
             {
                 case MotionEvent.ACTION_DOWN:
@@ -2423,19 +2425,20 @@ public class Activity extends ContextThemeWrapper
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (mightBeMyGesture)
+                    if (mightBeMyGesture && mHiddenStatusbarPulldown)
                     {
                         if(ev.getY() > tStatus)
                         {
                             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                             mHandler.postDelayed(new Runnable() {
-                                                     public void run() {
-                                                                               getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                                                                               getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);     
-                                                     }
-                                                     
-                                                     }, 10000);
+                            public void run() {
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                            }
+
+                            }, 10000);
+
                         }
                         
                         mightBeMyGesture = false;
