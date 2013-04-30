@@ -2411,6 +2411,10 @@ public class Activity extends ContextThemeWrapper
     public boolean dispatchTouchEvent(MotionEvent ev) {
             boolean mHiddenStatusbarPulldown = (Settings.System.getInt(getContentResolver(),
                 Settings.System.HIDDEN_STATUSBAR_PULLDOWN, 0) == 1);
+            // get user timeout, default at 10 sec.
+            int mHiddenStatusbarPulldownTimeout = (Settings.System.getInt(getContentResolver(),
+                Settings.System.HIDDEN_STATUSBAR_PULLDOWN_TIMEOUT, 10000));
+
             switch (ev.getAction())
             {
                 case MotionEvent.ACTION_DOWN:
@@ -2433,13 +2437,10 @@ public class Activity extends ContextThemeWrapper
                                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                             }
-
-                            }, 10000);
-
+                               // User picked timeout here
+                            }, mHiddenStatusbarPulldownTimeout);
                         }
-                        
                         mightBeMyGesture = false;
-                            
                         return true;
                     }
                     break;
