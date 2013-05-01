@@ -2827,14 +2827,6 @@ public final class Settings {
         public static final String HIDDEN_STATUSBAR_PULLDOWN_TIMEOUT = "hidden_statusbar_pulldown_timeout";
 
         /**
-         * Whether Status Bar is currently hidden or not for notification
-         * toggle notification shade
-         *
-         * @hide
-         */
-        public static final String TOGGLE_NOTIFICATION_SHADE = "toggle_notification_shade";
-
-        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
