@@ -50,6 +50,7 @@ public class BatteryBar extends RelativeLayout implements Animatable {
     private boolean shouldAnimateCharging = true;
     private boolean isAnimating = false;
 
+    private Handler mHandler = new Handler();
     private SettingsObserver mSettingsObserver;
 
     LinearLayout mBatteryBarLayout;
@@ -68,7 +69,7 @@ public class BatteryBar extends RelativeLayout implements Animatable {
             super(handler);
         }
 
-        void observe() {
+        void observer() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.STATUSBAR_BATTERY_BAR_COLOR),
@@ -149,8 +150,8 @@ public class BatteryBar extends RelativeLayout implements Animatable {
             filter.addAction(Intent.ACTION_SCREEN_ON);
             getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
 
-            mSettingsObserver = new SettingsObserver(new Handler());
-            mSettingsObserver.observe();
+            mSettingsObserver = new SettingsObserver(mHandler);
+            mSettingsObserver.observer();
             updateSettings();
         }
     }

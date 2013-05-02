@@ -51,6 +51,7 @@ public class Clock extends TextView {
     protected String mClockFormatString;
     protected SimpleDateFormat mClockFormat;
     private Locale mLocale;
+    private SettingsObserver mSettingsObserver;
 
     public static final int AM_PM_STYLE_NORMAL  = 0;
     public static final int AM_PM_STYLE_SMALL   = 1;
@@ -77,8 +78,6 @@ public class Clock extends TextView {
 
     private int mAmPmStyle = AM_PM_STYLE_GONE;
     public boolean mShowClock;
-
-    private SettingsObserver mSettingsObserver;
 
     protected class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -144,16 +143,17 @@ public class Clock extends TextView {
             filter.addAction(Intent.ACTION_USER_SWITCHED);
 
             getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
+
+            // NOTE: It's safe to do these after registering the receiver since the receiver always runs
+            // in the main thread, therefore the receiver can't run before this method returns.
+
+            // The time zone may have changed while the receiver wasn't registered, so update the Time
+            mCalendar = Calendar.getInstance(TimeZone.getDefault());
+
+            mSettingsObserver = new SettingsObserver(new Handler());
+            mSettingsObserver.observe();
         }
 
-        // NOTE: It's safe to do these after registering the receiver since the receiver always runs
-        // in the main thread, therefore the receiver can't run before this method returns.
-
-        // The time zone may have changed while the receiver wasn't registered, so update the Time
-        mCalendar = Calendar.getInstance(TimeZone.getDefault());
-
-        mSettingsObserver = new SettingsObserver(new Handler());
-        mSettingsObserver.observe();
         updateSettings();
     }
 
@@ -162,7 +162,7 @@ public class Clock extends TextView {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
-            getContext().getContentResolver().unregisterContentObserver(mSettingsObserver);
+            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
             mAttached = false;
         }
     }
