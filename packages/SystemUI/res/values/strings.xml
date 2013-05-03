@@ -536,6 +536,10 @@
         <xliff:g id="number">%d</xliff:g>
     </string>
 
+    <!--  App window Strings -->
+    <string name="close">Close</string>
+    <string name="app_window">Applications</string>
+
     <!--  Target/Action Strings -->
     <string name="shortcut_label">Carbon Actions</string>
     <string name="action_home">Home</string>

@@ -1969,6 +1969,7 @@
   <java-symbol type="string" name="action_app"/>
   <java-symbol type="string" name="action_ribbon"/>
   <java-symbol type="string" name="action_widgets"/>
+  <java-symbol type="string" name="action_app_window"/>
 
   <!--  AOKP Ribbon -->
   <java-symbol type="layout" name="target_button" />
@@ -1979,6 +1980,8 @@
   <java-symbol type="dimen" name="icon_size_15" />
   <java-symbol type="dimen" name="notification_ribbon_padding" />
   <java-symbol type="dimen" name="lockscreen_ribbon_padding" />
+  <java-symbol type="anim" name="recents_fade_in" />
+  <java-symbol type="anim" name="recents_fade_out" />
 
   <!-- Panel auto brightness -->
   <java-symbol type="integer" name="config_panelAutoBrightnessValue" />

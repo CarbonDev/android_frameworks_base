@@ -125,13 +125,6 @@ public class AokpSwipeRibbon extends LinearLayout {
             params.gravity = getGravity();
             params.setTitle("Ribbon" + mLocation);
             if (mWindowManager != null) {
-                if (mGesturePanel != null) {
-                    try {
-                        mWindowManager.removeView(mGesturePanel);
-                    } catch (IllegalArgumentException e) {
-                        //If we try to remove the gesture panel and it's not currently attached.
-                    }
-                }
                 mWindowManager.addView(mPopupView, params);
                 PlayInAnim();
                 if (mHideTimeOut > 0) {
@@ -281,9 +274,6 @@ public class AokpSwipeRibbon extends LinearLayout {
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     mWindowManager.removeView(mPopupView);
-                        if (mGesturePanel != null) {
-                            mWindowManager.addView(mGesturePanel, mGesturePanel.getGesturePanelLayoutParams());
-                        }
                     animating = false;
                 }
 
@@ -407,6 +397,7 @@ public class AokpSwipeRibbon extends LinearLayout {
                  Settings.System.RIBBON_ICON_VIBRATE[mRibbonNumber], true);
         mColorize = Settings.System.getBoolean(cr,
                  Settings.System.RIBBON_ICON_COLORIZE[mRibbonNumber], false);
+
         mHideTimeOut = Settings.System.getInt(cr,
                  Settings.System.RIBBON_HIDE_TIMEOUT[mLocationNumber], mHideTimeOut);
         mColor = Settings.System.getInt(cr,
