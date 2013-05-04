@@ -1927,4 +1927,7 @@
 
   <java-symbol type="string" name="config_legacyUmsLunFile" />
 
+  <!-- Integer to configure panel auto brightness mode when changed -->
+  <integer name="config_panelAutoBrightnessValue">-1</integer>
+
 </resources>
