@@ -11,7 +11,7 @@ import com.android.systemui.R;
 public class PowerMenuToggle extends BaseToggle {
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         setIcon(R.drawable.ic_qs_powermenu);
         setLabel(R.string.quick_settings_powermenu_label);

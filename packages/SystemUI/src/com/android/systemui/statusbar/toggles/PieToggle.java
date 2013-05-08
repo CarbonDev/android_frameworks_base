@@ -18,7 +18,7 @@ public class PieToggle extends StatefulToggle {
     SettingsObserver mSettingsObserver;
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         mSettingsObserver = new SettingsObserver(new Handler());
         scheduleViewUpdate();

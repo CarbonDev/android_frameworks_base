@@ -14,7 +14,7 @@ public class VolumeToggle extends BaseToggle {
     private AudioManager am;
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         setIcon(R.drawable.ic_qs_volume);
         setLabel(R.string.quick_settings_volume_label);

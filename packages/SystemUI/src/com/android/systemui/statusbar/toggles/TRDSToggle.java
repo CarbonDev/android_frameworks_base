@@ -16,7 +16,7 @@ import com.android.internal.util.carbon.SysHelpers;
 public class TRDSToggle extends StatefulToggle {
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         scheduleViewUpdate();
     }
