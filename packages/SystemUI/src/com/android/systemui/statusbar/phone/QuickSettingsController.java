@@ -40,6 +40,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.cm.QSConstants.TILE_CAMERA;
 import static com.android.internal.util.cm.QSConstants.TILE_CARBON;
 import static com.android.internal.util.cm.QSConstants.TILE_DELIMITER;
+import static com.android.internal.util.cm.QSConstants.TILE_FCHARGE;
 import static com.android.internal.util.cm.QSConstants.TILE_GPS;
 import static com.android.internal.util.cm.QSConstants.TILE_LOCKSCREEN;
 import static com.android.internal.util.cm.QSConstants.TILE_LTE;
@@ -75,6 +76,7 @@ import com.android.systemui.quicksettings.BugReportTile;
 import com.android.systemui.quicksettings.CameraTile;
 import com.android.systemui.quicksettings.CarbonTile;
 import com.android.systemui.quicksettings.GPSTile;
+import com.android.systemui.quicksettings.FChargeTile;
 import com.android.systemui.quicksettings.InputMethodTile;
 import com.android.systemui.quicksettings.LteTile;
 import com.android.systemui.quicksettings.MobileNetworkTile;
@@ -206,6 +208,8 @@ public class QuickSettingsController {
                 qs = new WiFiTile(mContext, this);
             } else if (tile.equals(TILE_GPS)) {
                 qs = new GPSTile(mContext, this);
+            } else if (tile.equals(TILE_FCHARGE)) {
+                qs = new FChargeTile(mContext, this, mHandler);
             } else if (tile.equals(TILE_BLUETOOTH) && bluetoothSupported) {
                 qs = new BluetoothTile(mContext, this);
             } else if (tile.equals(TILE_BRIGHTNESS)) {

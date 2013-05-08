@@ -3380,6 +3380,12 @@ public final class Settings {
         public static final String EXPANDED_DESKTOP_MODE = "expanded_desktop_mode";
 
         /**
+        * Whether fcharge is enabled or not if kernel supports it
+        * @hide
+        */
+        public static final String FCHARGE_ENABLED = "fcharge_enabled";
+
+        /**
          * Quick Settings Disable Panel
          *
          * @hide

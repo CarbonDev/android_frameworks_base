@@ -1274,10 +1274,6 @@
     <!-- Integer to configure panel auto brightness mode when changed -->
     <integer name="config_panelAutoBrightnessValue">-1</integer>
 
-    <!-- empty string to disable, or like: /sys/kernel/fast_charge/force_fast_charge
-         it is disabled by default so devices need to add an overlay to enable-->
-    <string name="config_fastChargePath" translatable="false"></string>
-
     <!-- Boolean to enable Stylus gestures -->
     <bool name="config_stylusGestures">false</bool>
 
@@ -1287,4 +1283,10 @@
     <!-- The list of components which should be automatically disabled. -->
     <string-array name="config_disabledComponents" translatable="false">
     </string-array>
+
+    <!-- empty string to disable, or eg: /sys/kernel/fast_charge/force_fast_charge
+         for a custom path the delivered kernel supports.
+         it is disabled by default so devices need to add an overlay to enable -->
+    <string name="config_fastChargePath" translatable="false"></string>
+
 </resources>
