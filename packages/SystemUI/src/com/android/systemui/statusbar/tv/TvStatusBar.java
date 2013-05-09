@@ -94,6 +94,10 @@ public class TvStatusBar extends BaseStatusBar {
     }
 
     @Override
+    public void toggleQSShade() {
+    }
+
+    @Override
     protected void onBarTouchEvent(MotionEvent ev) {
     }
 
@@ -164,6 +168,6 @@ public class TvStatusBar extends BaseStatusBar {
     }
 
     @Override
-    public void animateExpandSettingsPanel() {
+    public void animateExpandSettingsPanel(boolean flip) {
     }
 }
