@@ -385,6 +385,7 @@ public class ToggleManager {
         if (deviceSupportsBluetooth()) {
             tiles.add(BLUETOOTH_TOGGLE);
         }
+        tiles.add(CARBON_TOGGLE);
         return tiles;
     }
 
