@@ -721,6 +721,8 @@ public class Activity extends ContextThemeWrapper
     private CharSequence mTitle;
     private int mTitleColor = 0;
 
+    public static boolean mPieOnTop = false;
+
     final FragmentManagerImpl mFragments = new FragmentManagerImpl();
     final FragmentContainer mContainer = new FragmentContainer() {
         @Override
@@ -2427,6 +2429,16 @@ public class Activity extends ContextThemeWrapper
      */
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!mPieOnTop && (Settings.System.getInt(getContentResolver(),
+                    Settings.System.STATUSBAR_PEEK, 0) == 1)) {
+                if (ev.getY() < getStatusBarHeight()) {
+                    Settings.System.putInt(getContentResolver(),
+                            Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE, 1);
+                } else {
+                    Settings.System.putInt(getContentResolver(),
+                            Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE, 0);
+                }
+            }
             onUserInteraction();
         }
         if (getWindow().superDispatchTouchEvent(ev)) {
@@ -2434,7 +2446,11 @@ public class Activity extends ContextThemeWrapper
         }
         return onTouchEvent(ev);
     }
-    
+
+    private int getStatusBarHeight() {
+        return getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+    }
+
     /**
      * Called to process trackball events.  You can override this to
      * intercept all trackball events before they are dispatched to the
