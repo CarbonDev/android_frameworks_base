@@ -2802,31 +2802,6 @@ public final class Settings {
         public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
 
         /**
-         * Whether Status bar should be hiidden when there are no
-         * notifications
-         * @hide
-         */
-        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
-
-        /**
-         * Whether Status Bar is currently hidden or not
-         * @hide
-         */
-        public static final String HIDE_STATUSBAR = "hide_statusbar";
-
-        /**
-         * Whether or not hidden Statusbar can be pulled down
-         * @hide
-         */
-        public static final String HIDDEN_STATUSBAR_PULLDOWN = "hidden_statusbar_pulldown";
-
-        /**
-         * Allows hidden Statusbar timeout to be configured
-         * @hide
-         */
-        public static final String HIDDEN_STATUSBAR_PULLDOWN_TIMEOUT = "hidden_statusbar_pulldown_timeout";
-
-        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
@@ -3462,7 +3437,19 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_SHOW_NOW = "navigation_bar_show_now";
 
-		/**
+        /**
+         * Used as a flag to determine if we have statusbar hidden
+         * @hide
+         */
+        public static final String STATUSBAR_HIDDEN = "statusbar_hidden";
+
+        /**
+         * Statusbar toggle for quick settings
+         * &hide
+         */
+        public static final String STATUSBAR_QUICK_TOGGLE = "statusbar_quick_toggle";
+
+        /**
          * Show the NavBar dialog in Power menu
          * @hide
          */
