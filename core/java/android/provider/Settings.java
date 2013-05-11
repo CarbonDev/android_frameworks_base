@@ -2942,13 +2942,21 @@ public final class Settings {
          */
         public static final String TOGGLE_NOTIFICATION_AND_QS_SHADE = "toggle_notification_and_qs_shade";
 
-         /**
+        /**
+         * Peek at stausbar when it is hidden by swiping down from top
+         * end of the screen
+         *
+         * @hide
+         */
+        public static final String STATUSBAR_PEEK = "statusbar_peek";
+
+        /**
          * Whether Expanded desktop is currently running or not
          * @hide
          */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
-         /**
+        /**
          * Expanded desktop mode
          * 0 = none, 1 = hide only navbar, 2 = hide only statusbar, 3 = hide both
          * @hide
