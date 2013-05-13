@@ -2416,6 +2416,10 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
+    public void collapse() {
+        animateCollapsePanels();
+    }
+
     public void animateCollapseQuickSettings() {
         mStatusBarView.collapseAllPanels(true);
     }
