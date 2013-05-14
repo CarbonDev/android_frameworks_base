@@ -4360,17 +4360,6 @@ public final class Settings {
         };
 
         /**
-         * @hide
-         */
-        public static final String[] CUSTOM_TOGGLE_TEXT = new String[] {
-            "custom_toggle_text_0",
-            "custom_toggle_text_1",
-            "custom_toggle_text_2",
-            "custom_toggle_text_3",
-            "custom_toggle_text_4",
-        };
-
-        /**
          * Battery warning preferences
          *
          * 0 = show dialog + play sound (default)
