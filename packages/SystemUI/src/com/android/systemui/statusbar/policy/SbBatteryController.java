@@ -20,16 +20,18 @@ import java.util.ArrayList;
 
 import android.bluetooth.BluetoothAdapter.BluetoothStateChangeCallback;
 import android.content.BroadcastReceiver;
-import android.graphics.Color;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.CharacterStyle;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.CharacterStyle;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.provider.Settings;
@@ -69,6 +71,9 @@ public class SbBatteryController extends LinearLayout {
 
     private int mLevel = -1;
     private boolean mPlugged = false;
+
+    private int customColor;
+    private int color = 0;
 
     public static final int STYLE_ICON_ONLY = 0;
     public static final int STYLE_TEXT_ONLY = 1;
@@ -181,7 +186,13 @@ public class SbBatteryController extends LinearLayout {
         int N = mIconViews.size();
         for (int i = 0; i < N; i++) {
             ImageView v = mIconViews.get(i);
-            v.setImageResource(icon);
+            Drawable batteryBitmap = mContext.getResources().getDrawable(icon);
+            if (customColor) {
+                batteryBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            } else {
+                batteryBitmap.clearColorFilter();
+            }
+            v.setImageDrawable(batteryBitmap);
             v.setImageLevel(level);
             v.setContentDescription(mContext.getString(
                     R.string.accessibility_battery_level, level));
@@ -246,8 +257,11 @@ public class SbBatteryController extends LinearLayout {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_BATTERY_ICON), false,
-                    this);
+                    .getUriFor(Settings.System.STATUSBAR_BATTERY_ICON), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_ICON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ICON_COLOR_BEHAVIOR), false, this);
         }
 
         @Override
@@ -261,6 +275,10 @@ public class SbBatteryController extends LinearLayout {
         ContentResolver cr = mContext.getContentResolver();
         mBatteryStyle = Settings.System.getInt(cr,
                 Settings.System.STATUSBAR_BATTERY_ICON, 0);
+        color = Settings.System.getInt(cr,
+                Settings.System.STATUS_ICON_COLOR, 0);
+        customColor = Settings.System.getInt(cr,
+                Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
 
         switch (mBatteryStyle) {
             case STYLE_ICON_ONLY:

@@ -2832,6 +2832,20 @@ public final class Settings {
         public static final String COMBINED_BAR_AUTO_HIDE = "combined_bar_auto_hide";
 
         /**
+         * Status icon color.
+         *
+         * @hide
+         */
+        public static final String STATUS_ICON_COLOR = "status_icon_color";
+
+        /**
+         * Reset to default icon of System Icons in Statusbar.
+         *
+         * @hide
+         */
+        public static final String ICON_COLOR_BEHAVIOR = "icon_color_behavior";
+
+        /**
          * Display style of AM/PM next to clock in status bar
          * 0: Normal display (Eclair stock)
          * 1: Small display (Froyo stock)

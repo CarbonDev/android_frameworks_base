@@ -19,6 +19,8 @@ package com.android.systemui.statusbar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -57,6 +59,9 @@ public class SignalClusterView
     private int mEtherIconId = 0;
     private String mWifiDescription, mMobileDescription, mMobileTypeDescription, mEtherDescription;
 
+    private int customColor;
+    private int color = 0;
+
     ViewGroup mWifiGroup, mMobileGroup;
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane, mEther;
     View mSpacer;
@@ -72,6 +77,10 @@ public class SignalClusterView
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SIGNAL_TEXT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_ICON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ICON_COLOR_BEHAVIOR), false, this);
         }
 
         void unobserve() {
@@ -228,7 +237,14 @@ public class SignalClusterView
         if (mWifiGroup == null) return;
 
         if (mWifiVisible) {
-            mWifi.setImageResource(mWifiStrengthId);
+            mWifiGroup.setVisibility(View.VISIBLE);
+            Drawable wifiBitmap = mContext.getResources().getDrawable(mWifiStrengthId);
+            if (customColor) {
+                wifiBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            } else {
+                wifiBitmap.clearColorFilter();
+            }
+            mWifi.setImageDrawable(wifiBitmap);
             mWifiActivity.setImageResource(mWifiActivityId);
 
             mWifiGroup.setContentDescription(mWifiDescription);
@@ -243,6 +259,17 @@ public class SignalClusterView
                     mWifiStrengthId, mWifiActivityId));
 
         if (mMobileVisible && !mIsAirplaneMode) {
+            mMobileGroup.setVisibility(View.VISIBLE);
+            if(mMobileStrengthId != 0) {
+                Drawable mobileBitmap = mContext.getResources().getDrawable(mMobileStrengthId);
+                if (customColor) {
+                    mobileBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                } else {
+                    mobileBitmap.clearColorFilter();
+                }
+                mMobile.setImageDrawable(mobileBitmap);
+            }
+
             mMobile.setImageResource(mMobileStrengthId);
             mMobileActivity.setImageResource(mMobileActivityId);
             mMobileType.setImageResource(mMobileTypeId);
@@ -254,6 +281,17 @@ public class SignalClusterView
         }
 
         if (mIsAirplaneMode) {
+            mAirplane.setVisibility(View.VISIBLE);
+            if(mAirplaneIconId != 0) {
+                Drawable AirplaneBitmap = mContext.getResources().getDrawable(mAirplaneIconId);
+                if (customColor) {
+                    mAirplane.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                } else {
+                    mAirplane.clearColorFilter();
+                }
+                mAirplane.setImageDrawable(AirplaneBitmap);
+            }
+
             mAirplane.setImageResource(mAirplaneIconId);
             mAirplane.setVisibility(View.VISIBLE);
         } else {
@@ -261,6 +299,17 @@ public class SignalClusterView
         }
 
         if (mEtherVisible) {
+            mEther.setVisibility(View.VISIBLE);
+            if(mEtherIconId != 0) {
+                Drawable etherBitmap = mContext.getResources().getDrawable(mEtherIconId);
+                if (customColor) {
+                    mEther.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                } else {
+                    mEther.clearColorFilter();
+                }
+                mEther.setImageDrawable(etherBitmap);
+            }
+
             mEther.setVisibility(View.VISIBLE);
             mEther.setImageResource(mEtherIconId);
             mEther.setContentDescription(mEtherDescription);
@@ -294,6 +343,11 @@ public class SignalClusterView
         mSignalClusterStyle = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_SIGNAL_TEXT, SIGNAL_CLUSTER_STYLE_NORMAL));
         updateSignalClusterStyle();
+
+        color = Settings.System.getInt(resolver,
+                Settings.System.STATUS_ICON_COLOR, 0);
+        customColor = Settings.System.getInt(resolver,
+                Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
+        apply();
     }
 }
-

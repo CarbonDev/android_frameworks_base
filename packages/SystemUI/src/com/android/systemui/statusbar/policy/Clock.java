@@ -109,6 +109,12 @@ public class Clock extends TextView {
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUSBAR_CLOCK_DATE_FORMAT), false,
                     this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_ICON_COLOR), false,
+                    this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.ICON_COLOR_BEHAVIOR), false,
+                    this);
             updateSettings();
         }
 
@@ -332,14 +338,28 @@ public class Clock extends TextView {
 
         int defaultColor = getResources().getColor(
                 com.android.internal.R.color.holo_blue_light);
-        mClockColor = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_CLOCK_COLOR, -2);
-        if (mClockColor == Integer.MIN_VALUE
-                || mClockColor == -2) {
-            // flag to reset the color
-            mClockColor = defaultColor;
+        int customColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
+
+        if (customColor) {
+            clockColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUS_ICON_COLOR, defaultColor);
+            if (clockColor == Integer.MIN_VALUE) {
+                // flag to reset the color
+                clockColor = defaultColor;
+            }
+            setTextColor(clockColor);
+        } else {
+            mClockColor = Settings.System.getInt(resolver,
+                    Settings.System.STATUSBAR_CLOCK_COLOR, -2);
+            if (mClockColor == Integer.MIN_VALUE
+                    || mClockColor == -2) {
+                // flag to reset the color
+                mClockColor = defaultColor;
+            }
+            setTextColor(mClockColor);
         }
-        setTextColor(mClockColor);
+
         updateClockVisibility();
         updateClock();
     }
