@@ -642,7 +642,7 @@ public class NetworkController extends BroadcastReceiver {
                     break;
                 case TelephonyManager.NETWORK_TYPE_DCHSPAP:
                     mDataIconList = TelephonyIcons.DATA_DC[mInetCondition];
-                    mDataTypeIconId = R.drawable.stat_sys_data_connected_dc;
+                    mDataTypeIconId = mDataIconList[0];
                     mContentDescriptionDataType = mContext.getString(
                             R.string.accessibility_data_connection_DC);
                     break;
