@@ -4340,6 +4340,13 @@ public final class Settings {
         public static final String CURRENT_UI_MODE = "current_ui_mode";
 
         /**
+         * enable and disable shade collapse on click
+         *
+         * @hide
+         */
+        public static final String SHADE_COLLAPSE_ALL = "shade_collapse_all";
+
+        /**
          * User selected UI Mode
          * 
          *  0 = Phone UI
