@@ -251,7 +251,7 @@ public class RibbonTarget {
             mContext.sendBroadcastAsUser(u, UserHandle.ALL);
         }
         Intent i = new Intent();
-        i.setAction("com.android.systemui.aokp.LAUNCH_ACTION");
+        i.setAction("com.android.systemui.carbon.LAUNCH_ACTION");
         i.putExtra("action", action);
         mContext.sendBroadcastAsUser(i, UserHandle.ALL);
         if (mDismiss) {
