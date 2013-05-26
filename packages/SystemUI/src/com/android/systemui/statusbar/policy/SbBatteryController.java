@@ -154,10 +154,6 @@ public class SbBatteryController extends LinearLayout {
                 Settings.System.STATUSBAR_BATTERY_ICON, 0);
         int icon;
         switch (mBatteryStyle) {
-            case STYLE_ICON_CIRCLE: 
-            case STYLE_ICON_CIRCLE_PERCENT:
-                 icon = 0;
-                 break;
             case STYLE_ICON_SPEED:
                  icon = plugged ? R.drawable.stat_sys_battery_charge_altcircle
                  : R.drawable.stat_sys_battery_altcircle;
@@ -320,14 +316,14 @@ public class SbBatteryController extends LinearLayout {
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryTextCM.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
-                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryIcon.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
 			case STYLE_ICON_CIRCLE_PERCENT:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryTextCM.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
-                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryIcon.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
 			case STYLE_ICON_DOTTED_CIRCLE_PERCENT:
