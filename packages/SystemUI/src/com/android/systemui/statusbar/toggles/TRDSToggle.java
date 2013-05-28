@@ -11,7 +11,6 @@ import android.provider.Settings;;
 import android.view.View;
 
 import com.android.systemui.R;
-import com.android.internal.util.carbon.SysHelpers;
 
 public class TRDSToggle extends StatefulToggle {
 
@@ -24,15 +23,13 @@ public class TRDSToggle extends StatefulToggle {
     @Override
     protected void doEnable() {
         Settings.Secure.putInt(mContext.getContentResolver(),
-                Settings.Secure.UI_INVERTED_MODE, 1);
-        SysHelpers.restartSystemUI();
+                Settings.Secure.UI_INVERTED_MODE, 2);
     }
 
     @Override
     protected void doDisable() {
         Settings.Secure.putInt(mContext.getContentResolver(),
-                Settings.Secure.UI_INVERTED_MODE, 0);
-        SysHelpers.restartSystemUI();
+                Settings.Secure.UI_INVERTED_MODE, 1);
     }
 
     @Override
@@ -46,7 +43,7 @@ public class TRDSToggle extends StatefulToggle {
     @Override
     protected void updateView() {
         boolean enabled = Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.UI_INVERTED_MODE, 0) == 1;
+                Settings.Secure.UI_INVERTED_MODE, 1) == 2;
         setEnabledState(enabled);
         setIcon(enabled ? R.drawable.ic_qs_trds_on : R.drawable.ic_qs_trds_off);
         setLabel(enabled ? R.string.quick_settings_trds_on_label
