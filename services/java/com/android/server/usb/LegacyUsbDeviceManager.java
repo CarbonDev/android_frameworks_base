@@ -681,6 +681,11 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
         }
     }
 
+    public void setCurrentFunctions(String functions, boolean makeDefault) {
+        if (DEBUG) Slog.d(TAG, "setCurrentFunctions(" + functions + ") default: " + makeDefault);
+        mHandler.sendMessage(MSG_SET_CURRENT_FUNCTION, functions, makeDefault);
+    }
+
     public void allowUsbDebugging(boolean alwaysAllow, String publicKey) {
         if (mDebuggingManager != null) {
             mDebuggingManager.allowUsbDebugging(alwaysAllow, publicKey);
