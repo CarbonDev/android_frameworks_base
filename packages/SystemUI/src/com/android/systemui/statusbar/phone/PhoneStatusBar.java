@@ -3280,7 +3280,11 @@ public class PhoneStatusBar extends BaseStatusBar {
             } else {
                 mCurrentTheme = (CustomTheme) newTheme.clone();
             }
-            recreateStatusBar();
+            try {
+                Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
+            } catch (IOException e) {
+        }
+                // we're screwed here fellas
         } else {
 
             if (mClearButton instanceof TextView) {
