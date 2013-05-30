@@ -1988,6 +1988,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             loadIntegerSetting(stmt, Settings.System.STATUS_BAR_BATTERY,
                     R.integer.def_battery_style);
+
+            loadIntegerSetting(stmt, Settings.System.UI_FORCE_OVERFLOW_BUTTON,
+                    R.integer.def_force_overflow_button);
         } finally {
             if (stmt != null) stmt.close();
         }

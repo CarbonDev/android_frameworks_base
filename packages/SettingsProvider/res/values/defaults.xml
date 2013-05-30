@@ -175,4 +175,8 @@
 
     <!-- Default for Settings.System.STATUS_BAR_BATTERY -->
     <integer name="def_battery_style">0</integer>
+
+    <!-- Default for Settings.System.UI_FORCE_OVERFLOW_BUTTON. -->
+    <integer name="def_force_overflow_button">0</integer>
+
 </resources>
