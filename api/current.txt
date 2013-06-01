@@ -21018,6 +21018,7 @@ package android.telephony {
     field public static final java.lang.String EXTRA_STATE_RINGING;
     field public static final int NETWORK_TYPE_1xRTT = 7; // 0x7
     field public static final int NETWORK_TYPE_CDMA = 4; // 0x4
+    field public static final int NETWORK_TYPE_DCHSPAP = 30; // 0x1e
     field public static final int NETWORK_TYPE_EDGE = 2; // 0x2
     field public static final int NETWORK_TYPE_EHRPD = 14; // 0xe
     field public static final int NETWORK_TYPE_EVDO_0 = 5; // 0x5
