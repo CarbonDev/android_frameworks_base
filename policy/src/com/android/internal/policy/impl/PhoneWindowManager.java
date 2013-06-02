@@ -17,6 +17,7 @@
 
 package com.android.internal.policy.impl;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManagerNative;
@@ -596,6 +597,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private String mPressOnAppSwitchBehavior;
     private String mLongPressOnAppSwitchBehavior;
 
+    // Kill task
+    private final static String SysUIPackage = "com.android.systemui";
+
     // To identify simulated keypresses, so we can perform
     // the default action for that key
     private boolean mIsVirtualKeypress;
@@ -1160,7 +1164,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH);
                     break;
                 case KEY_ACTION_KILL_APP:
-                    mHandler.postDelayed(mBackLongPress, mBackKillTimeout - 500);
+                    KillTask mKillTask = new KillTask(mContext);
+                    mHandler.postDelayed(mKillTask, mBackKillTimeout - 500);
                     break;
                 case KEY_ACTION_LAST_APP:
                     toggleLastApp();
@@ -3194,6 +3199,31 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
         }
     }
+
+    public static class KillTask implements Runnable {
+         private Context mContext;
+         public KillTask(Context context) {
+             this.mContext = context;
+         }
+         public void run() {
+            final Intent intent = new Intent(Intent.ACTION_MAIN);
+            final ActivityManager am = (ActivityManager) mContext
+                    .getSystemService(Activity.ACTIVITY_SERVICE);
+            String defaultHomePackage = "com.android.launcher";
+            intent.addCategory(Intent.CATEGORY_HOME);
+            final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
+            if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
+                defaultHomePackage = res.activityInfo.packageName;
+            }
+            String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
+            if (SysUIPackage.equals(packageName))
+                return; // don't kill SystemUI
+            if (!defaultHomePackage.equals(packageName)) {
+                am.forceStopPackage(packageName);
+                Toast.makeText(mContext, R.string.app_killed_message, Toast.LENGTH_SHORT).show();
+            }
+        }
+     }
 
     private SearchManager getSearchManager() {
         if (mSearchManager == null) {
