@@ -72,6 +72,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.SlidingDrawer.OnDrawerCloseListener;
+import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.SlidingDrawer.OnDrawerScrollListener;
 
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarNotification;
@@ -88,6 +91,7 @@ import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
 
 import com.android.systemui.statusbar.policy.BatteryController;
+import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CompatModeButton;
 import com.android.systemui.statusbar.policy.LocationController;
@@ -153,6 +157,11 @@ public class TabletStatusBar extends BaseStatusBar implements
     float mWidthLand = 0f;
     float mWidthPort = 0f;
     private int mMaxNotificationIcons = 5;
+
+    /*boolean mIsSlidingDrawer = false;
+    static boolean mAutoHide = false;
+    static long mAutoHideTime = 10000;
+    static boolean mIsDrawerOpen = true;*/
 
     TabletStatusBarView mStatusBarView;
     View mNotificationArea;
@@ -540,6 +549,11 @@ public class TabletStatusBar extends BaseStatusBar implements
     @Override
     public View getStatusBarView() {
         return mStatusBarView;
+    }
+
+    @Override
+    public QuickSettingsContainerView getQuickSettingsPanel() {
+        return mNotificationPanel.mSettingsContainer;
     }
 
     protected View makeStatusBarView() {
@@ -1410,10 +1424,8 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     public void topAppWindowChanged(boolean showMenu) {
         mTransparencyManager.update();
-
         if (mPieControlPanel != null)
             mPieControlPanel.setMenu(showMenu);
-
         if (DEBUG) {
             Slog.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");
         }
