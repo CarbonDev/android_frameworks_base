@@ -36,9 +36,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.media.RemoteControlClient;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -445,9 +448,10 @@ public class KeyguardHostView extends KeyguardViewBase {
             return;
         }
 
+        Drawable back = null;
         if (!background.isEmpty()) {
             try {
-                setBackgroundColor(Integer.parseInt(background));
+                back = new ColorDrawable(Integer.parseInt(background));
             } catch(NumberFormatException e) {
                 Log.e(TAG, "Invalid background color " + background);
             }
@@ -456,10 +460,14 @@ public class KeyguardHostView extends KeyguardViewBase {
                 Context settingsContext = getContext().createPackageContext("com.android.settings", 0);
                 String wallpaperFile = settingsContext.getFilesDir() + "/lockwallpaper";
                 Bitmap backgroundBitmap = BitmapFactory.decodeFile(wallpaperFile);
-                setBackgroundDrawable(new BitmapDrawable(backgroundBitmap));
+                back = new BitmapDrawable(getContext().getResources(), backgroundBitmap);
             } catch (NameNotFoundException e) {
-            // Do nothing here
+                // Do nothing here
             }
+        }
+        if (back != null) {
+            back.setColorFilter(BACKGROUND_COLOR, PorterDuff.Mode.MULTIPLY);
+            setBackground(back);
         }
     }
 
