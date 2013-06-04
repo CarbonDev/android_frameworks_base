@@ -186,6 +186,9 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             if (target == -1) {
                 mHandler.removeCallbacks(SetLongPress);
                 mLongPress = false;
+                if (mGlowTorchOn) {
+                    mCallback.userActivity(0);
+                }
             } else {
                 fireTorch();
                 mHandler.postDelayed(SetLongPress, ViewConfiguration.getLongPressTimeout());
