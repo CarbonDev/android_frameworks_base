@@ -184,7 +184,7 @@ public class NotificationPanelView extends PanelView {
                 case MotionEvent.ACTION_DOWN:
                     mGestureStartX = event.getX(0);
                     mGestureStartY = event.getY(0);
-                    mTrackingSwipe = isFullyExpanded()
+                    mTrackingSwipe = isFullyExpanded();
                     mOkToFlip = getExpandedHeight() == 0;
                     if(mToggleStyle != 0) {
                         // don't allow settings panel with non-tile toggles
@@ -262,15 +262,10 @@ public class NotificationPanelView extends PanelView {
                     break;
             }
             if(mOkToFlip && shouldFlip) {
-                if (getMeasuredHeight() < mHandleBarHeight) {
+                if (mJustPeeked || getExpandedHeight() < mHandleBarHeight) {
                     mStatusBar.switchToSettings();
                 } else {
-                    // Do not flip if the drag event started within the top bar
-                    if (MotionEvent.ACTION_DOWN == event.getActionMasked() && event.getY(0) < mHandleBarHeight ) {
-                        mStatusBar.switchToSettings();
-                    } else {
-                        mStatusBar.flipToSettings();
-                    }
+                    mStatusBar.flipToSettings();
                 }
                 mOkToFlip = false;
             } else if (mSwipeTriggered) {
