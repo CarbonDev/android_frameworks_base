@@ -4018,6 +4018,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         void endFling() {
             endFling(true);
         }
+
         void endFling(boolean clearCache) {
             mTouchMode = TOUCH_MODE_REST;
 
