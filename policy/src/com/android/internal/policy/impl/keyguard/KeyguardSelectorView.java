@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 import android.animation.ObjectAnimator;
 import android.app.SearchManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -75,7 +74,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private String[] mStoredTargets;
     private int mTargetOffset;
     private boolean mIsScreenLarge;
-    private UnlockReceiver receiver;
+    private UnlockReceiver mUnlockReceiver;
     private IntentFilter filter;
     private boolean mReceiverRegistered = false;
 
@@ -83,7 +82,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
 
         public void onTrigger(View v, int target) {
             if (mReceiverRegistered) {
-                mContext.unregisterReceiver(receiver);
+                mContext.unregisterReceiver(mUnlockReceiver);
                 mReceiverRegistered = false;
             }
             if (mStoredTargets == null) {
@@ -243,8 +242,10 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mUnlockBroadcasted = false;
         filter = new IntentFilter();
         filter.addAction(UnlockReceiver.ACTION_UNLOCK_RECEIVER);
-        receiver = new UnlockReceiver();
-        mContext.registerReceiver(receiver, filter);
+        if (mUnlockReceiver == null) {
+            mUnlockReceiver = new UnlockReceiver();
+        }
+        mContext.registerReceiver(mUnlockReceiver, filter);
         mReceiverRegistered = true;
     }
 
@@ -451,6 +452,9 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     @Override
     public void onPause() {
         KeyguardUpdateMonitor.getInstance(getContext()).removeCallback(mInfoCallback);
+        if (mUnlockReceiver != null) {
+            mContext.unregisterReceiver(mUnlockReceiver);
+        }
     }
 
     @Override
@@ -490,7 +494,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 }
             }
             if (mReceiverRegistered) {
-                mContext.unregisterReceiver(receiver);
+                mContext.unregisterReceiver(mUnlockReceiver);
                 mReceiverRegistered = false;
             }
         }
