@@ -107,6 +107,7 @@ final class Settings {
     private static final String ATTR_ENABLED_CALLER = "enabledCaller";
     private static final String ATTR_STOPPED = "stopped";
     private static final String ATTR_INSTALLED = "inst";
+    private static final String ATTR_PRIVACY_GUARD = "privacy-guard";
 
     private final File mSettingsFilename;
     private final File mBackupSettingsFilename;
@@ -450,10 +451,15 @@ final class Settings {
                             final boolean installed = installUser == null
                                     || installUser.getIdentifier() == UserHandle.USER_ALL
                                     || installUser.getIdentifier() == user.id;
+                            final boolean privacyGuard = android.provider.Settings.Secure.getIntForUser(
+                                    mContext.getContentResolver(),
+                                    android.provider.Settings.Secure.PRIVACY_GUARD_DEFAULT,
+                                    0, user.id) == 1;
                             p.setUserState(user.id, COMPONENT_ENABLED_STATE_DEFAULT,
                                     installed,
                                     true, // stopped,
                                     true, // notLaunched
+                                    privacyGuard,
                                     null, null, null);
                             writePackageRestrictionsLPr(user.id);
                         }
@@ -851,6 +857,7 @@ final class Settings {
                                 true,   // installed
                                 false,  // stopped
                                 false,  // notLaunched
+                                false,  // privacy guard
                                 null, null, null);
                     }
                     return;
@@ -907,6 +914,9 @@ final class Settings {
                     final String notLaunchedStr = parser.getAttributeValue(null, ATTR_NOT_LAUNCHED);
                     final boolean notLaunched = stoppedStr == null
                             ? false : Boolean.parseBoolean(notLaunchedStr);
+                    final String privacyGuardStr = parser.getAttributeValue(null, ATTR_PRIVACY_GUARD);
+                    final boolean privacyGuard = privacyGuardStr == null
+                            ? false : Boolean.parseBoolean(privacyGuardStr);
 
                     HashSet<String> enabledComponents = null;
                     HashSet<String> disabledComponents = null;
@@ -927,7 +937,7 @@ final class Settings {
                         }
                     }
 
-                    ps.setUserState(userId, enabled, installed, stopped, notLaunched,
+                    ps.setUserState(userId, enabled, installed, stopped, notLaunched, privacyGuard,
                             enabledCaller, enabledComponents, disabledComponents);
                 } else if (tagName.equals("preferred-activities")) {
                     readPreferredActivitiesLPw(parser, userId);
@@ -1033,7 +1043,7 @@ final class Settings {
 
             for (final PackageSetting pkg : mPackages.values()) {
                 PackageUserState ustate = pkg.readUserState(userId);
-                if (ustate.stopped || ustate.notLaunched || !ustate.installed
+                if (ustate.stopped || ustate.notLaunched || !ustate.installed || ustate.privacyGuard
                         || ustate.enabled != COMPONENT_ENABLED_STATE_DEFAULT
                         || (ustate.enabledComponents != null
                                 && ustate.enabledComponents.size() > 0)
@@ -1059,6 +1069,9 @@ final class Settings {
                             serializer.attribute(null, ATTR_ENABLED_CALLER,
                                     ustate.lastDisableAppCaller);
                         }
+                    }
+                    if (ustate.privacyGuard) {
+                        serializer.attribute(null, ATTR_PRIVACY_GUARD, "true");
                     }
                     if (ustate.enabledComponents != null
                             && ustate.enabledComponents.size() > 0) {
@@ -2563,6 +2576,14 @@ final class Settings {
             throw new IllegalArgumentException("Unknown package: " + packageName);
         }
         return pkg.installerPackageName;
+    }
+
+    boolean getPrivacyGuardSettingLPr(String packageName, int userId) {
+        final PackageSetting pkg = mPackages.get(packageName);
+        if (pkg == null) {
+            throw new IllegalArgumentException("Unknown package: " + packageName);
+        }
+        return pkg.isPrivacyGuard(userId);
     }
 
     int getApplicationEnabledSettingLPr(String packageName, int userId) {
