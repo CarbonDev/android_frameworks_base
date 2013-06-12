@@ -34,6 +34,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -42,6 +44,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Slog;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 
 import static com.android.internal.util.carbon.AwesomeConstants.*;
@@ -87,6 +90,14 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
 
     private IntentFilter filter;
     private boolean mReceiverRegistered = false;
+
+    private class H extends Handler {
+        public void handleMessage(Message m) {
+            switch (m.what) {
+            }
+        }
+    }
+    private H mHandler = new H();
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
 
@@ -164,10 +175,9 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             if (!mGlowPadLock && mLongPress) {
                 mGlowPadLock = true;
                 if (mReceiverRegistered) {
-                    mContext.unregisterReceiver(receiver);
+                    mContext.unregisterReceiver(mUnlockReceiver);
                     mReceiverRegistered = false;
                 }
-                launchAction(longActivities[mTarget]);
             }
         }
 
