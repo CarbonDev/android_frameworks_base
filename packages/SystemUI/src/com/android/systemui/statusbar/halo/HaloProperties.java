@@ -17,7 +17,10 @@
 package com.android.systemui.statusbar.halo;
 
 import android.os.Handler;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
+import android.graphics.ColorFilterMaker;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -90,10 +93,24 @@ public class HaloProperties extends FrameLayout {
     private int mHaloMessageNumber = 0;
     private MessageType mHaloMessageType = MessageType.MESSAGE;
 
+    private static int mStyle;
+    private static final int BLUE = 0;
+    private static final int GREEN = 1;
+    private static final int WHITE = 2;
+    private static final int PURPLE = 3;
+    private static final int RED = 4;
+    private static final int YELLOW = 5;
+    private static final int PINK = 6;
+    private static final int BLACK = 7;
+
+    Handler mHandler;
+
     CustomObjectAnimator mHaloOverlayAnimator;
 
     public HaloProperties(Context context) {
         super(context);
+
+        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         mHaloDismiss = mContext.getResources().getDrawable(R.drawable.halo_dismiss);
         mHaloBackL = mContext.getResources().getDrawable(R.drawable.halo_back_left);
@@ -103,8 +120,6 @@ public class HaloProperties extends FrameLayout {
         mHaloSilenceL = mContext.getResources().getDrawable(R.drawable.halo_silence_left);
         mHaloSilenceR = mContext.getResources().getDrawable(R.drawable.halo_silence_right);
         mHaloMessage = mContext.getResources().getDrawable(R.drawable.halo_message);
-
-        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         mHaloBubble = mInflater.inflate(R.layout.halo_bubble, null);
         mHaloBg = (ImageView) mHaloBubble.findViewById(R.id.halo_bg);
@@ -116,8 +131,8 @@ public class HaloProperties extends FrameLayout {
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextViewR = (TextView) mHaloTickerContent.findViewById(R.id.bubble_r);
         mHaloTextViewL = (TextView) mHaloTickerContent.findViewById(R.id.bubble_l);
-        mHaloTextViewL.setAlpha(1f);
-        mHaloTextViewR.setAlpha(1f);
+
+        updateColorView();
 
         mHaloNumberView = mInflater.inflate(R.layout.halo_number, null);
         mHaloNumberContainer = (RelativeLayout)mHaloNumberView.findViewById(R.id.container);
@@ -135,6 +150,9 @@ public class HaloProperties extends FrameLayout {
         setHaloSize(mFraction);
 
         mHaloOverlayAnimator = new CustomObjectAnimator(this);
+        mHandler = new Handler();
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
     }
 
     public void setHaloSize(float fraction) {
@@ -336,5 +354,55 @@ public class HaloProperties extends FrameLayout {
         mHaloNumberView.measure(MeasureSpec.getSize(mHaloNumberView.getMeasuredWidth()),
                 MeasureSpec.getSize(mHaloNumberView.getMeasuredHeight()));
         mHaloNumberView.layout(0, 0, 0, 0);
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_CIRCLE_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_BUBBLE_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_BUBBLE_TEXT_COLOR), false, this);
+            updateColorView();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateColorView();
+        }
+    }
+
+    private void updateColorView() {
+        ContentResolver cr = mContext.getContentResolver();
+        int mCircleColor = Settings.System.getInt(cr,
+               Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
+        int mBubbleColor = Settings.System.getInt(cr,
+               Settings.System.HALO_BUBBLE_COLOR, 0xFF33B5E5);
+        int mTextColor = Settings.System.getInt(cr, 
+               Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
+
+        // Ring
+        mHaloBg.setBackgroundResource(R.drawable.halo_bg);
+        mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mCircleColor, .32f, 0f));
+
+        // Speech bubbles
+        mHaloTextViewL.setBackgroundResource(R.drawable.bubble_l);
+        mHaloTextViewL.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mBubbleColor, .32f, 0f));
+        mHaloTextViewL.setTextColor(mTextColor);
+        mHaloTextViewL.setAlpha(0f);
+        mHaloTextViewR.setBackgroundResource(R.drawable.bubble_r);
+        mHaloTextViewR.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mBubbleColor, .32f, 0f));
+        mHaloTextViewR.setTextColor(mTextColor);
+        mHaloTextViewR.setAlpha(0f);
     }
 }
