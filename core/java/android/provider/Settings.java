@@ -2715,6 +2715,12 @@ public final class Settings {
         */
         public static final String EXPANDED_FLASH_MODE = "expanded_flash_mode";
 
+       /**
+         * HALO enabled, should default to 0 (HALO is disabled)
+         * @hide
+         */
+        public static final String HALO_ENABLED = "halo_enabled";
+
         /**
         * AutoHide CombinedBar on tablets.
         * @hide
