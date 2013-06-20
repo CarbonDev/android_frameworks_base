@@ -336,12 +336,7 @@ public final class KeyChain {
         KeyChainConnection keyChainConnection = bind(context);
         try {
             IKeyChainService keyChainService = keyChainConnection.getService();
-
-            final byte[] certificateBytes = keyChainService.getCertificate(alias);
-            if (certificateBytes == null) {
-                return null;
-            }
-
+            byte[] certificateBytes = keyChainService.getCertificate(alias);
             TrustedCertificateStore store = new TrustedCertificateStore();
             List<X509Certificate> chain = store
                     .getCertificateChain(toCertificate(certificateBytes));

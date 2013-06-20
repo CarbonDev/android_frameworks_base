@@ -160,13 +160,10 @@ public abstract class AbstractThreadedSyncAdapter {
                     if (mAutoInitialize
                             && extras != null
                             && extras.getBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE, false)) {
-                        try {
-                            if (ContentResolver.getIsSyncable(account, authority) < 0) {
-                                ContentResolver.setIsSyncable(account, authority, 1);
-                            }
-                        } finally {
-                            syncContextClient.onFinished(new SyncResult());
+                        if (ContentResolver.getIsSyncable(account, authority) < 0) {
+                            ContentResolver.setIsSyncable(account, authority, 1);
                         }
+                        syncContextClient.onFinished(new SyncResult());
                         return;
                     }
                     SyncThread syncThread = new SyncThread(

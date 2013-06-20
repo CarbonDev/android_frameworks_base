@@ -23,23 +23,6 @@
 #include <string.h>
 #include <stddef.h>
 #include <assert.h>
-#include <unistd.h>
-#include <errno.h>
-
-/*
- * TEMP_FAILURE_RETRY is defined by some, but not all, versions of
- * <unistd.h>. (Alas, it is not as standard as we'd hoped!) So, if it's
- * not already defined, then define it here.
- */
-#ifndef TEMP_FAILURE_RETRY
-/* Used to retry syscalls that can return EINTR. */
-#define TEMP_FAILURE_RETRY(exp) ({         \
-    typeof (exp) _rc;                      \
-    do {                                   \
-        _rc = (exp);                       \
-    } while (_rc == -1 && errno == EINTR); \
-    _rc; })
-#endif
 
 static inline size_t min_of(size_t a, size_t b) { return (a < b) ? a : b; }
 
@@ -152,7 +135,7 @@ ssize_t StreamingZipInflater::read(void* outBuf, size_t count) {
             // if we don't have any data to decode, read some in.  If we're working
             // from mmapped data this won't happen, because the clipping to total size
             // will prevent reading off the end of the mapped input chunk.
-            if ((mInflateState.avail_in == 0) && (mDataMap == NULL)) {
+            if (mInflateState.avail_in == 0) {
                 int err = readNextChunk();
                 if (err < 0) {
                     ALOGE("Unable to access asset data: %d", err);
@@ -208,10 +191,11 @@ int StreamingZipInflater::readNextChunk() {
     if (mInNextChunkOffset < mInTotalSize) {
         size_t toRead = min_of(mInBufSize, mInTotalSize - mInNextChunkOffset);
         if (toRead > 0) {
-            ssize_t didRead = TEMP_FAILURE_RETRY(::read(mFd, mInBuf, toRead));
+            ssize_t didRead = ::read(mFd, mInBuf, toRead);
             //ALOGV("Reading input chunk, size %08x didread %08x", toRead, didRead);
             if (didRead < 0) {
-                ALOGE("Error reading asset data: %s", strerror(errno));
+                // TODO: error
+                ALOGE("Error reading asset data");
                 return didRead;
             } else {
                 mInNextChunkOffset += didRead;

@@ -344,18 +344,11 @@ final class ActivityStack {
                     // We don't at this point know if the activity is fullscreen,
                     // so we need to be conservative and assume it isn't.
                     Slog.w(TAG, "Activity pause timeout for " + r);
-                    int pid = -1;
-                    long pauseTime = 0;
-                    String m = null;
                     synchronized (mService) {
                         if (r.app != null) {
-                           pid = r.app.pid;
+                            mService.logAppTooSlow(r.app, r.pauseTime,
+                                    "pausing " + r);
                         }
-                        pauseTime = r.pauseTime;
-                        m = "pausing " + r;
-                    }
-                    if (pid > 0) {
-                        mService.logAppTooSlow(pid, pauseTime, m);
                     }
 
                     activityPaused(r != null ? r.appToken : null, true);
@@ -376,20 +369,11 @@ final class ActivityStack {
                 } break;
                 case LAUNCH_TICK_MSG: {
                     ActivityRecord r = (ActivityRecord)msg.obj;
-                    int pid = -1;
-                    long launchTickTime = 0;
-                    String m = null;
                     synchronized (mService) {
                         if (r.continueLaunchTickingLocked()) {
-                           if (r.app != null) {
-                                pid = r.app.pid;
-                            }
-                            launchTickTime = r.launchTickTime;
-                            m = "launching " + r;
+                            mService.logAppTooSlow(r.app, r.launchTickTime,
+                                    "launching " + r);
                         }
-                    }
-                    if (pid > 0) {
-                        mService.logAppTooSlow(pid, launchTickTime, m);
                     }
                 } break;
                 case DESTROY_TIMEOUT_MSG: {
@@ -3251,7 +3235,6 @@ final class ActivityStack {
                         } catch (InterruptedException e) {
                         }
                     } while (!outResult.timeout && outResult.who == null);
-                    mWaitingActivityLaunched.remove(outResult);
                 } else if (res == ActivityManager.START_TASK_TO_FRONT) {
                     ActivityRecord r = this.topRunningActivityLocked(null);
                     if (r.nowVisible) {
@@ -3268,7 +3251,6 @@ final class ActivityStack {
                             } catch (InterruptedException e) {
                             }
                         } while (!outResult.timeout && outResult.who == null);
-                        mWaitingActivityVisible.remove(outResult);
                     }
                 }
             }
@@ -3684,9 +3666,7 @@ final class ActivityStack {
         }
 
         if (activityRemoved) {
-            synchronized (mService) {
-                resumeTopActivityLocked(null);
-            }
+            resumeTopActivityLocked(null);
         }
 
         return res;
