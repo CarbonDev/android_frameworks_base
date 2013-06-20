@@ -111,12 +111,21 @@
                     android:visibility="invisible" />
 
                 <ImageView
-                    android:id="@+id/recents_clear"
+                    android:id="@+id/recents_clear_left"
                     android:clickable="true"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="center"
                     android:layout_gravity="bottom|left"
+                    android:src="@drawable/ic_recents_clear" />
+
+                <ImageView
+                    android:id="@+id/recents_clear_right"
+                    android:clickable="true"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="center"
+                    android:layout_gravity="bottom|right"
                     android:src="@drawable/ic_recents_clear" />
 
             </FrameLayout>
