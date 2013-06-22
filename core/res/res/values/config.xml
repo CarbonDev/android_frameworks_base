@@ -1432,4 +1432,7 @@
          performance profiles  -->
     <string name="config_perf_profile_default_entry" translatable="false"></string>
 
+    <!-- Boolean to enable adb by default on a per-device basis -->
+    <bool name="config_enableAdbByDefault">false</bool>
+
 </resources>
