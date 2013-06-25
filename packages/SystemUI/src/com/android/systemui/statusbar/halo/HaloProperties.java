@@ -63,16 +63,6 @@ public class HaloProperties extends FrameLayout {
     protected View mHaloNumberView;
     protected TextView mHaloNumber;
 
-    private static int mStyle;
-    private static final int BLUE = 0;
-    private static final int GREEN = 1;
-    private static final int WHITE = 2;
-    private static final int PURPLE = 3;
-    private static final int RED = 4;
-    private static final int YELLOW = 5;
-    private static final int PINK = 6;
-    private static final int BLACK = 7;
-
     Handler mHandler;
 
     CustomObjectAnimator mHaloOverlayAnimator;
