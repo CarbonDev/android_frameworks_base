@@ -1077,7 +1077,7 @@ public class LockPatternView extends View {
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         return new SavedState(superState,
-                LockPatternUtils.patternToString(mPattern),
+                mLockPatternUtils.patternToString(mPattern),
                 mPatternDisplayMode.ordinal(), mPatternSize,
                 mInputEnabled, mInStealthMode, mEnableHapticFeedback, mVisibleDots, mShowErrorPath);
     }
