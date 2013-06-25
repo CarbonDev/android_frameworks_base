@@ -17,7 +17,6 @@
 package com.android.server;
 
 import android.app.AppOpsManager;
-import android.app.ActivityManagerNative;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -715,17 +714,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         mProvidersByName.remove(provider.getName());
     }
 
-    private boolean isPrivacyGuardEnabled(int pid) {
-        try {
-            if (ActivityManagerNative.getDefault().isPrivacyGuardEnabledForProcess(pid)) {
-                Slog.i(TAG, "Location services unavailable under privacy guard for process pid=" + pid);
-                return true;
-            }
-        } catch (RemoteException e) {
-            // nothing
-        }
-        return false;
-    }
 
     /**
      * Returns "true" if access to the specified location provider is allowed by the current
@@ -940,9 +928,6 @@ public class LocationManagerService extends ILocationManager.Stub {
      */
     @Override
     public List<String> getProviders(Criteria criteria, boolean enabledOnly) {
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return new ArrayList<String>(0);
-        }
         int allowedResolutionLevel = getCallerAllowedResolutionLevel();
         ArrayList<String> out;
         int uid = Binder.getCallingUid();;
@@ -1346,7 +1331,7 @@ public class LocationManagerService extends ILocationManager.Stub {
         }
 
         boolean isProviderEnabled = isAllowedByUserSettingsLocked(name, uid);
-        if (isProviderEnabled && !isPrivacyGuardEnabled(pid)) {
+        if (isProviderEnabled) {
             applyRequirementsLocked(name);
         } else {
             // Notify the listener that updates are currently disabled
@@ -1360,9 +1345,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         checkPackageName(packageName);
 
         final int pid = Binder.getCallingPid();
-        if (isPrivacyGuardEnabled(pid)) {
-            return;
-        }
         final int uid = Binder.getCallingUid();
 
         synchronized (mLock) {
@@ -1431,9 +1413,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         checkResolutionLevelIsSufficientForProviderUse(allowedResolutionLevel,
                 request.getProvider());
         // no need to sanitize this request, as only the provider name is used
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return null;
-        }
 
         final int uid = Binder.getCallingUid();
         final long identity = Binder.clearCallingIdentity();
@@ -1500,13 +1479,8 @@ public class LocationManagerService extends ILocationManager.Stub {
 
         if (D) Log.d(TAG, "requestGeofence: " + sanitizedRequest + " " + geofence + " " + intent);
 
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return;
-        }
-
         // geo-fence manager uses the public location API, need to clear identity
         int uid = Binder.getCallingUid();
-
         if (UserHandle.getUserId(uid) != UserHandle.USER_OWNER) {
             // temporary measure until geofences work for secondary users
             Log.w(TAG, "proximity alerts are currently available only to the primary user");
@@ -1529,10 +1503,6 @@ public class LocationManagerService extends ILocationManager.Stub {
 
         if (D) Log.d(TAG, "removeGeofence: " + geofence + " " + intent);
 
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return;
-        }
-
         // geo-fence manager uses the public location API, need to clear identity
         long identity = Binder.clearCallingIdentity();
         try {
@@ -1552,10 +1522,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         checkResolutionLevelIsSufficientForProviderUse(allowedResolutionLevel,
                 LocationManager.GPS_PROVIDER);
 
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return false;
-        }
-
         final int uid = Binder.getCallingUid();
         final long ident = Binder.clearCallingIdentity();
         try {
@@ -1565,7 +1531,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         } finally {
             Binder.restoreCallingIdentity(ident);
         }
-
         try {
             mGpsStatusProvider.addGpsStatusListener(listener);
         } catch (RemoteException e) {
@@ -1577,10 +1542,6 @@ public class LocationManagerService extends ILocationManager.Stub {
 
     @Override
     public void removeGpsStatusListener(IGpsStatusListener listener) {
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return;
-        }
-
         synchronized (mLock) {
             try {
                 mGpsStatusProvider.removeGpsStatusListener(listener);
@@ -1598,10 +1559,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         }
         checkResolutionLevelIsSufficientForProviderUse(getCallerAllowedResolutionLevel(),
                 provider);
-
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return false;
-        }
 
         // and check for ACCESS_LOCATION_EXTRA_COMMANDS
         if ((mContext.checkCallingOrSelfPermission(ACCESS_LOCATION_EXTRA_COMMANDS)
@@ -1623,11 +1580,6 @@ public class LocationManagerService extends ILocationManager.Stub {
             throw new SecurityException(
                     "calling sendNiResponse from outside of the system is not allowed");
         }
-
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return false;
-        }
-
         try {
             return mNetInitiatedListener.sendNiResponse(notifId, userResponse);
         } catch (RemoteException e) {
@@ -1650,10 +1602,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         checkResolutionLevelIsSufficientForProviderUse(getCallerAllowedResolutionLevel(),
                 provider);
 
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return null;
-        }
-
         LocationProviderInterface p;
         synchronized (mLock) {
             p = mProvidersByName.get(provider);
@@ -1668,10 +1616,6 @@ public class LocationManagerService extends ILocationManager.Stub {
         checkResolutionLevelIsSufficientForProviderUse(getCallerAllowedResolutionLevel(),
                 provider);
         if (LocationManager.FUSED_PROVIDER.equals(provider)) return false;
-
-        if (isPrivacyGuardEnabled(Binder.getCallingPid())) {
-            return false;
-        }
 
         int uid = Binder.getCallingUid();
         long identity = Binder.clearCallingIdentity();
