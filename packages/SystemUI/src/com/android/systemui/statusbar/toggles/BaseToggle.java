@@ -26,6 +26,7 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsTileView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class BaseToggle
         implements OnClickListener, OnLongClickListener {
@@ -46,6 +47,8 @@ public abstract class BaseToggle
     protected TextView mLabel = null;
     protected ImageView mIcon = null;
     private int mIconId = -1;
+
+    int mTextColor;
 
     private SettingsObserver mObserver = null;
 
@@ -69,7 +72,12 @@ public abstract class BaseToggle
         mObserver = new SettingsObserver(mHandler);
         mObserver.observe();
         setTextSize(ToggleManager.getTextSize(mContext));
+        setTextColor(mTextColor);
         scheduleViewUpdate();
+    }
+
+    protected final void setTextColor(int cl) {
+        mTextColor = cl;
     }
 
     protected final void setTextSize(int s) {
@@ -210,6 +218,7 @@ public abstract class BaseToggle
 
             if (mLabel != null) {
                 mLabel.setText(mLabelText);
+                mLabel.setTextColor(mTextColor);
                 mLabel.setVisibility(View.VISIBLE);
                 // if (mIconDrawable != null) {
                 // mLabel.setCompoundDrawablesWithIntrinsicBounds(null,
@@ -277,24 +286,18 @@ public abstract class BaseToggle
         ToggleManager.log(msg, e);
     }
 
-    private void updateSettings() {
-        ContentResolver resolver = mContext.getContentResolver();
-
-        mCollapsePref = Settings.System.getBoolean(resolver,
-                Settings.System.SHADE_COLLAPSE_ALL, false);
-    }
-
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
 
         void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
+            ContentResolver cr = mContext.getContentResolver();
 
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.SHADE_COLLAPSE_ALL),
-                    false, this);
+            cr.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHADE_COLLAPSE_ALL), false, this);
+            cr.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_TEXT_COLOR), false, this);
 
             updateSettings();
         }
@@ -303,5 +306,14 @@ public abstract class BaseToggle
         public void onChange(boolean selfChange) {
             updateSettings();
         }
+    }
+
+    private void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mCollapsePref = Settings.System.getBoolean(resolver,
+                Settings.System.SHADE_COLLAPSE_ALL, false);
+        mTextColor = Settings.System.getInt(resolver,
+                Settings.System.QUICK_SETTINGS_TEXT_COLOR, 0xFFFFFFFF);
     }
 }
