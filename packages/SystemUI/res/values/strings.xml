@@ -638,9 +638,9 @@
     <!-- Recents Ram Bar -->
     <string name="memory">RAM</string>
     <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
-    <string name="service_free_mem"><xliff:g id="memory">%1$d</xliff:g> free</string>
+    <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> free</string>
     <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
-    <string name="service_used_mem"><xliff:g id="memory">%1$d</xliff:g> used</string>
+    <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> used</string>
 
     <!-- Label in drop down to identify brightness slider -->
     <string name="brightness_label">Brightness</string>
