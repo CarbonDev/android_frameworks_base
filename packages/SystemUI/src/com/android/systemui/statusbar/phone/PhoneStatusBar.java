@@ -394,6 +394,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     };
 
+	// Check if Automatic Brightness was called on settings
     Runnable mLongPressBrightnessChange = new Runnable() {
         @Override
         public void run() {
@@ -466,6 +467,11 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.RIBBON_ICON_COLORIZE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            update();
+        }
+        
+        @Override
+        public void onChange(boolean selfChange) {
             update();
         }
 
