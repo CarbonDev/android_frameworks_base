@@ -919,10 +919,26 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mUsedMemText = (TextView)findViewById(R.id.usedMemText);
             mFreeMemText = (TextView)findViewById(R.id.freeMemText);
             mRamText = (TextView)findViewById(R.id.ramText);
+
+            if (usedMem >= 1024) {
+	    usedMem = usedMem / 1024l;
+            mUsedMemText.setText(getResources().getString(
+                    R.string.service_used_mem, usedMem + " GB"));
+            }
+	    else {
             mUsedMemText.setText(getResources().getString(
                     R.string.service_used_mem, usedMem + " MB"));
+            }
+	    if (freeMem >= 1024) {
+	    freeMem = freeMem / 1024l;
+            mFreeMemText.setText(getResources().getString(
+                    R.string.service_free_mem, freeMem + " GB"));
+            }
+	    else {
             mFreeMemText.setText(getResources().getString(
                     R.string.service_free_mem, freeMem + " MB"));
+            }
+
             mRamText.setText(getResources().getString(
                     R.string.memory));
             float totalMem = mTotalMemory;
