@@ -19,7 +19,9 @@ package com.android.systemui.statusbar.phone;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -97,6 +99,12 @@ public class QuickSettingsTileView extends RelativeLayout {
             ContentResolver cr = mContext.getContentResolver();
 
             cr.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_STYLE), false, this);
+            cr.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_COLOR), false, this);            
+            cr.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR), false, this);
+            cr.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RANDOM_COLOR_ONE), false, this);
             cr.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RANDOM_COLOR_TWO), false, this);
@@ -137,7 +145,14 @@ public class QuickSettingsTileView extends RelativeLayout {
         if (tileBg == 1) {
             int tileBgColor = Settings.System.getInt(cr,
                     Settings.System.QUICK_SETTINGS_BACKGROUND_COLOR, 0xFF000000);
-            setBackgroundColor(tileBgColor);
+            int presBgColor = Settings.System.getInt(cr,
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR, 0xFF212121);
+            ColorDrawable bgDrawable = new ColorDrawable(tileBgColor);
+            ColorDrawable presDrawable = new ColorDrawable(presBgColor);
+            StateListDrawable states = new StateListDrawable();
+            states.addState(new int[] {android.R.attr.state_pressed}, presDrawable);
+            states.addState(new int[] {}, bgDrawable);
+            this.setBackground(states);
         } else if (tileBg == 0) {
             int[] Colors = new int[] {
                 blueDark,
@@ -148,7 +163,14 @@ public class QuickSettingsTileView extends RelativeLayout {
                 blueBright
             };
             Random generator = new Random();
-            setBackgroundColor(Colors[generator.nextInt(Colors.length)]);
+            int presBgColor = Settings.System.getInt(cr,
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR, 0xFF212121);
+            ColorDrawable bgDrawable = new ColorDrawable(Colors[generator.nextInt(Colors.length)]);
+            ColorDrawable presDrawable = new ColorDrawable(presBgColor);
+            StateListDrawable states = new StateListDrawable();
+            states.addState(new int[] {android.R.attr.state_pressed}, presDrawable);
+            states.addState(new int[] {}, bgDrawable);
+            this.setBackground(states);
         } else {
             setBackgroundResource(R.drawable.qs_tile_background);
         }

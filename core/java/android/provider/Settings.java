@@ -2563,6 +2563,12 @@ public final class Settings {
         public static final String QUICK_SETTINGS_BACKGROUND_COLOR = "quick_settings_background_color";
 
         /**
+         * User color for tile background pressed
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR = "quick_settings_background_pressed_color";
+
+        /**
          * User color for text background
          * @hide
          */
