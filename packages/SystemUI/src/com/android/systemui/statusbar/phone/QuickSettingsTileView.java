@@ -146,7 +146,7 @@ public class QuickSettingsTileView extends RelativeLayout {
             int tileBgColor = Settings.System.getInt(cr,
                     Settings.System.QUICK_SETTINGS_BACKGROUND_COLOR, 0xFF000000);
             int presBgColor = Settings.System.getInt(cr,
-                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR, 0xFF212121);
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR, 0xFF161616);
             ColorDrawable bgDrawable = new ColorDrawable(tileBgColor);
             ColorDrawable presDrawable = new ColorDrawable(presBgColor);
             StateListDrawable states = new StateListDrawable();
@@ -164,7 +164,7 @@ public class QuickSettingsTileView extends RelativeLayout {
             };
             Random generator = new Random();
             int presBgColor = Settings.System.getInt(cr,
-                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR, 0xFF212121);
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR, 0xFF161616);
             ColorDrawable bgDrawable = new ColorDrawable(Colors[generator.nextInt(Colors.length)]);
             ColorDrawable presDrawable = new ColorDrawable(presBgColor);
             StateListDrawable states = new StateListDrawable();
