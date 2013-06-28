@@ -1960,6 +1960,9 @@
 
   <java-symbol type="string" name="config_fastChargePath" />
 
+  <!-- Screenshort Trash -->
+  <java-symbol type="string" name="trash" />
+
   <!--  Awesome Action -->
   <java-symbol type="string" name="action_home"/>
   <java-symbol type="string" name="action_back"/>
