@@ -151,6 +151,12 @@ public class PhoneStatusBar extends BaseStatusBar {
     private static final int MSG_FLIP_TO_QS_PANEL = 1005;
     // 1020-1030 reserved for BaseStatusBar
 
+    // statusbar behavior
+    private static int mBarBehaviour;
+    private static final int BAR_SHOW = 0;
+    private static final int BAR_HIDE = 1;
+    private static final int BAR_AUTO = 2;
+
     // will likely move to a resource or other tunable param at some point
     private static final int INTRUDER_ALERT_DECAY_MS = 0; // disabled, was 10000;
 
@@ -1325,15 +1331,29 @@ public class PhoneStatusBar extends BaseStatusBar {
         refreshAllStatusBarIcons();
     }
 
-    private void updateStatusBarVisibility() {
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.AUTO_HIDE_STATUSBAR, 0) == 1) {
+    private void updateStatusBar() {
+        ContentResolver cr = mContext.getContentResolver();
+        mBarBehaviour = Settings.System.getInt(cr,
+                Settings.System.HIDE_STATUSBAR, 0);
+
+        switch (mBarBehaviour) {
+            case BAR_SHOW:
             Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HIDE_STATUSBAR,
+                    Settings.System.STATUSBAR_HIDDEN, 0);
+                 break;
+            case BAR_HIDE:
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN, 1);
+                 break;
+            case BAR_AUTO:
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN,
                     (mNotificationData.size() == 0) ? 1 : 0);
-        } else {
+                 break;
+            default:
             Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HIDE_STATUSBAR, 0);
+                    Settings.System.STATUSBAR_HIDDEN, 0);
+                 break;
         }
     }
 
@@ -1535,7 +1555,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 .start();
         }
 
-        if (mNotificationData.size() < 2) updateStatusBarVisibility();
+        if (mNotificationData.size() < 2) updateStatusBar();
 
         updateCarrierLabelVisibility(false);
     }
@@ -2856,6 +2876,7 @@ public class PhoneStatusBar extends BaseStatusBar {
 
                 updateResources();
                 repositionNavigationBar();
+                updateStatusBar();
                 updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
                 if (mNavigationBarView != null && mNavigationBarView.mDelegateHelper != null) {
                     // if We are in Landscape/Phone Mode then swap the XY coordinates for NaVRing Swipe
@@ -3166,7 +3187,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.AUTO_HIDE_STATUSBAR), false, this, UserHandle.USER_ALL);
+                    Settings.System.HIDE_STATUSBAR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_HIDE_ENABLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -3217,7 +3238,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mBrightnessControl = !autoBrightness && Settings.System.getInt(
                     cr, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
 
-        updateStatusBarVisibility();
+        updateStatusBar();
     }
 
     public boolean skipToSettingsPanel() {

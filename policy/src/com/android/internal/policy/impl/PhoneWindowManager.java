@@ -344,6 +344,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mExpandedMode;
  
     boolean mHideStatusBar;
+    boolean mStatusbarHide;
 
     private static final class PointerLocationInputEventReceiver extends InputEventReceiver {
         private final PointerLocationView mView;
@@ -4014,14 +4015,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // case though.
                 mHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.HIDE_STATUSBAR, 0) == 1;
+                mStatusbarHide = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.STATUSBAR_HIDDEN, 0) == 1;
                 boolean toggleNotificationAndQSShade = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE, 0) == 1;
                 if ((topIsFullscreen && !toggleNotificationAndQSShade)
                         || (mExpandedState == 1 &&
                         (mExpandedMode == 2 || mExpandedMode == 3) && !toggleNotificationAndQSShade)
-                        || (mHideStatusBar && !toggleNotificationAndQSShade) ||
-                        Settings.System.getBoolean(mContext.getContentResolver(),
-                        Settings.System.STATUSBAR_HIDDEN, false) == true) {
+                        || (mHideStatusBar && !toggleNotificationAndQSShade)
+                        || (mStatusbarHide && !toggleNotificationAndQSShade)) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
