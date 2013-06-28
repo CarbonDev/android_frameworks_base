@@ -3004,6 +3004,13 @@ public final class Settings {
         public static final String EXPANDED_DESKTOP_MODE = "expanded_desktop_mode";
 
         /**
+         * Quick Settings Disable Panel
+         *
+         * @hide
+         */
+        public static final String QS_DISABLE_PANEL = "qs_disable_panel";
+
+        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
