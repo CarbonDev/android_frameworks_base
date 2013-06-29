@@ -54,6 +54,8 @@ public class PieControl implements OnClickListener {
     public static final String LAST_APP_BUTTON = "##lastapp##";
     public static final String KILL_TASK_BUTTON = "##killtask##";
     public static final String APP_WINDOW_BUTTON = "##appwindow##";
+    public static final String ACT_NOTIF_BUTTON = "##actnotif##";
+    public static final String ACT_QS_BUTTON = "##actqs##";
 
     protected Context mContext;
     protected PieMenu mPie;
@@ -66,6 +68,8 @@ public class PieControl implements OnClickListener {
     private PieItem mLastApp;
     private PieItem mKillTask;
     private PieItem mAppWindow;
+    private PieItem mActNotif;
+    private PieItem mActQs;
     private PieItem mSearch;
     private OnNavButtonPressedListener mListener;
     private PieControlPanel mPanel;
@@ -127,11 +131,15 @@ public class PieControl implements OnClickListener {
         mLastApp = makeItem(R.drawable.ic_sysbar_lastapp_side, 1, LAST_APP_BUTTON, true);
         mKillTask = makeItem(R.drawable.ic_sysbar_killtask_pie, 1, KILL_TASK_BUTTON, true);
         mAppWindow = makeItem(R.drawable.ic_sysbar_appwindow_pie, 1, APP_WINDOW_BUTTON, true);
+        mActNotif = makeItem(R.drawable.ic_sysbar_notifications_pie, 1, ACT_NOTIF_BUTTON, true);
+        mActQs = makeItem(R.drawable.ic_sysbar_quicksettings_pie, 1, ACT_QS_BUTTON, true);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, true);
         mPie.addItem(mMenu);
         mPie.addItem(mKillTask);
         mPie.addItem(mLastApp);
         mPie.addItem(mAppWindow);
+        mPie.addItem(mActQs);
+        mPie.addItem(mActNotif);
 
         if(mIsAssistantAvailable) {
             mSearch = makeItem(R.drawable.ic_sysbar_search_side, 1, SEARCH_BUTTON, true);

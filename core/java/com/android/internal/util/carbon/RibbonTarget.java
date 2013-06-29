@@ -262,6 +262,7 @@ public class RibbonTarget {
     private boolean shouldUnlock(String action) {
         if (action.equals(AwesomeConstants.AwesomeConstant.ACTION_TORCH.value()) ||
             action.equals(AwesomeConstants.AwesomeConstant.ACTION_NOTIFICATIONS.value()) ||
+            action.equals(AwesomeConstants.AwesomeConstant.ACTION_QUICKSETTINGS.value()) ||
             action.equals(AwesomeConstants.AwesomeConstant.ACTION_POWER.value())) {
             return false;
         }

@@ -4137,6 +4137,7 @@
     <string name="action_lastapp">Last app</string>
     <string name="action_power">Power</string>
     <string name="action_notifications">Notifications</string>
+    <string name="action_quicksettings">Quicksettings</string>
     <string name="action_assist">Search (Google Now)</string>
     <string name="action_clockoptions">Clock options</string>
     <string name="action_voiceassist">Voice search</string>

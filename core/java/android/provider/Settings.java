@@ -3713,6 +3713,18 @@ public final class Settings {
          */
         public static final String PIE_APP_WINDOW = "pie_app_window";
 
+        /**
+         * Pie action notifications, default to off
+         * @hide
+         */
+        public static final String PIE_ACT_NOTIF = "pie_act_notif";
+
+        /**
+         * Pie action quicksettings, default to off
+         * @hide
+         */
+        public static final String PIE_ACT_QS = "pie_act_qs";
+
         /*
          * Pie gap angle, should default to 2
          * @hide

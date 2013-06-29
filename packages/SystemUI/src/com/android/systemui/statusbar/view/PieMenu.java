@@ -226,6 +226,8 @@ public class PieMenu extends FrameLayout {
     private boolean mUseLastApp;
     private boolean mUseKillTask;
     private boolean mUseAppWindow;
+    private boolean mUseActNotif;
+    private boolean mUseActQs;
     private boolean mHapticFeedback;
 
     // Animations
@@ -283,9 +285,11 @@ public class PieMenu extends FrameLayout {
         boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         mUseMenuAlways = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_MENU, 1) == 1;
-        mUseLastApp = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_LAST_APP, 0) == 1;
-        mUseKillTask = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_KILL_TASK, 0) == 1;
-        mUseAppWindow = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_APP_WINDOW, 0) == 1;
+        mUseLastApp = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_LAST_APP, 1) == 1;
+        mUseKillTask = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_KILL_TASK, 1) == 1;
+        mUseAppWindow = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_APP_WINDOW, 1) == 1;
+        mUseActNotif = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_ACT_NOTIF, 1) == 1;
+        mUseActQs = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_ACT_QS, 1) == 1;
         mUseSearch = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_SEARCH, 1) == 1;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MODE, 2);
@@ -650,7 +654,9 @@ public class PieMenu extends FrameLayout {
     }
 
     private boolean canItemDisplay(PieItem item) {
-        return !(item.getName().equals(PieControl.APP_WINDOW_BUTTON) && !mUseAppWindow) &&
+        return !(item.getName().equals(PieControl.ACT_NOTIF_BUTTON) && !mUseActNotif) &&
+               !(item.getName().equals(PieControl.ACT_QS_BUTTON) && !mUseActQs) &&
+               !(item.getName().equals(PieControl.APP_WINDOW_BUTTON) && !mUseAppWindow) &&
                !(item.getName().equals(PieControl.KILL_TASK_BUTTON) && !mUseKillTask) &&
                !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp) &&
                !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
@@ -665,10 +671,11 @@ public class PieMenu extends FrameLayout {
         int itemCount = mItems.size();
         if (!mPanel.currentAppUsesMenu() && !mUseMenuAlways) itemCount--;
         if (!mUseSearch) itemCount--;
+        if (!mUseActNotif) itemCount--;
+        if (!mUseActQs) itemCount--;
         if (!mUseLastApp) itemCount--;
         if (!mUseAppWindow) itemCount--;
         if (!mUseKillTask) itemCount--;
-
 
         int totalCount = 0;
         int lesserSweepCount = 0;
