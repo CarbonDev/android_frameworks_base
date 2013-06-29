@@ -892,6 +892,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
             long usedMem = 0;
             long freeMem = 0;
+	    double usedMemD = 0;
+     	    double freeMemD = 0;
 
             DisplayMetrics metrics = new DisplayMetrics();
             WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -921,18 +923,22 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRamText = (TextView)findViewById(R.id.ramText);
 
             if (usedMem >= 1024) {
-	    usedMem = usedMem / 1024l;
+	    usedMemD = (double)usedMem / 1024;
+	    String temp = String.format("%1$,.1f", usedMemD);
+	    usedMemD = Double.parseDouble(temp);
             mUsedMemText.setText(getResources().getString(
-                    R.string.service_used_mem, usedMem + " GB"));
+                    R.string.service_used_mem, usedMemD + " GB"));
             }
 	    else {
             mUsedMemText.setText(getResources().getString(
                     R.string.service_used_mem, usedMem + " MB"));
             }
 	    if (freeMem >= 1024) {
-	    freeMem = freeMem / 1024l;
+	    freeMemD = (double)freeMem / 1024;
+	    String temp = String.format("%1$,.1f", freeMemD);
+	    freeMemD = Double.parseDouble(temp);
             mFreeMemText.setText(getResources().getString(
-                    R.string.service_free_mem, freeMem + " GB"));
+                    R.string.service_free_mem, freeMemD + " GB"));
             }
 	    else {
             mFreeMemText.setText(getResources().getString(
