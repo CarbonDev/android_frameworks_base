@@ -845,9 +845,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     @Override
     public void setImeShowStatus(boolean enabled) {
-        Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING,
-                enabled ? 1 : 0);
     }
 
     @Override
@@ -2129,7 +2126,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             mNotificationPanel.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    updateCarrierAndWifiLabelVisibility(false);
+                    updateCarrierLabelVisibility(false);
                 }
             }, FLIP_DURATION - 150);
         }

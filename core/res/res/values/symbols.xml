@@ -1978,6 +1978,7 @@
   <java-symbol type="string" name="action_lastapp"/>
   <java-symbol type="string" name="action_power"/>
   <java-symbol type="string" name="action_notifications"/>
+  <java-symbol type="string" name="action_quicksettings"/>
   <java-symbol type="string" name="action_assist"/>
   <java-symbol type="string" name="action_clockoptions"/>
   <java-symbol type="string" name="action_voiceassist"/>
