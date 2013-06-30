@@ -2900,14 +2900,20 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
+		
+		/**
+         * Network speed indicator
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
 
-	/**
+	    /**
          * HALO enabled, should default to 0 (HALO is disabled)
          * @hide
          */
         public static final String HALO_ENABLED = "halo_enabled";
 
- 	/**
+ 	    /**
          * HALO, should default to 0 (no, do not show)
          * @hide
          */
