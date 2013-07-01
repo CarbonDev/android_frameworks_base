@@ -2014,13 +2014,21 @@ public class NotificationManagerService extends INotificationManager.Stub
                         // does not have the VIBRATE permission.
                         long identity = Binder.clearCallingIdentity();
                         try {
+<<<<<<< HEAD
                             mVibrator.vibrate(r.sbn.getUid(), r.sbn.getBasePkg(), pattern, repeat);
+=======
+                            mVibrator.vibrate(pattern, repeat);
+>>>>>>> b0f227c... Add an option to allow a (subtle) notification vibration during calls.
                         } finally {
                             Binder.restoreCallingIdentity(identity);
                         }
                     } else if (pattern.length > 1) {
                         // If you want your own vibration pattern, you need the VIBRATE permission
+<<<<<<< HEAD
                         mVibrator.vibrate(r.sbn.getUid(), r.sbn.getBasePkg(), notification.vibrate, repeat);
+=======
+                        mVibrator.vibrate(notification.vibrate, repeat);
+>>>>>>> b0f227c... Add an option to allow a (subtle) notification vibration during calls.
                     }
                 }
             }
@@ -2053,13 +2061,21 @@ public class NotificationManagerService extends INotificationManager.Stub
     private boolean shouldConvertSoundToVibration() {
         return Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION,
+<<<<<<< HEAD
                 1, UserHandle.USER_CURRENT_OR_SELF) != 0;
+=======
+                1, UserHandle.USER_CURRENT) != 0;
+>>>>>>> b0f227c... Add an option to allow a (subtle) notification vibration during calls.
     }
 
     private boolean canVibrateDuringAlertsDisabled() {
         return Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_VIBRATE_DURING_ALERTS_DISABLED,
+<<<<<<< HEAD
                 0, UserHandle.USER_CURRENT_OR_SELF) != 0;
+=======
+                0, UserHandle.USER_CURRENT) != 0;
+>>>>>>> b0f227c... Add an option to allow a (subtle) notification vibration during calls.
     }
 
     private boolean inQuietHours() {
