@@ -137,6 +137,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     private long[] mDefaultVibrationPattern;
     private long[] mFallbackVibrationPattern;
+    private long[] mNoAlertsVibrationPattern;
 
     private boolean mSystemReady;
     private int mDisabledNotifications;
@@ -877,6 +878,11 @@ public class NotificationManagerService extends INotificationManager.Stub
                 VIBRATE_PATTERN_MAXLEN,
                 DEFAULT_VIBRATE_PATTERN);
 
+        mNoAlertsVibrationPattern = getLongArray(resources,
+                com.android.internal.R.array.config_notificationNoAlertsVibePattern,
+                VIBRATE_PATTERN_MAXLEN,
+                DEFAULT_VIBRATE_PATTERN);
+
         // Don't start allowing notifications until the setup wizard has run once.
         // After that, including subsequent boots, init with notifications turned on.
         // This works on the first boot because the setup wizard will toggle this
@@ -1317,15 +1323,16 @@ public class NotificationManagerService extends INotificationManager.Stub
                 Log.e(TAG, "An error occurred profiling the notification.", th);
             }
 
-            // If we're not supposed to beep, vibrate, etc. then don't.
-            if (((mDisabledNotifications & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) == 0)
-                    && (!(old != null
-                        && (notification.flags & Notification.FLAG_ONLY_ALERT_ONCE) != 0 ))
-                    && (r.userId == UserHandle.USER_ALL ||
-                        (r.userId == userId && r.userId == currentUser))
-                    && canInterrupt
-                    && mSystemReady) {
+            final boolean alertsDisabled =
+                    (mDisabledNotifications & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) != 0;
+            boolean readyForAlerts = canInterrupt
+                    && mSystemReady
+                    && (r.userId == UserHandle.USER_ALL || (r.userId == userId && r.userId == currentUser))
+                    && (old == null || (notification.flags & Notification.FLAG_ONLY_ALERT_ONCE) == 0);
+            boolean hasValidSound = false;
 
+            // If we're not supposed to beep, vibrate, etc. then don't.
+            if (readyForAlerts && !alertsDisabled) {
                 final AudioManager audioManager = (AudioManager) mContext
                 .getSystemService(Context.AUDIO_SERVICE);
 
@@ -1334,7 +1341,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                     (notification.defaults & Notification.DEFAULT_SOUND) != 0;
 
                 Uri soundUri = null;
-                boolean hasValidSound = false;
 
                 if (!(inQuietHours && mQuietHoursMute) && useDefaultSound) {
                     soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
@@ -1373,8 +1379,14 @@ public class NotificationManagerService extends INotificationManager.Stub
                         }
                     }
                 }
+            }
 
+            if (readyForAlerts && (!alertsDisabled || canVibrateDuringAlertsDisabled())) {
                 // vibrate
+
+                final AudioManager audioManager = (AudioManager)
+                        mContext.getSystemService(Context.AUDIO_SERVICE);
+
                 // Does the notification want to specify its own vibration?
                 final boolean hasCustomVibrate = notification.vibrate != null;
 
@@ -1384,30 +1396,42 @@ public class NotificationManagerService extends INotificationManager.Stub
                            !hasCustomVibrate
                         && hasValidSound
                         && (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
-                        && (Settings.System.getInt(mContext.getContentResolver(), Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, 1) != 0);
+                        && (Settings.System.getIntForUser(mContext.getContentResolver(), Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, 1, UserHandle.USER_CURRENT) != 0);
 
                 // The DEFAULT_VIBRATE flag trumps any custom vibration AND the fallback.
                 final boolean useDefaultVibrate =
                         (notification.defaults & Notification.DEFAULT_VIBRATE) != 0;
+
                 if (!(inQuietHours && mQuietHoursStill)
                         && (useDefaultVibrate || convertSoundToVibration || hasCustomVibrate)
                         && !(audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)) {
                     mVibrateNotification = r;
+
+                    int repeat = (notification.flags & Notification.FLAG_INSISTENT) != 0 ? 0: -1;
+                    long[] pattern;
+
+                    if (alertsDisabled) {
+                        pattern = mNoAlertsVibrationPattern;
+                    } else if (useDefaultVibrate) {
+                        pattern = mDefaultVibrationPattern;
+                    } else if (hasCustomVibrate) {
+                        pattern = notification.vibrate;
+                    } else {
+                        pattern = mFallbackVibrationPattern;
+                    }
+
                     if (useDefaultVibrate || convertSoundToVibration) {
                         // Escalate privileges so we can use the vibrator even if the notifying app
                         // does not have the VIBRATE permission.
                         long identity = Binder.clearCallingIdentity();
                         try {
-                            mVibrator.vibrate(useDefaultVibrate ? mDefaultVibrationPattern
-                                                                : mFallbackVibrationPattern,
-                                ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
+                            mVibrator.vibrate(pattern, repeat);
                         } finally {
                             Binder.restoreCallingIdentity(identity);
                         }
-                    } else if (notification.vibrate.length > 1) {
+                    } else if (pattern.length > 1) {
                         // If you want your own vibration pattern, you need the VIBRATE permission
-                        mVibrator.vibrate(notification.vibrate,
-                            ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
+                        mVibrator.vibrate(notification.vibrate, repeat);
                     }
                 }
             }
@@ -1437,6 +1461,13 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
 
         idOut[0] = id;
+    }
+
+
+    private boolean canVibrateDuringAlertsDisabled() {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NOTIFICATION_VIBRATE_DURING_ALERTS_DISABLED,
+                0, UserHandle.USER_CURRENT) != 0;
     }
 
     private boolean inQuietHours() {
