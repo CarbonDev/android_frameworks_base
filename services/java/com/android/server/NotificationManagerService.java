@@ -1396,7 +1396,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                            !hasCustomVibrate
                         && hasValidSound
                         && (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
-                        && (Settings.System.getIntForUser(mContext.getContentResolver(), Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, 1, UserHandle.USER_CURRENT) != 0);
+                        && (Settings.System.getIntForUser(mContext.getContentResolver(), Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, 1, UserHandle.USER_CURRENT_OR_SELF) != 0);
 
                 // The DEFAULT_VIBRATE flag trumps any custom vibration AND the fallback.
                 final boolean useDefaultVibrate =
@@ -1463,11 +1463,10 @@ public class NotificationManagerService extends INotificationManager.Stub
         idOut[0] = id;
     }
 
-
     private boolean canVibrateDuringAlertsDisabled() {
         return Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_VIBRATE_DURING_ALERTS_DISABLED,
-                0, UserHandle.USER_CURRENT) != 0;
+                0, UserHandle.USER_CURRENT_OR_SELF) != 0;
     }
 
     private boolean inQuietHours() {
