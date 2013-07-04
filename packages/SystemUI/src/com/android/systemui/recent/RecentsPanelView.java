@@ -61,6 +61,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.android.systemui.R;
+import com.android.systemui.recent.CircleMemoryMeter;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
@@ -113,6 +114,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     TextView mRamText;
 
     private static int mClearPosition;
+    private static boolean mCircleRam;
+
+    private CircleMemoryMeter mCircleMeterLeft;
+    private CircleMemoryMeter mCircleMeterRight;
 
     MemInfoReader mMemInfoReader = new MemInfoReader();
 
@@ -358,6 +363,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mShowing = show;
         mClearPosition = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.CLEAR_RECENTS_POSITION, 0);
+        mCircleRam = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.RECENTS_RAM_CIRCLE, false);
 
         if (show) {
             // if there are no apps, bring up a "No recent apps" message
@@ -366,11 +373,29 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
             if (mClearPosition == 0) {
-                mClearRecentsLeft.setVisibility(noApps ? View.GONE : View.VISIBLE);
-                mClearRecentsRight.setVisibility(View.GONE);
+                if (mCircleRam) {
+                    mClearRecentsLeft.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                    mClearRecentsRight.setVisibility(View.GONE);
+                    mCircleMeterLeft.setVisibility(View.VISIBLE);
+                    mCircleMeterRight.setVisibility(View.GONE);
+                } else {
+                    mClearRecentsLeft.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                    mClearRecentsRight.setVisibility(View.GONE);
+                    mCircleMeterLeft.setVisibility(View.GONE);
+                    mCircleMeterRight.setVisibility(View.GONE);
+                }
             } else {
-                mClearRecentsRight.setVisibility(noApps ? View.GONE : View.VISIBLE);
-                mClearRecentsLeft.setVisibility(View.GONE);
+                if (mCircleRam) {
+                    mClearRecentsRight.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                    mClearRecentsLeft.setVisibility(View.GONE);
+                    mCircleMeterRight.setVisibility(View.VISIBLE);
+                    mCircleMeterLeft.setVisibility(View.GONE);
+                } else {
+                    mClearRecentsRight.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                    mClearRecentsLeft.setVisibility(View.GONE);
+                    mCircleMeterRight.setVisibility(View.GONE);
+                    mCircleMeterLeft.setVisibility(View.GONE);
+                }
             }
             onAnimationEnd(null);
             setFocusable(true);
@@ -474,6 +499,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         mRecentsScrim = findViewById(R.id.recents_bg_protect);
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
+
+        mCircleMeterLeft = (CircleMemoryMeter) findViewById(R.id.circle_meter_left);
+        mCircleMeterRight = (CircleMemoryMeter) findViewById(R.id.circle_meter_right);
 
         mClearRecentsLeft = (ImageView) findViewById(R.id.recents_clear_left);
         mClearRecentsRight = (ImageView) findViewById(R.id.recents_clear_right);

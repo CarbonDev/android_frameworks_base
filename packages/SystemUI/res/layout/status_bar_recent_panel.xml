@@ -115,23 +115,51 @@
                     android:layout_gravity="center"
                     android:visibility="invisible" />
 
-                <ImageView
-                    android:id="@+id/recents_clear_left"
-                    android:clickable="true"
+                <FrameLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:scaleType="center"
-                    android:layout_gravity="bottom|left"
-                    android:src="@drawable/ic_recents_clear" />
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_gravity="bottom|left" >
 
-                <ImageView
-                    android:id="@+id/recents_clear_right"
-                    android:clickable="true"
+                    <com.android.systemui.recent.CircleMemoryMeter
+                        android:id="@+id/circle_meter_left"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/recents_clear_left"
+                        android:clickable="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_recents_clear" />
+
+                </FrameLayout>
+
+                <FrameLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:scaleType="center"
-                    android:layout_gravity="bottom|right"
-                    android:src="@drawable/ic_recents_clear" />
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_gravity="bottom|right" >
+
+                    <com.android.systemui.recent.CircleMemoryMeter
+                        android:id="@+id/circle_meter_right"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/recents_clear_right"
+                        android:clickable="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_recents_clear" />
+
+                </FrameLayout>
 
         </FrameLayout>
 
