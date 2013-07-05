@@ -491,7 +491,7 @@ public class ShortcutsWidget extends LinearLayout {
                 mExternalLongClickListener.onLongClick(v);
             }
             try {
-                Intent i = new Intent("android.settings.slim.notificationshortcuts.NOTIFICATION_SHORTCUTS");
+                Intent i = new Intent("android.settings.carbon.notificationshortcuts.NOTIFICATION_SHORTCUTS");
                 i.addCategory(Intent.CATEGORY_DEFAULT);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(i);
