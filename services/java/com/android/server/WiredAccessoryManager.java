@@ -428,6 +428,9 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
                         Slog.e(TAG, "Ignoring dock event as Audio routing disabled " + event);
                         return;
                     }
+                } else if (name.equals("CAR") || name.equals("DESK")) {
+                    // Motorola dock - ignore this event and don't change the audio routing
+                    return;
                 }
                 synchronized (mLock) {
                     updateStateLocked(devPath, name, state);
