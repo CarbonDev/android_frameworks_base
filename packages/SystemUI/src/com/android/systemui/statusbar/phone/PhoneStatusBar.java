@@ -152,10 +152,11 @@ public class PhoneStatusBar extends BaseStatusBar {
     // 1020-1030 reserved for BaseStatusBar
 
     // statusbar behavior
-    private static int mBarBehaviour;
+    private static int mBarBehavior;
     private static final int BAR_SHOW = 0;
     private static final int BAR_HIDE = 1;
-    private static final int BAR_AUTO = 2;
+    private static final int BAR_AUTO_REM = 2;
+    private static final int BAR_AUTO_ALL = 3;
 
     // will likely move to a resource or other tunable param at some point
     private static final int INTRUDER_ALERT_DECAY_MS = 0; // disabled, was 10000;
@@ -234,6 +235,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     float mNotificationPanelMinHeightFrac;
     boolean mNotificationPanelIsFullScreenWidth;
     TextView mNotificationPanelDebugText;
+    private int mNotificationsSizeOldState = 0;
 
     // settings
     ToggleManager mToggleManager;
@@ -1333,10 +1335,10 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private void updateStatusBar() {
         ContentResolver cr = mContext.getContentResolver();
-        mBarBehaviour = Settings.System.getInt(cr,
+        mBarBehavior = Settings.System.getInt(cr,
                 Settings.System.HIDE_STATUSBAR, 0);
 
-        switch (mBarBehaviour) {
+        switch (mBarBehavior) {
             case BAR_SHOW:
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_HIDDEN, 0);
@@ -1345,10 +1347,15 @@ public class PhoneStatusBar extends BaseStatusBar {
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_HIDDEN, 1);
                  break;
-            case BAR_AUTO:
+            case BAR_AUTO_REM:
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_HIDDEN,
-                    (mNotificationData.size() == 0) ? 1 : 0);
+                    hasClearableNotifications() ? 0 : 1);
+                 break;
+            case BAR_AUTO_ALL:
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN,
+                    hasVisibleNotifications() ? 0 : 1);
                  break;
             default:
             Settings.System.putInt(mContext.getContentResolver(),
@@ -1491,11 +1498,25 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
+    boolean hasClearableNotifications() {
+        if (mNotificationData != null) {
+            return mNotificationData.size() > 0 && mNotificationData.hasClearableItems();
+        }
+        return false;
+    }
+
+    boolean hasVisibleNotifications() {
+        if (mNotificationData != null) {
+            return mNotificationData.size() > 0 && mNotificationData.hasVisibleItems();
+        }
+        return false;
+    }
+
     @Override
     protected void setAreThereNotifications() {
         final boolean any = mNotificationData.size() > 0;
 
-        final boolean clearable = any && mNotificationData.hasClearableItems();
+        final boolean clearable = hasClearableNotifications();
 
         if (DEBUG) {
             Slog.d(TAG, "setAreThereNotifications: N=" + mNotificationData.size()
@@ -1536,7 +1557,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mClearButton.setEnabled(clearable);
 
         final View nlo = mStatusBarView.findViewById(R.id.notification_lights_out);
-        final boolean showDot = (any&&!areLightsOn());
+        final boolean showDot = (any && !areLightsOn());
         if (showDot != (nlo.getAlpha() == 1.0f)) {
             if (showDot) {
                 nlo.setAlpha(0f);
@@ -1555,7 +1576,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 .start();
         }
 
-        if (mNotificationData.size() < 2) updateStatusBar();
+        if (mNotificationData.size() != mNotificationsSizeOldState) {
+            mNotificationsSizeOldState = mNotificationData.size();
+            updateStatusBar();
+        }
 
         updateCarrierLabelVisibility(false);
     }
@@ -3238,7 +3262,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         mBrightnessControl = !autoBrightness && Settings.System.getInt(
                     cr, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
 
-        updateStatusBar();
+        if (mNotificationData != null) {
+            updateStatusBar();
+        }
     }
 
     public boolean skipToSettingsPanel() {
