@@ -228,5 +228,10 @@
     <string name="powerwidget_screen_timeout_toast">Tiempo de pantalla establecido a: %1$d %2$s</string>
     <string name="quick_settings_gps">GPS</string>
 
+    <string name="halo_dismiss">Descartar notificación</string>
+    <string name="halo_hide">Ocultar</string>
+    <string name="halo_clear_all">Limpiar todas las notificaciones</string>
+    <string name="halo_silence">Ocultar y silenciar hasta despertar</string>
+
     <!-- CYANOGENMOD ADDITIONS END -->
 </resources>
