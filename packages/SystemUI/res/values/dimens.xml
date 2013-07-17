@@ -245,4 +245,5 @@
     <dimen name="halo_speech_vpadding_top">7dp</dimen>
     <dimen name="halo_speech_vpadding_bottom">7dp</dimen>
     <dimen name="halo_content_max_width">250dp</dimen> 
+
 </resources>
