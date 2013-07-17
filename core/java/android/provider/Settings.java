@@ -3347,10 +3347,10 @@ public final class Settings {
         public static final String POWER_BUTTON_TORCH = "power_button_torch";
 
         /**
-         * Whether to wake the screen with the home key, the value is boolean.
+         * Whether to wake the screen with the home, power, or both keys.
          * @hide
          */
-        public static final String HOME_WAKE_SCREEN = "home_wake_screen";
+        public static final String BUTTON_WAKE_SCREEN = "button_wake_screen";
 
         /**
          * Whether to enable custom rebindings of the actions performed on
