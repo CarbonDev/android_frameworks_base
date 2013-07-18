@@ -19,6 +19,7 @@ public class BrightnessToggle extends BaseToggle implements BrightnessStateChang
 
     @Override
     public void onClick(View v) {
+        vibrateOnTouch();
         collapseStatusBar();
         showBrightnessDialog();
     }

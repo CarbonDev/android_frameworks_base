@@ -24,6 +24,7 @@ public class ScreenshotToggle extends BaseToggle {
 
     @Override
     public void onClick(View v) {
+        vibrateOnTouch();
         collapseStatusBar();
         mHandler.postDelayed(mRunnable, 500); // just enough delay for statusbar to collapse
     }
