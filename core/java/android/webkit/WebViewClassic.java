@@ -3524,7 +3524,8 @@ public final class WebViewClassic implements WebViewProvider, WebViewProvider.Sc
             // We want to pause the current playing video when switching out
             // from the current WebView/tab.
             if (mHTML5VideoViewProxy != null) {
-                mHTML5VideoViewProxy.pauseAndDispatch();
+                // Use suspend instead of pause to release the decoder
+                mHTML5VideoViewProxy.suspendAndDispatch();
             }
             if (mNativeClass != 0) {
                 nativeSetPauseDrawing(mNativeClass, true);
