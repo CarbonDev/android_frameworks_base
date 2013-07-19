@@ -95,6 +95,15 @@ int install(const char *pkgname, uid_t uid, gid_t gid)
         return -1;
     }
 
+#ifdef HAVE_SELINUX
+    if (selinux_android_setfilecon(pkgdir, pkgname, uid) < 0) {
+        ALOGE("cannot setfilecon dir '%s': %s\n", pkgdir, strerror(errno));
+        unlink(libsymlink);
+        unlink(pkgdir);
+        return -1;
+    }
+#endif
+
     if (chown(pkgdir, uid, gid) < 0) {
         ALOGE("cannot chown dir '%s': %s\n", pkgdir, strerror(errno));
         unlink(libsymlink);
@@ -248,6 +257,15 @@ int make_user_data(const char *pkgname, uid_t uid, uid_t persona)
         unlink(pkgdir);
         return -errno;
     }
+
+#ifdef HAVE_SELINUX
+    if (selinux_android_setfilecon(pkgdir, pkgname, uid) < 0) {
+        ALOGE("cannot setfilecon dir '%s': %s\n", pkgdir, strerror(errno));
+        unlink(libsymlink);
+        unlink(pkgdir);
+        return -errno;
+    }
+#endif
 
     return 0;
 }
