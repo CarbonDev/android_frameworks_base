@@ -26,7 +26,7 @@
                 android:background="@drawable/bubble_r"
                 android:singleLine="false"
                 android:visibility="gone"
-                android:textColor="#fff"
+                android:textColor="#3892b4"
                 android:textSize="@dimen/halo_speech_text_size"/>
 
             <TextView
@@ -40,7 +40,7 @@
                 android:background="@drawable/bubble_l"
                 android:singleLine="false"
                 android:visibility="gone"
-                android:textColor="#fff"
+                android:textColor="#3892b4"
                 android:textSize="@dimen/halo_speech_text_size"/>
 
         </RelativeLayout>
