@@ -314,28 +314,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         mWindowManager.addView(mEffect, lp);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        if (!mAttached) {
-            mAttached = true;
-            mSettingsObserver = new SettingsObserver(new Handler());
-            mSettingsObserver.observe();
-            mSettingsObserver.onChange(true);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        if (mAttached) {
-            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
-            mAttached = false;
-        }
-    }
-
     private void initControl() {
         if (mInitialized) return;
 
