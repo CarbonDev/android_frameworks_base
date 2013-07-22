@@ -1007,14 +1007,16 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 return;
             }
 
+            DisplayMetrics dpm = mContext.getResources().getDisplayMetrics();
+
             int shrt = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 
-                    18, getResources().getDisplayMetrics());
+                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_short), dpm);
             int wide = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    24, getResources().getDisplayMetrics());
+                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_wide), dpm);
             int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                    10, getResources().getDisplayMetrics());
+                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_top), dpm);
             int bttm = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    10, getResources().getDisplayMetrics());
+                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom), dpm);
 
             mHaloTextViewR.setText(tickerText);
             mHaloTextViewR.setPadding(shrt, top, wide, bttm);
