@@ -79,9 +79,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import android.service.notification.StatusBarNotification;
+
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.systemui.EventLogTags;
-import com.android.internal.statusbar.StatusBarNotification;
 
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 
