@@ -1651,12 +1651,6 @@ public final class Settings {
         public static final String MMS_AUTO_RETRIEVAL_ON_ROAMING = "mms_auto_on_roaming";
 
         /**
-         * Whether national data roaming should be used.
-         * @hide
-         */
-        public static final String MVNO_ROAMING = "mvno_roaming";
-
-        /**
          * Determines whether remote devices may discover and/or connect to
          * this device.
          * <P>Type: INT</P>
