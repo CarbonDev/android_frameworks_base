@@ -5008,15 +5008,12 @@ public class WindowManagerService extends IWindowManager.Stub
         mInputManager.setInputFilter(filter);
     }
 
-<<<<<<< HEAD
-=======
     // Called by window manager policy.  Not exposed externally.
     @Override
     public void reboot() {
         ShutdownThread.reboot(getUiContext(), null, true);
     }
 
->>>>>>> ad3c941... Squashed commit of the theme engine support.
     public void setCurrentUser(final int newUserId) {
         synchronized (mWindowMap) {
             mCurrentUserId = newUserId;
