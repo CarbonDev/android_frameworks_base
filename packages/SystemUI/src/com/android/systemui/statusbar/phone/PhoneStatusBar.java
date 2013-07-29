@@ -28,6 +28,7 @@ import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.service.notification.StatusBarNotification;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -1940,12 +1941,12 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mInitialTouchX = x;
                 mInitialTouchY = y;
                 mHandler.removeCallbacks(mLongPressBrightnessChange);
-                if ((y + mViewDelta) < mNotificationHeaderHeight) {
+                if ((y) < mNotificationHeaderHeight) {
                     mHandler.postDelayed(mLongPressBrightnessChange,
                             BRIGHTNESS_CONTROL_LONG_PRESS_TIMEOUT);
                 }
             } else if (action == MotionEvent.ACTION_MOVE) {
-                if ((y + mViewDelta) < mNotificationHeaderHeight) {
+                if ((y) < mNotificationHeaderHeight) {
                     mVelocityTracker.computeCurrentVelocity(1000);
                     float yVel = mVelocityTracker.getYVelocity();
                     yVel = Math.abs(yVel);
