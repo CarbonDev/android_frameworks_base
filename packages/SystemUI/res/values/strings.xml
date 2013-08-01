@@ -539,4 +539,8 @@
         <xliff:g id="number">%d</xliff:g>
     </string>
 
+    <!-- Notification drawer toasts -->
+    <string name="calendar_error_alert">No Calendar app installed.</string>
+    <string name="clock_error_alert">No DeskClock app installed.</string>
+
 </resources>

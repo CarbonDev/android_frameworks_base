@@ -17,7 +17,8 @@
 package com.android.systemui.statusbar.policy;
 
 import android.app.ActivityManagerNative;
-+import android.app.StatusBarManager;
+import android.app.StatusBarManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,14 +36,15 @@ import android.text.format.DateFormat;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.MotionEvent;
-+import android.view.View;
-+import android.view.View.OnClickListener;
-+import android.view.View.OnLongClickListener;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -137,20 +139,13 @@ public class ClockStock extends TextView implements OnClickListener, OnLongClick
 
     private final CharSequence getSmallTime() {
         Context context = getContext();
-        boolean b24 = DateFormat.is24HourFormat(context);
         int res;
-
-        if (b24) {
-            res = R.string.twenty_four_hour_time_format;
-        } else {
-            res = R.string.twelve_hour_time_format;
-        }
 
         final char MAGIC1 = '\uEF00';
         final char MAGIC2 = '\uEF01';
 
         SimpleDateFormat sdf;
-        String format = context.getString(res);
+        String format = DateFormat.getTimeFormatString(context);
         if (!format.equals(mClockFormatString)) {
             /*
              * Search for an unquoted "a" in the format string, so we can
@@ -232,18 +227,28 @@ public class ClockStock extends TextView implements OnClickListener, OnLongClick
 
     @Override
     public void onClick(View v) {
-        // start com.android.deskclock/.DeskClock
-        ComponentName clock = new ComponentName("com.android.deskclock",
-                "com.android.deskclock.DeskClock");
-        Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(clock);
-        collapseStartActivity(intent);
+        try {
+            // start com.android.deskclock/.DeskClock
+            ComponentName clock = new ComponentName("com.android.deskclock",
+                    "com.android.deskclock.DeskClock");
+            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(clock);
+            collapseStartActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(mContext,
+                com.android.systemui.R.string.clock_error_alert, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public boolean onLongClick(View v) {
-        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
-        collapseStartActivity(intent);
+        try {
+            Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+            collapseStartActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(mContext,
+                com.android.systemui.R.string.clock_error_alert, Toast.LENGTH_LONG).show();
+        }
 
         // consume event
         return true;
