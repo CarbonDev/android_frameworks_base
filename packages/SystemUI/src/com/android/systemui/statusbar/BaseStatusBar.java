@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
@@ -40,6 +39,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
