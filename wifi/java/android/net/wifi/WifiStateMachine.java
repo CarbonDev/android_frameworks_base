@@ -2552,7 +2552,7 @@ public class WifiStateMachine extends StateMachine {
                     break;
                 case CMD_SET_COUNTRY_CODE:
                     String country = (String) message.obj;
-                    String countryCode = country != null ? country.toUpperCase() : null;
+                    String countryCode = country != null ? country.toUpperCase(Locale.ROOT) : null;
                     if (DBG) log("set country code " + countryCode);
                     if (mWifiNative.setCountryCode(countryCode)) {
                         mCountryCode = countryCode;
