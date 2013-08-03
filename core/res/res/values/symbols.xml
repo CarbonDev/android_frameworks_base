@@ -1937,4 +1937,6 @@
   <java-symbol type="id" name="navbarback" />
   <java-symbol type="id" name="navbarmenu" />
 
+  <java-symbol type="string" name="config_fastChargePath" />
+
 </resources>
