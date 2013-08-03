@@ -3036,6 +3036,12 @@ public final class Settings {
         public static final String KEYBOARD_ROTATION_TIMEOUT = "keyboard_rotation_timeout";
 
         /**
+         * Forces formal text input.  1 to replace emoticon key with enter key.
+         * @hide
+         */
+        public static final String FORMAL_TEXT_INPUT = "formal_text_input";
+
+        /**
          * Whether to use a separate delay for "slide to unlock" and security
          * lock
          * @hide
