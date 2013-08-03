@@ -3354,12 +3354,6 @@ public final class Settings {
         public static final String THEME_WALLPAPER = "theme_wallpaper";
 
        /**
-        * Key to store Torch state.
-        * @hide 
-        */
-        public static final String TORCH_STATE = "torch_state";
-
-       /**
         * Lefty mode
         * @hide
         */

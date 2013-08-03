@@ -247,10 +247,6 @@ public class NavigationBarView extends LinearLayout {
         mShowMenu = false;
         mDelegateHelper = new DelegateViewHelper(this);
 
-        getIcons(res);
-    }
-
-    private void getIcons(Resources res) {
         mBackIcon = res.getDrawable(R.drawable.ic_sysbar_back);
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
@@ -258,13 +254,6 @@ public class NavigationBarView extends LinearLayout {
         mRecentIcon = res.getDrawable(R.drawable.ic_sysbar_recent);
         mRecentLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_land);
         mAokpTarget = new AokpTarget(context);
-    }
-
-    @Override
-    public void setLayoutDirection(int layoutDirection) {
-        getIcons(mContext.getResources());
-
-        super.setLayoutDirection(layoutDirection);
     }
 
     private void makeBar() {
