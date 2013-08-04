@@ -220,7 +220,7 @@
             android:layout_weight="1"
             />
 
-        <ImageView android:id="@+id/clear_all_button"
+	<ImageView android:id="@+id/clear_all_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="center"

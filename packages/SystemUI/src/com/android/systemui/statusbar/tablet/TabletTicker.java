@@ -93,7 +93,7 @@ public class TabletTicker
                     + " mQueuePos=" + mQueuePos + " mQueue=" + Arrays.toString(mQueue));
         }
 
-        // If it's already in here, remove whatever's in there and put the new one at the end.
+	// If it's already in here, remove whatever's in there and put the new one at the end.
         remove(key, false);
 
         mKeys[mQueuePos] = key;
@@ -114,7 +114,7 @@ public class TabletTicker
     }
 
     public void remove(IBinder key, boolean advance) {
-        if (mCurrentKey == key) {
+	if (mCurrentKey == key) {
             // Showing now
             if (advance) {
                 removeMessages(MSG_ADVANCE);
@@ -140,7 +140,7 @@ public class TabletTicker
     }
 
     public void halt() {
-        removeMessages(MSG_ADVANCE);
+	removeMessages(MSG_ADVANCE);
         if (mCurrentView != null || mQueuePos != 0) {
             for (int i=0; i<QUEUE_LENGTH; i++) {
                 mKeys[i] = null;
@@ -160,7 +160,7 @@ public class TabletTicker
     }
 
     private void advance() {
-        // Out with the old...
+	// Out with the old...
         if (mCurrentView != null) {
             if (mWindow != null) {
                 mWindow.removeView(mCurrentView);

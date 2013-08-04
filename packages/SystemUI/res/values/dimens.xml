@@ -234,5 +234,15 @@
     <!-- Constant for hidden navbar drag handle -->
     <dimen name="drag_handle_height">10dp</dimen>
 
+    <!-- Halo -->
+    <dimen name="halo_bubble_size">75dp</dimen>
+    <dimen name="halo_number_size">24dp</dimen>
+    <dimen name="halo_number_icon_size">18dp</dimen>
+    <dimen name="halo_number_text_size">14sp</dimen>
+    <dimen name="halo_speech_text_size">14sp</dimen>
+    <dimen name="halo_speech_hpadding_short">10dp</dimen>
+    <dimen name="halo_speech_hpadding_wide">18dp</dimen>
+    <dimen name="halo_speech_vpadding_top">7dp</dimen>
+    <dimen name="halo_speech_vpadding_bottom">7dp</dimen>
     <dimen name="halo_content_max_width">250dp</dimen> 
 </resources>
