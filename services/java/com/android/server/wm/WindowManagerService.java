@@ -4953,7 +4953,7 @@ public class WindowManagerService extends IWindowManager.Stub
                 mAnimatorDurationScale };
     }
 
-    // Called by window manager policy. Not exposed externally.
+    // Called by window manager policy.  Not exposed externally.
     @Override
     public int getLidState() {
         int sw = mInputManager.getSwitchState(-1, InputDevice.SOURCE_ANY,
@@ -4986,6 +4986,12 @@ public class WindowManagerService extends IWindowManager.Stub
     @Override
     public void shutdown(boolean confirm) {
         ShutdownThread.shutdown(getUiContext(), confirm);
+    }
+
+    // Called by window manager policy. Not exposed externally.
+    @Override
+    public void rebootTile() {
+        ShutdownThread.reboot(mContext, null, true);
     }
 
     // Called by window manager policy.  Not exposed externally.

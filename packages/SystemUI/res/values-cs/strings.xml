@@ -206,8 +206,6 @@
     <string name="quick_settings_brightness_dialog_auto_brightness_label" msgid="5064982743784071218">"AUTOMATICKY"</string>
     <string name="status_bar_help_title" msgid="1199237744086469217">"Zde se zobrazují oznámení"</string>
     <string name="status_bar_help_text" msgid="7874607155052076323">"Můžete je kdykoli zobrazit tím, že přejedete prstem dolů."\n"Přejedete-li prstem dolů ještě jednou, zobrazí se ovládací prvky systému."</string>
-<<<<<<< HEAD
-=======
     <!-- AOKP translations -->
     <string name="shortcut_label">Akce AOKP</string>
     <string name="action_home">Domů</string>
@@ -277,5 +275,4 @@
     <string name="running_processes_item_description_s_p"><xliff:g id="numprocess">%1$d</xliff:g> služby a <xliff:g id="numservices">%2$d</xliff:g> služby</string>
     <string name="running_processes_item_description_p_s"><xliff:g id="numprocess">%1$d</xliff:g> služba a <xliff:g id="numservices">%2$d</xliff:g> služba</string>
     <string name="running_processes_item_description_p_p"><xliff:g id="numprocess">%1$d</xliff:g> služby a <xliff:g id="numservices">%2$d</xliff:g> služby</string>
->>>>>>> 3840e89... FW: Status Bar Hide toggle (1/3)
 </resources>

@@ -36,8 +36,8 @@ import com.android.systemui.statusbar.phone.QuickSettingsTileView;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChangeCallback;
 import com.android.systemui.statusbar.policy.BluetoothController;
-import com.android.systemui.statusbar.policy.BrightnessController;
-import com.android.systemui.statusbar.policy.BrightnessController.BrightnessStateChangeCallback;
+import com.android.systemui.settings.BrightnessController;
+import com.android.systemui.settings.BrightnessController.BrightnessStateChangeCallback;
 import com.android.systemui.statusbar.policy.LocationController;
 import com.android.systemui.statusbar.policy.LocationController.LocationGpsStateChangeCallback;
 import com.android.systemui.statusbar.policy.NetworkController;
@@ -98,7 +98,7 @@ public class ToggleManager {
     public static final String POWERMENU_TOGGLE = "POWERMENU";
     public static final String PROFILE_TOGGLE = "PROFILE";
     public static final String SCREENSHOT_TOGGLE = "SCREENSHOT";
-    public static final String CUSTOM_TOGGLE = "CUSTOM";
+    // public static final String CUSTOM_TOGGLE = "CUSTOM";
     public static final String STAYAWAKE_TOGGLE = "STAYAWAKE";
     public static final String WIRELESS_ADB_TOGGLE = "WIRELESSADB";
     public static final String MUSIC_TOGGLE = "MUSIC";
@@ -165,18 +165,15 @@ public class ToggleManager {
             toggleMap.put(QUICKRECORD_TOGGLE, QuickRecordToggle.class);
             toggleMap.put(QUIETHOURS_TOGGLE, QuietHoursToggle.class);
             toggleMap.put(STATUSBAR_TOGGLE, StatusbarToggle.class);
-<<<<<<< HEAD
             toggleMap.put(SLEEP_TOGGLE, SleepToggle.class);
             toggleMap.put(CARBON_TOGGLE, CarbonToggle.class);
             toggleMap.put(POWERMENU_TOGGLE, PowerMenuToggle.class);
             toggleMap.put(PROFILE_TOGGLE, ProfileToggle.class);
             toggleMap.put(SCREENSHOT_TOGGLE, ScreenshotToggle.class);
-            toggleMap.put(CUSTOM_TOGGLE, CustomToggle.class);
+            // toggleMap.put(CUSTOM_TOGGLE, CustomToggle.class);
             toggleMap.put(STAYAWAKE_TOGGLE, StayAwakeToggle.class);
             toggleMap.put(WIRELESS_ADB_TOGGLE, WirelessAdbToggle.class);
             toggleMap.put(MUSIC_TOGGLE, MusicToggle.class);
-=======
->>>>>>> 3840e89... FW: Status Bar Hide toggle (1/3)
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;

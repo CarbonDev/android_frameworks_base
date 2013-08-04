@@ -576,6 +576,54 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    private PowerMenuReceiver mPowerMenuReceiver;
+
+    // PowerMenu Tile
+    class PowerMenuReceiver extends BroadcastReceiver {
+        private boolean mIsRegistered = false;
+
+        public PowerMenuReceiver(Context context) {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (action.equals(Intent.ACTION_POWERMENU)) {
+                showGlobalActionsDialog();
+            }
+            if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
+                mWindowManagerFuncs.rebootTile();
+            }
+            if (action.equals(Intent.ACTION_SCREENSHOT)) {
+                takeScreenshot();
+            }
+            if (action.equals(Intent.ACTION_POWERMENU_PROFILE)) {
+               showGlobalActionsProfileDialog();
+            }
+
+        }
+
+        private void registerSelf() {
+            if (!mIsRegistered) {
+                mIsRegistered = true;
+
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(Intent.ACTION_POWERMENU);
+                filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
+                filter.addAction(Intent.ACTION_SCREENSHOT);
+                filter.addAction(Intent.ACTION_POWERMENU_PROFILE);
+                mContext.registerReceiver(mPowerMenuReceiver, filter);
+            }
+        }
+
+        private void unregisterSelf() {
+            if (mIsRegistered) {
+                mIsRegistered = false;
+                mContext.unregisterReceiver(this);
+            }
+        }
+    }
+
     private UEventObserver mHDMIObserver = new UEventObserver() {
         @Override
         public void onUEvent(UEventObserver.UEvent event) {
@@ -956,6 +1004,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    void showGlobalActionsProfileDialog() {
+          if (mGlobalActions == null) {
+              mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
+          }
+          mGlobalActions.showProfileDialog();
+    }
+
     boolean isDeviceProvisioned() {
         return Settings.Global.getInt(
                 mContext.getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 0) != 0;
@@ -1225,6 +1280,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         } else {
             screenTurnedOff(WindowManagerPolicy.OFF_BECAUSE_OF_USER);
         }
+        mPowerMenuReceiver = new PowerMenuReceiver(context);
+        mPowerMenuReceiver.registerSelf();
     }
 
     /**
@@ -3935,8 +3992,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                         Settings.System.EXPANDED_DESKTOP_MODE, 0);
                 if (topIsFullscreen || (Settings.System.getInt(mContext.getContentResolver(),
                                         Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 &&
-                                        (expandedMode == 2 || expandedMode == 3))) 
-                                    || Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.STATUSBAR_HIDDEN, false) == true) {
+                                        (expandedMode == 2 || expandedMode == 3))
+                                    || Settings.System.getBoolean(mContext.getContentResolver(),
+                                        Settings.System.STATUSBAR_HIDDEN, false) == true) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
@@ -4175,7 +4233,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     };
 
     // Assume this is called from the Handler thread.
-    private void takeScreenshot() {
+    public void takeScreenshot() {
         synchronized (mScreenshotLock) {
             if (mScreenshotConnection != null) {
                 return;

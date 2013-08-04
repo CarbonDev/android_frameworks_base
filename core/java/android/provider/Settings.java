@@ -3651,6 +3651,13 @@ public final class Settings {
         public static final String QUICK_TOGGLE_FAV_CONTACT = "quick_toggle_fav_contact";
 
         /**
+         * enable and disable shade collapse on click
+         *
+         * @hide
+         */
+        public static final String SHADE_COLLAPSE_ALL = "shade_collapse_all";
+
+        /**
          * enable and disable fast toggle in settings
          *
          * @hide
@@ -3663,6 +3670,133 @@ public final class Settings {
          * @hide
          */
         public static final String CHOOSE_FASTTOGGLE_SIDE = "choose_fasttoggle_side";
+
+        /**
+         * @hide
+         */
+        public static final String CUSTOM_TOGGLE_REVERT = "custom_toggle_revert";
+
+        /**
+         * @hide
+         */
+        public static final String DCLICK_TOGGLE_REVERT = "dclick_toggle_revert";
+
+        /**
+         * @hide
+         */
+        public static final String MATCH_ACTION_ICON = "match_action_icon";
+
+        /**
+         * @hide
+         */
+        public static final String COLLAPSE_SHADE = "collapse_shade";
+
+        /**
+         * @hide
+         */
+        public static final String CUSTOM_TOGGLE_STATE = "custom_toggle_state";
+
+        /**
+         * @hide
+         */
+        public static final String CUSTOM_TOGGLE_QTY = "custom_toggle_qty";
+
+        /**
+         * @hide
+         */
+        public static final String[] CUSTOM_PRESS_TOGGLE = new String[] {
+            "toggle_custom_app_intent_0",
+            "toggle_custom_app_intent_1",
+            "toggle_custom_app_intent_2",
+            "toggle_custom_app_intent_3",
+            "toggle_custom_app_intent_4",
+        };
+
+        /**
+         * @hide
+         */
+        public static final String[] CUSTOM_LONGPRESS_TOGGLE = new String[] {
+            "toggle_custom_app_longintent_0",
+            "toggle_custom_app_longintent_1",
+            "toggle_custom_app_longintent_2",
+            "toggle_custom_app_longintent_3",
+            "toggle_custom_app_longintent_4",
+        };
+
+        /**
+         * @hide
+         */
+        public static final String[] CUSTOM_TOGGLE_ICONS = new String[] {
+            "custom_toggle_icons_0",
+            "custom_toggle_icons_1",
+            "custom_toggle_icons_2",
+            "custom_toggle_icons_3",
+            "custom_toggle_icons_4",
+        };
+
+        /**
+         * User configurable background for qs tiles
+         * 0 = random colors
+         * 1 = colorpicker preference
+         * 2 = default background
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_BACKGROUND_STYLE = "quick_settings_background_style";
+
+        /**
+         * User color for tile background
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_BACKGROUND_COLOR = "quick_settings_background_color";
+
+        /**
+         * User color for tile background pressed
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR = "quick_settings_background_pressed_color";
+
+        /**
+         * User color for text background
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_TEXT_COLOR = "quick_settings_text_color";
+
+        /**
+         * Random user selected colors
+         * @hide
+         */
+        public static final String RANDOM_COLOR_ONE = "random_color_one";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_TWO = "random_color_two";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_THREE = "random_color_three";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_FOUR = "random_color_four";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_FIVE = "random_color_five";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_SIX = "random_color_six";
+
+        /**
+         * Screenshot toggle delay
+         * @hide
+         */
+        public static final String SCREENSHOT_TOGGLE_DELAY = "screenshot_toggle_delay";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
