@@ -546,9 +546,6 @@ public class NavigationBarView extends LinearLayout {
         if (getRecentsButton()!=null) {
             getRecentsButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_NOP)) ? 0.5f : 1.0f);
         }
-
-        ((ImageView)getRecentsButton()).setImageDrawable(mVertical ? mRecentLandIcon : mRecentIcon);
-
         updateMenuArrowKeys();
     }
 
