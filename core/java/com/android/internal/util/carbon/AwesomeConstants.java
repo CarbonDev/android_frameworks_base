@@ -48,8 +48,6 @@ public class AwesomeConstants {
         ACTION_RECENTS       { @Override public String value() { return "**recents**";}},
         ACTION_ASSIST        { @Override public String value() { return "**assist**";}},
         ACTION_POWER         { @Override public String value() { return "**power**";}},
-        ACTION_WIDGETS       { @Override public String value() { return "**widgets**";}},
-        ACTION_APP_WINDOW    { @Override public String value() { return "**app_window**";}},
         ACTION_NOTIFICATIONS { @Override public String value() { return "**notifications**";}},
         ACTION_CLOCKOPTIONS  { @Override public String value() { return "**clockoptions**";}},
         ACTION_VOICEASSIST   { @Override public String value() { return "**voiceassist**";}},
@@ -63,8 +61,6 @@ public class AwesomeConstants {
         ACTION_EVENT         { @Override public String value() { return "**event**";}},
         ACTION_TODAY         { @Override public String value() { return "**today**";}},
         ACTION_ALARM         { @Override public String value() { return "**alarm**";}},
-        ACTION_UNLOCK        { @Override public String value() { return "**unlock**";}},
-        ACTION_CAMERA        { @Override public String value() { return "**camera**";}},
         ACTION_NULL          { @Override public String value() { return "**null**";}},
         ACTION_APP           { @Override public String value() { return "**app**";}};
         public String value() { return this.value(); }
@@ -161,12 +157,6 @@ public class AwesomeConstants {
             case ACTION_POWER:
                 value = res.getString(com.android.internal.R.string.action_power);
                 break;
-            case ACTION_WIDGETS:
-                value = res.getString(com.android.internal.R.string.action_widgets);
-                break;
-            case ACTION_APP_WINDOW:
-                value = res.getString(com.android.internal.R.string.action_app_window);
-                break;
             case ACTION_NOTIFICATIONS:
                 value = res.getString(com.android.internal.R.string.action_notifications);
                 break;
@@ -199,12 +189,6 @@ public class AwesomeConstants {
                 break;
             case ACTION_ALARM:
                 value = res.getString(com.android.internal.R.string.action_alarm);
-                break;
-            case ACTION_UNLOCK:
-                value = res.getString(com.android.internal.R.string.action_unlock);
-                break;
-            case ACTION_CAMERA:
-                value = res.getString(com.android.internal.R.string.action_camera);
                 break;
             case ACTION_APP:
                 value = res.getString(com.android.internal.R.string.action_app);
@@ -253,12 +237,6 @@ public class AwesomeConstants {
             case ACTION_POWER:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_power");
                 break;
-            case ACTION_WIDGETS:
-                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_widget");
-                break;
-            case ACTION_APP_WINDOW:
-                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_widget");
-                break;
             case ACTION_NOTIFICATIONS:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_notifications");
                 break;
@@ -291,12 +269,6 @@ public class AwesomeConstants {
                 break;
             case ACTION_ALARM:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_alarm");
-                break;
-            case ACTION_UNLOCK:
-                value = res.getDrawable(com.android.internal.R.drawable.ic_lockscreen_unlock);
-                break;
-            case ACTION_CAMERA:
-                value = res.getDrawable(com.android.internal.R.drawable.ic_lockscreen_camera);
                 break;
             case ACTION_APP: // APP doesn't really have an icon - it should look up
                         //the package icon - we'll return the 'null' on just in case
