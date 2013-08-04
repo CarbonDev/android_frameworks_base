@@ -24,7 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 
-import com.android.internal.util.aokp.BackgroundAlphaColorDrawable;
+import com.android.internal.util.carbon.BackgroundAlphaColorDrawable;
 import com.android.systemui.statusbar.NavigationBarView;
 import com.android.systemui.statusbar.phone.PanelBar;
 

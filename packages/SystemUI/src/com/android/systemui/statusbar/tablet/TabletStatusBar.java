@@ -459,10 +459,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     protected void loadDimens() {
         final Resources res = mContext.getResources();
 
-        mNaturalBarHeight = isLandscape() ?
-                res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height_landscape) :
-                    res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height);
-
         int newIconSize = res.getDimensionPixelSize(
             com.android.internal.R.dimen.system_bar_icon_size);
         int newIconHPadding = res.getDimensionPixelSize(

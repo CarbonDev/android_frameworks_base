@@ -264,12 +264,6 @@ public class AwesomeConstants {
             case ACTION_ALARM:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_alarm");
                 break;
-            case ACTION_UNLOCK:
-                value = res.getDrawable(com.android.internal.R.drawable.ic_lockscreen_unlock);
-                break;
-            case ACTION_CAMERA:
-                value = res.getDrawable(com.android.internal.R.drawable.ic_lockscreen_camera);
-                break;
             case ACTION_APP: // APP doesn't really have an icon - it should look up
                         //the package icon - we'll return the 'null' on just in case
             case ACTION_NULL:

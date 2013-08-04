@@ -582,6 +582,12 @@ public class SearchPanelView extends FrameLayout implements
                 .getAssistIntent(mContext, false, UserHandle.USER_CURRENT) != null;
     }
 
+    public int screenLayout() {
+        final int screenSize = Resources.getSystem().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        return screenSize;
+    }
+
     public boolean isScreenPortrait() {
         return mResources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }

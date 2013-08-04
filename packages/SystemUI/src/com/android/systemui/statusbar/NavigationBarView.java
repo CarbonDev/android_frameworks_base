@@ -262,9 +262,7 @@ public class NavigationBarView extends LinearLayout {
         mDelegateHelper = new DelegateViewHelper(this);
 
         mBackIcon = NavBarHelpers.getIconImage(mContext, AwesomeConstant.ACTION_BACK.value());
-        mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable();
         mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable(); //res.getDrawable(R.drawable.ic_sysbar_back_ime);
-        mBackAltLandIcon = ((KeyButtonView)generateKey(true, KEY_BACK_ALT)).getDrawable(); // res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mRecentIcon = res.getDrawable(R.drawable.ic_sysbar_recent);
         mRecentLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_land);
         mButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_key_width);
