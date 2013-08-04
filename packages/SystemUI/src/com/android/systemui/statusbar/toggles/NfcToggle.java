@@ -15,8 +15,12 @@ public class NfcToggle extends StatefulToggle {
     NfcAdapter mNfcAdapter = null;
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(c);
+        if (mNfcAdapter != null) {
+            setEnabledState(mNfcAdapter.isEnabled());
+        }
 
         registerBroadcastReceiver(new BroadcastReceiver() {
 
@@ -24,6 +28,9 @@ public class NfcToggle extends StatefulToggle {
             public void onReceive(Context context, Intent intent) {
                 final boolean enabled = (intent.getIntExtra(NfcAdapter.EXTRA_ADAPTER_STATE,
                         NfcAdapter.STATE_OFF) == NfcAdapter.STATE_ON);
+                if (mNfcAdapter == null) {
+                    mNfcAdapter = NfcAdapter.getDefaultAdapter();
+                }
                 updateCurrentState(enabled ? State.ENABLED : State.DISABLED);
             }
         }, new IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED));
@@ -62,16 +69,16 @@ public class NfcToggle extends StatefulToggle {
 
     private void toggleNfc(boolean state) {
         if (mNfcAdapter == null) {
-            mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
-            if (mNfcAdapter == null) {
-                return;
-            }
+            mNfcAdapter = NfcAdapter.getDefaultAdapter();
         }
-
-        if (state) {
-            mNfcAdapter.enable();
-        } else {
-            mNfcAdapter.disable();
+        try {
+            if (state) {
+                mNfcAdapter.enable();
+            } else {
+                mNfcAdapter.disable();
+            }
+        } catch (NullPointerException ex) {
+            // swallow
         }
     }
 }

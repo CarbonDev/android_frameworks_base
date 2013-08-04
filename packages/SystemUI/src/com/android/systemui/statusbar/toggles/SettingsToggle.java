@@ -11,7 +11,7 @@ import com.android.systemui.R;
 public class SettingsToggle extends BaseToggle {
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         setIcon(R.drawable.ic_qs_settings);
         setLabel(R.string.quick_settings_settings_label);
@@ -29,12 +29,6 @@ public class SettingsToggle extends BaseToggle {
 
     @Override
     public boolean onLongClick(View v) {
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setComponent(ComponentName
-                .unflattenFromString("com.aokp.romcontrol/.ROMControlActivity"));
-        intent.addCategory("android.intent.category.LAUNCHER");
-
-        startActivity(intent);
         return super.onLongClick(v);
     }
 

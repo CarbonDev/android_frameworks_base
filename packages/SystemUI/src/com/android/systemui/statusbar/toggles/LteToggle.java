@@ -18,7 +18,7 @@ public class LteToggle extends StatefulToggle {
     SettingsObserver mObserver;
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
 
         mObserver = new SettingsObserver(new Handler());
@@ -95,7 +95,11 @@ public class LteToggle extends StatefulToggle {
     }
 
     private static boolean validLteMode(int mode) {
-        return mode == PhoneConstants.NT_MODE_LTE_CDMA_EVDO
-                || mode == PhoneConstants.NT_MODE_GLOBAL;
+        return mode == PhoneConstants.NT_MODE_GLOBAL
+                || mode == PhoneConstants.NT_MODE_LTE_CDMA_EVDO
+                || mode == PhoneConstants.NT_MODE_LTE_GSM_WCDMA
+                || mode == PhoneConstants.NT_MODE_LTE_CMDA_EVDO_GSM_WCDMA
+                || mode == PhoneConstants.NT_MODE_LTE_ONLY
+                || mode == PhoneConstants.NT_MODE_LTE_WCDMA;
     }
 }

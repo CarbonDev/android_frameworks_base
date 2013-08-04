@@ -5,25 +5,25 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.view.View;
 
+import static com.android.internal.util.carbon.AwesomeConstants.*;
 import com.android.systemui.R;
-import com.android.systemui.aokp.AwesomeAction;
+import com.android.systemui.carbon.AwesomeAction;
 
 public class SilentToggle extends StatefulToggle {
     private AudioManager mAudioManager;
-
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
     }
 
     @Override
     protected void doEnable() {
-        AwesomeAction.getInstance(mContext).launchAction(AwesomeAction.ACTION_SILENT);
+        AwesomeAction.launchAction(mContext, AwesomeConstant.ACTION_SILENT.value());
     }
 
     @Override
     protected void doDisable() {
-        AwesomeAction.getInstance(mContext).launchAction(AwesomeAction.ACTION_SILENT);
+        AwesomeAction.launchAction(mContext, AwesomeConstant.ACTION_SILENT.value());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SilentToggle extends StatefulToggle {
                 break;
             default:
                 updateCurrentState(State.DISABLED);
-                setLabel(R.string.quick_settings_vibrate_off_label);
+                setLabel(R.string.quick_settings_silent_off_label);
                 setIcon(R.drawable.ic_qs_silence_off);
                 break;
         }

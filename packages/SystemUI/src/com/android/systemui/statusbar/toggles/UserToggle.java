@@ -19,8 +19,9 @@ import android.os.UserManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Profile;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.view.WindowManager;
 import android.view.View;
 import android.view.WindowManagerGlobal;
 import android.widget.ImageView;
@@ -33,11 +34,13 @@ public class UserToggle extends BaseToggle {
 
     private AsyncTask<Void, Void, Pair<String, Drawable>> mUserInfoTask;
 
-    private Drawable mAvatarDrawable = null;
+    private static Drawable sAvatarDrawable = null;
+    private static int sAvatarBaseSize = 125;
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
+        reloadUserInfo();
         registerBroadcastReceiver(new BroadcastReceiver() {
 
             @Override
@@ -45,7 +48,6 @@ public class UserToggle extends BaseToggle {
                 reloadUserInfo();
             }
         }, new IntentFilter(Intent.ACTION_USER_SWITCHED));
-        reloadUserInfo();
     }
 
     @Override
@@ -58,12 +60,10 @@ public class UserToggle extends BaseToggle {
             try {
                 WindowManagerGlobal.getWindowManagerService().lockNow(null);
             } catch (RemoteException e) {
-                Log.e(TAG, "Couldn't show user switcher", e);
+                log("Couldn't show user switcher", e);
             }
         } else {
-            Intent intent = ContactsContract.QuickContact.composeQuickContactsIntent(
-                    mContext, v, ContactsContract.Profile.CONTENT_URI,
-                    ContactsContract.QuickContact.MODE_LARGE, null);
+            Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Profile.CONTENT_URI);
             mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
         }
     }
@@ -84,10 +84,10 @@ public class UserToggle extends BaseToggle {
             currentUserContext = mContext.createPackageContextAsUser("android", 0,
                     new UserHandle(userInfo.id));
         } catch (NameNotFoundException e) {
-            Log.e(TAG, "Couldn't create user context", e);
+           log("Couldn't create user context", e);
             throw new RuntimeException(e);
         } catch (RemoteException e) {
-            Log.e(TAG, "Couldn't get user info", e);
+           log("Couldn't get user info", e);
         }
         final int userId = userInfo.id;
         final String userName = userInfo.name;
@@ -106,6 +106,14 @@ public class UserToggle extends BaseToggle {
                 Drawable avatar = null;
                 Bitmap rawAvatar = um.getUserIcon(userId);
                 if (rawAvatar != null) {
+                    DisplayMetrics dm = new DisplayMetrics();
+                    WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                    wm.getDefaultDisplay().getMetrics(dm);
+                    int desiredSize = (int) (sAvatarBaseSize * dm.density);
+                    int width = rawAvatar.getWidth();
+                    if (width > desiredSize) {
+                        rawAvatar = Bitmap.createScaledBitmap(rawAvatar, desiredSize, desiredSize, false);
+                    }
                     avatar = new BitmapDrawable(mContext.getResources(), rawAvatar);
                 } else {
                     avatar = mContext.getResources().getDrawable(R.drawable.ic_qs_default_user);
@@ -137,9 +145,8 @@ public class UserToggle extends BaseToggle {
             @Override
             protected void onPostExecute(Pair<String, Drawable> result) {
                 super.onPostExecute(result);
-                // mModel.setUserTileInfo(result.first, result.second);
-                mAvatarDrawable = result.second;
                 setLabel(result.first);
+                sAvatarDrawable = result.second;
                 scheduleViewUpdate();
                 mUserInfoTask = null;
             }
@@ -166,8 +173,8 @@ public class UserToggle extends BaseToggle {
 
     @Override
     protected void updateView() {
-        if (mAvatarDrawable != null) {
-            setIcon(mAvatarDrawable);
+        if (sAvatarDrawable != null) {
+            setIcon(sAvatarDrawable);
         }
         super.updateView();
     }

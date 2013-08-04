@@ -13,7 +13,7 @@ import com.android.systemui.R;
 public class ImeToggle extends BaseToggle {
 
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         setLabel(R.string.quick_settings_ime_label);
         setIcon(R.drawable.ic_qs_ime);
@@ -27,6 +27,7 @@ public class ImeToggle extends BaseToggle {
 
     @Override
     public void onClick(View v) {
+        collapseStatusBar();
         Intent intent = new Intent(Settings.ACTION_SHOW_INPUT_METHOD_PICKER);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
         try {

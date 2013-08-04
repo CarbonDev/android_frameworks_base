@@ -1,13 +1,16 @@
 
 package com.android.systemui.statusbar.toggles;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.FileObserver;
-import android.util.Log;
+import android.view.View;
 
 import com.android.systemui.R;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,21 +20,32 @@ public class FastChargeToggle extends StatefulToggle {
     private String mFastChargePath;
     private FileObserver mObserver;
 
+    private boolean mFastChargeEnabled = false;
+
     @Override
-    protected void init(Context c, int style) {
+    public void init(Context c, int style) {
         super.init(c, style);
         mFastChargePath = c.getString(com.android.internal.R.string.config_fastChargePath);
-        mObserver = new FileObserver(mFastChargePath) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                setEnabledState(mFastChargeEnabled = isFastChargeOn());
+                return null;
+            }
+
+            protected void onPostExecute(Void result) {
+                scheduleViewUpdate();
+            };
+        }.execute();
+        mObserver = new FileObserver(mFastChargePath, FileObserver.MODIFY) {
             @Override
             public void onEvent(int event, String file) {
-                if (file == null)
-                    file = "null";
-                Log.d(TAG, "fast charge file modified, event:" + event + ", file: " + file);
-                scheduleViewUpdate();
+                log("fast charge file modified, event:" + event + ", file: " + file);
+                setEnabledState(mFastChargeEnabled = isFastChargeOn());
             }
         };
         mObserver.startWatching();
-        scheduleViewUpdate();
     }
 
     @Override
@@ -55,19 +69,19 @@ public class FastChargeToggle extends StatefulToggle {
 
     @Override
     protected void updateView() {
-        boolean enabled = isFastChargeOn();
-        setLabel(enabled
+        setEnabledState(mFastChargeEnabled);
+        setLabel(mFastChargeEnabled
                 ? R.string.quick_settings_fcharge_on_label
                 : R.string.quick_settings_fcharge_off_label);
-        setIcon(enabled
+        setIcon(mFastChargeEnabled
                 ? R.drawable.ic_qs_fcharge_on
                 : R.drawable.ic_qs_fcharge_off);
         super.updateView();
     }
 
     private void setFastCharge(final boolean on) {
-        Intent fastChargeIntent = new Intent("com.aokp.romcontrol.ACTION_CHANGE_FCHARGE_STATE");
-        fastChargeIntent.setPackage("com.aokp.romcontrol");
+        Intent fastChargeIntent = new Intent("com.android.settings.ACTION_CHANGE_FCHARGE_STATE");
+        fastChargeIntent.setPackage("com.android.settings");
         fastChargeIntent.putExtra("newState", on);
         mContext.sendBroadcast(fastChargeIntent);
         scheduleViewUpdate();
@@ -82,26 +96,37 @@ public class FastChargeToggle extends StatefulToggle {
             return false;
         }
         String content = null;
-        FileReader reader = null;
+        BufferedReader reader = null;
         try {
-            reader = new FileReader(file);
-            char[] chars = new char[(int) file.length()];
-            reader.read(chars);
-            content = new String(chars).trim();
+            reader = new BufferedReader(new FileReader(file));
+            content = reader.readLine();
+            log("isFastChargeOn(): content: " + content);
+            return "1".equals(content) || "Y".equalsIgnoreCase(content)
+                    || "on".equalsIgnoreCase(content);
         } catch (Exception e) {
-            e.printStackTrace();
-            content = null;
+            log("exception reading fast charge file", e);
+            return false;
         } finally {
             try {
-                reader.close();
+                if (reader != null) {
+                    reader.close();
+                }
             } catch (IOException e) {
                 // ignore
             }
         }
-        if (content == null)
-            content = "";
-        Log.d(TAG, "isFastChargeOn(): content: " + content);
-        return "1".equals(content) || "Y".equalsIgnoreCase(content);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.setComponent(ComponentName
+                .unflattenFromString("com.brewcrewfoo.performance/.activities.MainActivity"));
+        intent.addCategory("android.intent.category.LAUNCHER");
+
+        startActivity(intent);
+
+        return super.onLongClick(v);
     }
 
 }
