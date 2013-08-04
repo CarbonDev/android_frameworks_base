@@ -25,6 +25,7 @@ import android.util.EventLog;
 import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.View;
+import android.database.ContentObserver;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.systemui.EventLogTags;
@@ -40,6 +41,8 @@ public class NotificationPanelView extends PanelView {
     int mFingers;
     PhoneStatusBar mStatusBar;
     boolean mOkToFlip;
+    ContentObserver mEnableObserver;
+    ContentObserver mChangeSideObserver;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);

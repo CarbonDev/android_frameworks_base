@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.systemui.R;
-import com.android.systemui.aokp.AwesomeAction;
+import com.android.systemui.carbon.AwesomeAction;
 import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.recent.RecentsActivity;
 

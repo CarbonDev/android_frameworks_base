@@ -87,7 +87,6 @@ public class AwesomeAction {
     public final static String ACTION_TORCH = "**torch**";
     public final static String ACTION_SEARCH = "**search**";
     public final static String ACTION_LAST_APP = "**lastapp**";
-    public final static String ACTION_RECENTS_GB = "**recentsgb**";
     public final static String ACTION_NULL = "**null**";
 
     public final static int INT_ACTION_HOME = 0;
@@ -113,7 +112,6 @@ public class AwesomeAction {
     public final static int INT_ACTION_SEARCH = 20;
     public final static int INT_ACTION_LAST_APP = 21;
     public final static int INT_ACTION_NULL = 22;
-    public final static int INT_ACTION_RECENTS_GB = 23;
 
     private HashMap<String, Integer> actionMap;
 
@@ -143,7 +141,6 @@ public class AwesomeAction {
             actionMap.put(ACTION_SEARCH, INT_ACTION_SEARCH);
             actionMap.put(ACTION_LAST_APP, INT_ACTION_LAST_APP);
             actionMap.put(ACTION_NULL, INT_ACTION_NULL);
-            actionMap.put(ACTION_RECENTS_GB, INT_ACTION_RECENTS_GB);
         }
         return actionMap;
     }
@@ -203,9 +200,6 @@ public class AwesomeAction {
                 break;
             case INT_ACTION_SEARCH:
                 injectKeyDelayed(KeyEvent.KEYCODE_SEARCH);
-                break;
-            case INT_ACTION_RECENTS_GB:
-                injectKeyDelayed(KeyEvent.KEYCODE_APP_SWITCH);
                 break;
             case INT_ACTION_KILL:
                 mHandler.post(mKillTask);
@@ -345,8 +339,6 @@ public class AwesomeAction {
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_back);
         if (uri.equals(ACTION_RECENTS))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_recent);
-        if (uri.equals(ACTION_RECENTS_GB))
-            return mContext.getResources().getDrawable(R.drawable.ic_sysbar_recent_gb);
         if (uri.equals(ACTION_SCREENSHOT))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_screenshot);
         if (uri.equals(ACTION_MENU))

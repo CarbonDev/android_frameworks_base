@@ -7,7 +7,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.android.systemui.R;
-import com.android.systemui.aokp.AwesomeAction;
+import com.android.systemui.carbon.AwesomeAction;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
 public class ExtensibleKeyButtonView extends KeyButtonView {
