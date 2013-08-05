@@ -156,9 +156,9 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".aokp.AwesomeReceiver">
+            android:name=".carbon.AwesomeReceiver">
             <intent-filter>
-                <action android:name="com.android.systemui.aokp.LAUNCH_ACTION" />
+                <action android:name="com.android.systemui.carbon.LAUNCH_ACTION" />
             </intent-filter>
         </receiver>
 
