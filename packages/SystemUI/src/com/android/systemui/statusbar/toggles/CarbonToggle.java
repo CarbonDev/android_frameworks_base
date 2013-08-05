@@ -20,7 +20,8 @@ public class CarbonToggle extends BaseToggle {
     @Override
     public void onClick(View v) {
         Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setClassName("com.carbon.settings", "com.carbon.settings.Settings$CrSettingsActivity");
+        intent.setComponent(ComponentName
+                .unflattenFromString("com.carbon.settings/.CrSettingsActivity"));
         intent.addCategory("android.intent.category.LAUNCHER");
         collapseStatusBar();
         dismissKeyguard();
