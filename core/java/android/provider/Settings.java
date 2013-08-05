@@ -5822,7 +5822,7 @@ public final class Settings {
             MOUNT_UMS_NOTIFY_ENABLED,
             UI_NIGHT_MODE,
             DIALPAD_AUTOCOMPLETE,
-            PRIVACY_GUARD_DEFAULT
+            PRIVACY_GUARD_DEFAULT,
             UI_INVERTED_MODE
         };
 
