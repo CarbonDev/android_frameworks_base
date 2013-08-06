@@ -3245,6 +3245,12 @@ public final class Settings {
         public static final String POWER_MENU_SCREENSHOT_ENABLED = "power_menu_screenshot_enabled";
 
         /**
+         * Whether power menu torch is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_TORCH_ENABLED = "power_menu_torch_enabled";
+
+        /**
          * Whether power menu expanded desktop is enabled
          * @hide
          */
@@ -3942,6 +3948,7 @@ public final class Settings {
             QUIET_HOURS_DIM,
             SYSTEM_PROFILES_ENABLED,
             POWER_MENU_SCREENSHOT_ENABLED,
+            POWER_MENU_TORCH_ENABLED,
             POWER_MENU_REBOOT_ENABLED,
             POWER_MENU_PROFILES_ENABLED,
             POWER_MENU_AIRPLANE_ENABLED,
