@@ -46,7 +46,7 @@ import android.widget.FrameLayout;
  */
 public abstract class KeyguardViewBase extends FrameLayout {
 
-    protected static final int BACKGROUND_COLOR = 0x70000000;
+    protected static int BACKGROUND_COLOR = 112;
     private AudioManager mAudioManager;
     private TelephonyManager mTelephonyManager = null;
     protected KeyguardViewMediator.ViewMediatorCallback mViewMediatorCallback;
