@@ -40,6 +40,7 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -666,7 +667,8 @@ public class ResolverActivity extends AlertActivity implements AdapterView.OnIte
             text.setText(info.displayLabel);
             if (mShowExtended) {
                 text2.setVisibility(View.VISIBLE);
-                text2.setText(info.extendedInfo);
+                text2.setText(TextUtils.isEmpty(info.extendedInfo)
+                        ? null : "(" + info.extendedInfo + ")");
             } else {
                 text2.setVisibility(View.GONE);
             }
