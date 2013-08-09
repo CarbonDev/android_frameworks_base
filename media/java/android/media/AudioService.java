@@ -3729,7 +3729,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     readDockAudioSettings(mContentResolver);
 
                 } else if (uri.equals(Settings.System.getUriFor(Settings.System.VOLUME_LINK_NOTIFICATION))) {
-                    mLinkNotificationWithVolume = Settings.System.getInt(mContentResolver,
+                    mLinkNotificationWithVolume = Settings.System.getIntForUser(mContentResolver,
                             Settings.System.VOLUME_LINK_NOTIFICATION, 1, UserHandle.USER_CURRENT) == 1;
                     if (mLinkNotificationWithVolume) {
                         mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_RING;
