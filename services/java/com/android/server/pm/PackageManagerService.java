@@ -4176,10 +4176,6 @@ public class PackageManagerService extends IPackageManager.Stub {
                 return null;
             }
 
-            if (mFoundPolicyFile) {
-                SELinuxMMAC.assignSeinfoValue(pkg);
-            }
-
             pkg.applicationInfo.uid = pkgSetting.appId;
             pkg.mExtras = pkgSetting;
 
