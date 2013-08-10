@@ -361,38 +361,63 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 });
         }
 
+        // next: screenshot
+        // only shown if enabled, disabled by default
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_SCREENSHOT_ENABLED, 0) == 1) {
+            mItems.add(
+                new SinglePressAction(R.drawable.ic_lock_screenshot, R.string.global_action_screenshot) {
+                    public void onPress() {
+                        takeScreenshot();
+                    }
+
+                    public boolean showDuringKeyguard() {
+                        return true;
+                    }
+
+                    public boolean showBeforeProvisioning() {
+                        return true;
+                    }
+                });
+        }
+
+        // next: expanded desktop toggle
+        // only shown if enabled, disabled by default
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 0) == 1) {
+            mItems.add(mExpandDesktopModeOn);
+        }
+
         // next: airplane mode
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.POWER_MENU_AIRPLANE_ENABLED, 1) == 1) {
             mItems.add(mAirplaneModeOn);
         }
 
-        // last: Torch
-        if (mEnableTorchToggle) {
-            Slog.e(TAG, "Adding torch");
-            mItems.add(new SinglePressAction(com.android.internal.R.drawable.ic_lock_torch,
-                    R.string.global_action_torch) {
-                public void onPress() {
-                    Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
-                    i.putExtra("bright", false);
-                   mContext.sendBroadcast(i);
-                }
+        // next: profile
+        // only shown if both system profiles and the menu item is enabled, enabled by default
+        if ((Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SYSTEM_PROFILES_ENABLED, 1) == 1) &&
+                (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_PROFILES_ENABLED, 1) == 1)) {
+            mItems.add(
+                new ProfileChooseAction() {
+                    public void onPress() {
+                        showProfileDialog();
+                    }
 
-                public boolean showDuringKeyguard() {
-                    return true;
-                }
+                    public boolean onLongPress() {
+                        return true;
+                    }
 
-                public boolean showBeforeProvisioning() {
-                    return true;
-                }
-            });
-        } else {
-            Slog.e(TAG, "Not adding torch");
-        }
+                    public boolean showDuringKeyguard() {
+                        return false;
+                    }
 
-        // Next NavBar Hide
-        if(mEnableNavBarHideToggle) {
-            mItems.add(mNavBarHideToggle);
+                    public boolean showBeforeProvisioning() {
+                        return false;
+                    }
+                });
         }
 
         // next: bug report, if enabled
@@ -444,63 +469,38 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 });
         }
 
-        // next: expanded desktop toggle
-        // only shown if enabled, disabled by default
-        if(Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 0) == 1){
-            mItems.add(mExpandDesktopModeOn);
-        }
-
-        // next: profile
-        // only shown if both system profiles and the menu item is enabled, enabled by default
-        if ((Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEM_PROFILES_ENABLED, 1) == 1) &&
-                (Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.POWER_MENU_PROFILES_ENABLED, 1) == 1)) {
-            mItems.add(
-                new ProfileChooseAction() {
-                    public void onPress() {
-                        showProfileDialog();
-                    }
-
-                    public boolean onLongPress() {
-                        return true;
-                    }
-
-                    public boolean showDuringKeyguard() {
-                        return false;
-                    }
-
-                    public boolean showBeforeProvisioning() {
-                        return false;
-                    }
-                });
-        }
-
-        // next: screenshot
-        // only shown if enabled, disabled by default
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_SCREENSHOT_ENABLED, 0) == 1) {
-            mItems.add(
-                new SinglePressAction(R.drawable.ic_lock_screenshot, R.string.global_action_screenshot) {
-                    public void onPress() {
-                        takeScreenshot();
-                    }
-
-                    public boolean showDuringKeyguard() {
-                        return true;
-                    }
-
-                    public boolean showBeforeProvisioning() {
-                        return true;
-                    }
-                });
-        }
-
         // next: optionally add a list of users to switch to
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.POWER_MENU_USER_ENABLED, 0) == 1) {
             addUsersToMenu(mItems);
+        }
+
+        // Next NavBar Hide
+        if (mEnableNavBarHideToggle) {
+            mItems.add(mNavBarHideToggle);
+        }
+
+        // last: Torch
+        if (mEnableTorchToggle) {
+            Slog.e(TAG, "Adding torch");
+            mItems.add(new SinglePressAction(com.android.internal.R.drawable.ic_lock_torch,
+                    R.string.global_action_torch) {
+                public void onPress() {
+                    Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
+                    i.putExtra("bright", false);
+                   mContext.sendBroadcast(i);
+                }
+
+                public boolean showDuringKeyguard() {
+                    return true;
+                }
+
+                public boolean showBeforeProvisioning() {
+                    return true;
+                }
+            });
+        } else {
+            Slog.e(TAG, "Not adding torch");
         }
 
         // last: silent mode
