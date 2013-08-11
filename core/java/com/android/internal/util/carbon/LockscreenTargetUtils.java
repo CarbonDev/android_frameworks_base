@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.cm;
+package com.android.internal.util.carbon;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -144,7 +144,7 @@ public final class LockscreenTargetUtils {
         if (packageName != null) {
             try {
                 Context packageContext = context.createPackageContext(packageName, 0);
-                res = context.getResources();
+                res = packageContext.getResources();
             } catch (PackageManager.NameNotFoundException e) {
                 Log.w(TAG, "Could not fetch icons from package " + packageName);
                 return null;
