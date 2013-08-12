@@ -454,11 +454,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         } catch (android.os.RemoteException ex) {
             // failed to register listener
         }
-        if(ExtendedPropertiesUtils.isTablet()) {
-            if (mBar.getTabletTicker() != null) mBar.getTabletTicker().setUpdateEvent(this);
-        } else {
-            if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
-        }
+        if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
+ 
         mNotificationData = mBar.getNotificationData();
         loadLastNotification(true);
     }
