@@ -1020,11 +1020,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
             mHaloTextViewR.setText(tickerText);
             mHaloTextViewR.setPadding(shrt, top, wide, bttm);
-            mHaloTextViewR.setGravity(Gravity.CENTER_HORIZONTAL);
+            mHaloTextViewR.setGravity(Gravity.LEFT);
             mHaloTextViewR.setMaxLines(2);
             mHaloTextViewL.setText(tickerText);
             mHaloTextViewL.setPadding(wide, top, shrt, bttm);
-            mHaloTextViewL.setGravity(Gravity.CENTER_HORIZONTAL);
+            mHaloTextViewL.setGravity(Gravity.LEFT);
             mHaloTextViewL.setMaxLines(2);
 
             float total = TICKER_HIDE_TIME + startDuration + 1000;
@@ -1496,7 +1496,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                 mEffect.nap(HaloEffect.NAP_DELAY + HaloEffect.WAKE_TIME * 2);
                                 if (mHideTicker) mEffect.sleep(HaloEffect.SLEEP_DELAY + HaloEffect.WAKE_TIME * 2, HaloEffect.SLEEP_TIME, false);
                                 tick(entry, text, HaloEffect.WAKE_TIME * 2, 1000, false);
-                                mEffect.ping(mPaintHoloBlue, HaloEffect.WAKE_TIME * 2);
+                                if (mEnableColor) {
+                                    mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME * 2);
+                                } else {
+                                    mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
+                                }
                             }
                     }
                     }, 400);
