@@ -53,4 +53,6 @@
     <string name="toggle_STAYAWAKE">Stay Awake</string>
     <string name="toggle_WIRELESSADB">Wireless ADB</string>
     <string name="toggle_MUSIC">Music</string>
+    <string name="toggle_HALO">Halo</string>
+    <string name="toggle_TRDS">Dark Carbon</string>
 </resources>
