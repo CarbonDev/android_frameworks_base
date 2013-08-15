@@ -119,22 +119,12 @@ public class HaloProperties extends FrameLayout {
         mHaloIcon = (ImageView) mHaloBubble.findViewById(R.id.app_icon);
         mHaloOverlay = (ImageView) mHaloBubble.findViewById(R.id.halo_overlay);
 
-        final float scale = getResources().getDisplayMetrics().density;
-        int l = (int) (20 * scale + 0.5f);
-        int t = (int) (17 * scale + 0.5f);
-        int r = (int) (20 * scale + 0.5f);
-        int b = (int) (30 * scale + 0.5f);
-
         mHaloContentView = mInflater.inflate(R.layout.halo_speech, null);
         mHaloTickerContainer = (RelativeLayout)mHaloContentView.findViewById(R.id.container);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextViewR = (TextView) mHaloTickerContent.findViewById(R.id.bubble_r);
-        mHaloTextViewR.setPadding(l, t, r, b);
-        mHaloTextViewR.setMaxLines(3);
         mHaloTextViewR.setAlpha(0f);
         mHaloTextViewL = (TextView) mHaloTickerContent.findViewById(R.id.bubble_l);
-        mHaloTextViewL.setPadding(l, t, r, b);
-        mHaloTextViewL.setMaxLines(3);
         mHaloTextViewL.setAlpha(0f);
 
         updateColorView();
@@ -407,11 +397,11 @@ public class HaloProperties extends FrameLayout {
            mHaloBgCustom.setVisibility(View.VISIBLE);
 
            // Speech bubbles
-           mHaloTextViewL.setBackgroundResource(R.drawable.bubble_l_custom);
+           mHaloTextViewL.setBackgroundResource(R.drawable.custom_bubble_l);
            mHaloTextViewL.getBackground().setColorFilter(ColorFilterMaker.
                     changeColorAlpha(mBubbleColor, .32f, 0f));
            mHaloTextViewL.setTextColor(mTextColor);
-           mHaloTextViewR.setBackgroundResource(R.drawable.bubble_r_custom);
+           mHaloTextViewR.setBackgroundResource(R.drawable.custom_bubble_r);
            mHaloTextViewR.getBackground().setColorFilter(ColorFilterMaker.
                     changeColorAlpha(mBubbleColor, .32f, 0f));
            mHaloTextViewR.setTextColor(mTextColor);
