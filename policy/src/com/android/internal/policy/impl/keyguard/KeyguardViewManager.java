@@ -444,7 +444,7 @@ public class KeyguardViewManager {
                         ImageView mLockScreenWallpaperImage = new ImageView(flayout.getContext());
                         mLockScreenWallpaperImage.setScaleType(ScaleType.CENTER_CROP);
                         flayout.addView(mLockScreenWallpaperImage, -1, -1);
-                        Context settingsContext = context.createPackageContext("com.android.settings", 0);
+                        Context settingsContext = context.createPackageContext("com.carbon.settings", 0);
                         String wallpaperFile = settingsContext.getFilesDir() + "/lockwallpaper";
                         Bitmap background = BitmapFactory.decodeFile(wallpaperFile);
                         Drawable d = new BitmapDrawable(context.getResources(), background);

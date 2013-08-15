@@ -575,7 +575,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mSettingsButton.setImageResource(R.drawable.ic_notify_settings);
             }
         }
-	mHaloButton = (ImageView) mStatusBarWindow.findViewById(R.id.halo_button);
+
+	    mHaloButton = (ImageView) mStatusBarWindow.findViewById(R.id.halo_button);
         if (mHaloButton != null) {
             mHaloButton.setOnClickListener(mHaloButtonListener);
             mHaloButtonVisible = true;
@@ -1870,7 +1871,10 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public boolean isShowingSettings() {
-        return mHasFlipSettings && mFlipSettingsView.getVisibility() == View.VISIBLE;
+        if (mFlipSettingsView != null) {
+            return mHasFlipSettings && mFlipSettingsView.getVisibility() == View.VISIBLE;
+        }
+        return false;
     }
 
     public void completePartialFlip() {
@@ -3158,17 +3162,21 @@ public class PhoneStatusBar extends BaseStatusBar {
         @Override
         public void onChange(boolean selfChange) {
             setNotificationWallpaperHelper();
+            setNotificationAlphaHelper();
         }
 
         public void startObserving() {
             final ContentResolver cr = mContext.getContentResolver();
+
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NOTIF_WALLPAPER_ALPHA),
                     false, this);
+            setNotificationWallpaperHelper();
 
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NOTIF_ALPHA),
                     false, this);
+            setNotificationAlphaHelper();
         }
     }
 
@@ -3186,7 +3194,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
          background.setAlpha((int) ((1-wallpaperAlpha) * 255));
         }
+    }
 
+    private void setNotificationAlphaHelper() {
         float notifAlpha = Settings.System.getFloat(mContext.getContentResolver(), Settings.System.NOTIF_ALPHA, 0.0f);
         if (mPile != null) {
             int N = mNotificationData.size();
