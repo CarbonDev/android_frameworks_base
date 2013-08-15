@@ -65,7 +65,6 @@ import android.os.ServiceManager;
 import android.provider.Settings;
 import android.service.notification.INotificationListener;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -1007,25 +1006,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 return;
             }
 
-            DisplayMetrics dpm = mContext.getResources().getDisplayMetrics();
-
-            int shrt = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_short), dpm);
-            int wide = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_wide), dpm);
-            int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_top), dpm);
-            int bttm = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom), dpm);
-
             mHaloTextViewR.setText(tickerText);
-            mHaloTextViewR.setPadding(shrt, top, wide, bttm);
-            mHaloTextViewR.setGravity(Gravity.LEFT);
-            mHaloTextViewR.setMaxLines(2);
             mHaloTextViewL.setText(tickerText);
-            mHaloTextViewL.setPadding(wide, top, shrt, bttm);
-            mHaloTextViewL.setGravity(Gravity.LEFT);
-            mHaloTextViewL.setMaxLines(2);
 
             float total = TICKER_HIDE_TIME + startDuration + 1000;
             PropertyValuesHolder tickerUpFrames = PropertyValuesHolder.ofKeyframe("haloContentAlpha",

@@ -35,6 +35,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.provider.Settings;
 
@@ -104,6 +105,17 @@ public class HaloProperties extends FrameLayout {
 
         mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        DisplayMetrics dpm = mContext.getResources().getDisplayMetrics();
+
+        int shrt = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 
+                mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_short), dpm);
+        int wide = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
+                mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_wide), dpm);
+        int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 
+                mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_top), dpm);
+        int bttm = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
+                mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom), dpm);
+
         mHaloDismiss = mContext.getResources().getDrawable(R.drawable.halo_dismiss);
         mHaloBackL = mContext.getResources().getDrawable(R.drawable.halo_back_left);
         mHaloBackR = mContext.getResources().getDrawable(R.drawable.halo_back_right);
@@ -123,9 +135,11 @@ public class HaloProperties extends FrameLayout {
         mHaloTickerContainer = (RelativeLayout)mHaloContentView.findViewById(R.id.container);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextViewR = (TextView) mHaloTickerContent.findViewById(R.id.bubble_r);
-        mHaloTextViewR.setAlpha(0f);
+        mHaloTextViewR.setPadding(shrt, top, wide, bttm);
+        mHaloTextViewR.setAlpha(1f);
         mHaloTextViewL = (TextView) mHaloTickerContent.findViewById(R.id.bubble_l);
-        mHaloTextViewL.setAlpha(0f);
+        mHaloTextViewL.setPadding(wide, top, shrt, bttm);
+        mHaloTextViewL.setAlpha(1f);
 
         updateColorView();
 
