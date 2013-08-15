@@ -90,6 +90,11 @@ public class QuickSettingsTileView extends RelativeLayout {
         inflater.inflate(layoutId, this);
     }
 
+    @Override
+    public void setVisibility(int vis) {
+        super.setVisibility(vis);
+    }
+
     public class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
