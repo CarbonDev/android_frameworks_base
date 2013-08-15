@@ -110,6 +110,14 @@ public class TvStatusBar extends BaseStatusBar {
     }
 
     @Override
+    public void setImeShowStatus(boolean enabled) {
+    }
+
+    @Override
+    public void setAutoRotate(boolean enabled) {
+    }
+
+    @Override
     public void toggleRecentApps() {
     }
 

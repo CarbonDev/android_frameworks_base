@@ -59,6 +59,8 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_NOTIFICATION_SHADE  = 17 << MSG_SHIFT;
     private static final int MSG_TOGGLE_QS_SHADE            = 18 << MSG_SHIFT;
     private static final int MSG_TOGGLE_STATUS_BAR          = 19 << MSG_SHIFT;
+    private static final int MSG_SET_IME_STATUS             = 20 << MSG_SHIFT;
+    private static final int MSG_SET_AUTOROTATE_STATUS      = 21 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -96,6 +98,8 @@ public class CommandQueue extends IStatusBar.Stub {
         public void topAppWindowChanged(boolean visible);
         public void setImeWindowStatus(IBinder token, int vis, int backDisposition);
         public void setHardKeyboardStatus(boolean available, boolean enabled);
+        public void setImeShowStatus(boolean enabled);
+        public void setAutoRotate(boolean enabled);
         public void toggleNotificationShade();
         public void toggleQSShade();
         public void toggleStatusBar(boolean enable);
@@ -233,6 +237,22 @@ public class CommandQueue extends IStatusBar.Stub {
         }
     }
 
+    public void setImeShowStatus(boolean enabled) {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_SET_IME_STATUS);
+            mHandler.obtainMessage(MSG_SET_IME_STATUS,
+                enabled ? 1 : 0, 0, null).sendToTarget();
+        }
+    }
+
+    public void setAutoRotate(boolean enabled) {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_SET_AUTOROTATE_STATUS);
+            mHandler.obtainMessage(MSG_SET_AUTOROTATE_STATUS,
+                enabled ? 1 : 0, 0, null).sendToTarget();
+        }
+    }
+
     public void toggleRecentApps() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_RECENT_APPS);
@@ -328,6 +348,12 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_SET_HARD_KEYBOARD_STATUS:
                     mCallbacks.setHardKeyboardStatus(msg.arg1 != 0, msg.arg2 != 0);
+                    break;
+                case MSG_SET_IME_STATUS:
+                    mCallbacks.setImeShowStatus(msg.arg1 != 0);
+                    break;
+                case MSG_SET_AUTOROTATE_STATUS:
+                    mCallbacks.setAutoRotate(msg.arg1 != 0);
                     break;
                 case MSG_TOGGLE_NOTIFICATION_SHADE:
                     mCallbacks.toggleNotificationShade();

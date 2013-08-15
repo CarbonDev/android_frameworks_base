@@ -30,10 +30,9 @@ import android.graphics.Region;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ResultReceiver;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.InputType;
@@ -66,6 +65,8 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.android.internal.statusbar.IStatusBarService;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -324,7 +325,8 @@ public class InputMethodService extends AbstractInputMethodService {
     boolean mForcedAutoRotate;
     Handler mHandler;
 
-    boolean mPermissionAllowsFeature;
+    private IStatusBarService mStatusBarService;
+    private Object mServiceAquireLock = new Object();
 
     final Insets mTmpInsets = new Insets();
     final int[] mTmpLocation = new int[2];
@@ -682,26 +684,14 @@ public class InputMethodService extends AbstractInputMethodService {
             mWindow.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         }
 
+        //IME is not showing on first onCreate
         try {
-            mPermissionAllowsFeature = false;
-            String[] currentDefaultImePackage = null;
-            PackageManager pm = getPackageManager();
-
-            String defaultImePackage = Settings.Secure.getString(
-                getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
-            if (defaultImePackage != null) {
-                currentDefaultImePackage = defaultImePackage.split("/", 2);
+            IStatusBarService statusbar = getStatusBarService();
+            if (statusbar != null) {
+                statusbar.setImeShowStatus(false);
             }
-            PackageInfo packageInfo = pm.getPackageInfo(currentDefaultImePackage[0], PackageManager.GET_PERMISSIONS);
-            String[] requestedPermissions = packageInfo.requestedPermissions;
-            if(requestedPermissions != null) {
-                for (int i = 0; i < requestedPermissions.length; i++) {
-                    if (requestedPermissions[i].equals(android.Manifest.permission.WRITE_SETTINGS)) {
-                        mPermissionAllowsFeature = true;
-                    }
-                }
-            }
-        } catch (NameNotFoundException e) {
+        } catch (RemoteException e) {
+            mStatusBarService = null;
         }
 
         initViews();
@@ -1470,18 +1460,32 @@ public class InputMethodService extends AbstractInputMethodService {
             mWindowWasVisible = true;
             mInShowWindow = false;
         }
-        if (mPermissionAllowsFeature) {
-            int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
-                    Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
-            if (mKeyboardRotationTimeout > 0) {
-                mHandler.removeCallbacks(restoreAutoRotation);
-                if (!mForcedAutoRotate) {
-                    boolean isAutoRotate = (Settings.System.getInt(getContentResolver(),
-                            Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
-                    if (!isAutoRotate) {
-                        mForcedAutoRotate = true;
-                        Settings.System.putInt(getContentResolver(),
-                                Settings.System.ACCELEROMETER_ROTATION, 1);
+
+        //IME softkeyboard is showing....toggle it
+        IStatusBarService statusbar = getStatusBarService();
+        try {
+            if (statusbar != null) {
+                statusbar.setImeShowStatus(true);
+            }
+        } catch (RemoteException e) {
+            mStatusBarService = null;
+        }
+
+        int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
+                Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
+        if (mKeyboardRotationTimeout > 0) {
+            mHandler.removeCallbacks(restoreAutoRotation);
+            if (!mForcedAutoRotate) {
+                boolean isAutoRotate = (Settings.System.getInt(getContentResolver(),
+                        Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
+                if (!isAutoRotate) {
+                    try {
+                        if (statusbar != null) {
+                            statusbar.setAutoRotate(true);
+                            mForcedAutoRotate = true;
+                        }
+                    } catch (RemoteException e) {
+                        mStatusBarService = null;
                     }
                 }
             }
@@ -1568,24 +1572,36 @@ public class InputMethodService extends AbstractInputMethodService {
             onWindowHidden();
             mWindowWasVisible = false;
         }
-        if (mPermissionAllowsFeature) {
-            int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
-                    Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
-            if (mKeyboardRotationTimeout > 0) {
-                mHandler.removeCallbacks(restoreAutoRotation);
-                if (mForcedAutoRotate) {
-                    mHandler.postDelayed(restoreAutoRotation, mKeyboardRotationTimeout);
-                }
+        //IME softkeyboard is hiding....toggle it
+        try {
+            IStatusBarService statusbar = getStatusBarService();
+            if (statusbar != null) {
+                statusbar.setImeShowStatus(false);
+            }
+        } catch (RemoteException e) {
+            mStatusBarService = null;
+        }
+
+        int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
+                Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
+        if (mKeyboardRotationTimeout > 0) {
+            mHandler.removeCallbacks(restoreAutoRotation);
+            if (mForcedAutoRotate) {
+                mHandler.postDelayed(restoreAutoRotation, mKeyboardRotationTimeout);
             }
         }
     }
-
+ 
     final Runnable restoreAutoRotation = new Runnable() {
         @Override public void run() {
-            if (mPermissionAllowsFeature) {
-                Settings.System.putInt(getContentResolver(),
-                        Settings.System.ACCELEROMETER_ROTATION, 0);
+            try {
+                IStatusBarService statusbar = getStatusBarService();
+                if (statusbar != null) {
+                    statusbar.setAutoRotate(false);
+                }
                 mForcedAutoRotate = false;
+            } catch (RemoteException e) {
+                mStatusBarService = null;
             }
         }
     };
@@ -2257,6 +2273,16 @@ public class InputMethodService extends AbstractInputMethodService {
             ic.performContextMenuAction(id);
         }
         return true;
+    }
+
+    IStatusBarService getStatusBarService() {
+        synchronized (mServiceAquireLock) {
+            if (mStatusBarService == null) {
+                mStatusBarService = IStatusBarService.Stub.asInterface(
+                        ServiceManager.getService("statusbar"));
+            }
+            return mStatusBarService;
+        }
     }
     
     /**
