@@ -234,6 +234,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     View mFlipSettingsView;
     QuickSettingsContainerView mSettingsContainer;
     int mSettingsPanelGravity;
+    private NotifChangedObserver mNotifChangedObserver;
 
     // Dark Carbon
     boolean mUiModeIsToggled;
@@ -727,6 +728,10 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
             mToggleManager.updateSettings();
         }
+
+        // Start observing for changes on Notification Drawer (Background & Alpha)
+        mNotifChangedObserver = new NotifChangedObserver(mHandler);
+        mNotifChangedObserver.startObserving();
 
         mClingShown = ! (DEBUG_CLINGS 
             || !Prefs.read(mContext).getBoolean(Prefs.SHOWN_QUICK_SETTINGS_HELP, false));
