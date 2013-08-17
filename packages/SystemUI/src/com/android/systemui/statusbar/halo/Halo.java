@@ -161,7 +161,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private String mNotificationText = "";
 
     private Paint mPaintHolo = new Paint();
-    private Paint mPaintHoloCustom = new Paint();
     private Paint mPaintWhite = new Paint();
     private Paint mPaintHoloRed = new Paint();
 
@@ -183,6 +182,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private int mKillX, mKillY;
     private int mMarkerIndex = -1;
     private int mDismissDelay = 100;
+    private int color = 0;
 
     private int oldIconIndex = -1;
     private float initialX = 0;
@@ -227,11 +227,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
             if (!selfChange) {
                 mEffect.wake();
-                if (mEnableColor) {
-                    mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME);
-                } else {
-                    mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
-                }
+                mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
                 mEffect.nap(HaloEffect.SNAP_TIME + 1000);
                 if (mHideTicker) mEffect.sleep(HaloEffect.SNAP_TIME + HaloEffect.NAP_TIME + 2500, HaloEffect.SLEEP_TIME, false);
             }
@@ -305,13 +301,15 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         mTriggerPos = getWMParams();
 
         // Init colors
-        int color = Settings.System.getInt(mContext.getContentResolver(), 
+        color = Settings.System.getInt(mContext.getContentResolver(), 
                Settings.System.HALO_EFFECT_COLOR, 0xFF33B5E5);
 
-        mPaintHoloCustom.setAntiAlias(true);
-        mPaintHoloCustom.setColor(color);
         mPaintHolo.setAntiAlias(true);
-        mPaintHolo.setColor(getResources().getColor(R.color.halo_ping_color));
+        if (mEnableColor) {
+            mPaintHolo.setColor(color);
+        } else {
+            mPaintHolo.setColor(mContext.getResources().getColor(R.color.halo_ping_color));
+        }
         mPaintWhite.setAntiAlias(true);
         mPaintWhite.setColor(0xfff0f0f0);
         mPaintHoloRed.setAntiAlias(true);
@@ -868,11 +866,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                 tick(mLastNotificationEntry, 0, -1, false, true);
 
                                 // Ping to notify the user we're back where we started
-                                if (mEnableColor) {
-                                    mEffect.ping(mPaintHoloCustom, 0);
-                                } else {
-                                    mEffect.ping(mPaintHolo, 0);
-                                }
+                                mEffect.ping(mPaintHolo, 0);
                             } else {
                                 setIcon(iconIndex);
                                 NotificationData.Entry entry = mNotificationData.get(iconIndex);
@@ -1434,11 +1428,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                             tick(entry, HaloEffect.WAKE_TIME * 2, 1000, true, true);
 
                             // Pop while not tasking, only if notification is certified fresh
-                            if (mEnableColor) {
-                                if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME * 2);
-                            } else {
-                                if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
-                            }
+                            if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
                         }
                     }
                     break;
@@ -1578,11 +1568,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                 mEffect.nap(HaloEffect.NAP_DELAY + HaloEffect.WAKE_TIME * 2);
                                 if (mHideTicker) mEffect.sleep(HaloEffect.SLEEP_DELAY + HaloEffect.WAKE_TIME * 2, HaloEffect.SLEEP_TIME, false);
                                 tick(entry, HaloEffect.WAKE_TIME * 2, 1000, false, true);
-                                if (mEnableColor) {
-                                    mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME * 2);
-                                } else {
-                                    mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
-                                }
+                                mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
                             }
                     }
                     }, 400);
