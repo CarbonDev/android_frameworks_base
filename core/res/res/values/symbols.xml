@@ -1956,6 +1956,7 @@
   <java-symbol type="string" name="lockscreen_discharging" />
 
   <java-symbol type="string" name="config_legacyUmsLunFile" />
+  <java-symbol type="bool" name="config_noDelayInATwoDP" />
 
   <!-- Panel auto brightness -->
   <java-symbol type="integer" name="config_panelAutoBrightnessValue" />
