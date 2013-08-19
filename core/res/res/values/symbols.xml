@@ -1956,6 +1956,7 @@
   <java-symbol type="string" name="lockscreen_discharging" />
 
   <java-symbol type="string" name="config_legacyUmsLunFile" />
+  <java-symbol type="bool" name="config_noDelayInATwoDP" />
 
   <!-- Panel auto brightness -->
   <java-symbol type="integer" name="config_panelAutoBrightnessValue" />
@@ -1978,6 +1979,7 @@
   <java-symbol type="string" name="action_lastapp"/>
   <java-symbol type="string" name="action_power"/>
   <java-symbol type="string" name="action_notifications"/>
+  <java-symbol type="string" name="action_quicksettings"/>
   <java-symbol type="string" name="action_assist"/>
   <java-symbol type="string" name="action_clockoptions"/>
   <java-symbol type="string" name="action_voiceassist"/>

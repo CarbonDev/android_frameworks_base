@@ -725,6 +725,22 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     @Override
+    public void toggleQSShade() {
+    }
+
+    @Override
+    public void toggleStatusBar(boolean enable) {
+    }
+
+    @Override
+    public void setImeShowStatus(boolean enabled) {
+    }
+
+    @Override
+    public void setAutoRotate(boolean enabled) {
+    }
+
+    @Override
     protected void updateSearchPanel() {
         super.updateSearchPanel();
         mSearchPanelView.setStatusBarView(mStatusBarView);
@@ -1113,7 +1129,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     @Override
-    public void animateExpandSettingsPanel() {
+    public void animateExpandSettingsPanel(boolean flip) {
         // TODO: Implement when TabletStatusBar begins to be used.
     }
 

@@ -90,6 +90,9 @@ public class NavBarHelpers {
         case ACTION_NOTIFICATIONS:
             newDrawable = mContext.getResources().getDrawable(R.drawable.ic_sysbar_notifications);
             break;
+        case ACTION_QUICKSETTINGS:
+            newDrawable = mContext.getResources().getDrawable(R.drawable.ic_sysbar_quicksettings);
+            break;
         case ACTION_LAST_APP:
             newDrawable = mContext.getResources().getDrawable(R.drawable.ic_sysbar_lastapp);
             break;
@@ -142,6 +145,9 @@ public class NavBarHelpers {
             break;
         case ACTION_NOTIFICATIONS:
             newSummary = mContext.getResources().getString(R.string.action_notifications);
+            break;
+        case ACTION_QUICKSETTINGS:
+            newSummary = mContext.getResources().getString(R.string.action_quicksettings);
             break;
         case ACTION_LAST_APP:
             newSummary = mContext.getResources().getString(R.string.action_lastapp);
