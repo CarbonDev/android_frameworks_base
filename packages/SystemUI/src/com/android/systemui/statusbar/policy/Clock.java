@@ -338,17 +338,17 @@ public class Clock extends TextView {
 
         int defaultColor = getResources().getColor(
                 com.android.internal.R.color.holo_blue_light);
-        int customColor = Settings.System.getInt(mContext.getContentResolver(),
+        boolean customColor = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
 
         if (customColor) {
-            clockColor = Settings.System.getInt(mContext.getContentResolver(),
+            mClockColor = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUS_ICON_COLOR, defaultColor);
-            if (clockColor == Integer.MIN_VALUE) {
+            if (mClockColor == Integer.MIN_VALUE) {
                 // flag to reset the color
-                clockColor = defaultColor;
+                mClockColor = defaultColor;
             }
-            setTextColor(clockColor);
+            setTextColor(mClockColor);
         } else {
             mClockColor = Settings.System.getInt(resolver,
                     Settings.System.STATUSBAR_CLOCK_COLOR, -2);

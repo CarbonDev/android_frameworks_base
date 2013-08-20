@@ -72,7 +72,7 @@ public class SbBatteryController extends LinearLayout {
     private int mLevel = -1;
     private boolean mPlugged = false;
 
-    private int customColor;
+    private boolean customColor;
     private int color = 0;
 
     public static final int STYLE_ICON_ONLY = 0;

@@ -343,7 +343,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     // tracking calls to View.setSystemUiVisibility()
     int mSystemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE;
 
-    private int customColor;
+    private boolean customColor;
     private int color = 0;
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();

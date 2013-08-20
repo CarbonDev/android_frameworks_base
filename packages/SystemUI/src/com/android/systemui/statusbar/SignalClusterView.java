@@ -59,7 +59,7 @@ public class SignalClusterView
     private int mEtherIconId = 0;
     private String mWifiDescription, mMobileDescription, mMobileTypeDescription, mEtherDescription;
 
-    private int customColor;
+    private boolean customColor;
     private int color = 0;
 
     ViewGroup mWifiGroup, mMobileGroup;
@@ -310,7 +310,6 @@ public class SignalClusterView
                 mEther.setImageDrawable(etherBitmap);
             }
 
-            mEther.setVisibility(View.VISIBLE);
             mEther.setImageResource(mEtherIconId);
             mEther.setContentDescription(mEtherDescription);
         } else {
@@ -348,6 +347,5 @@ public class SignalClusterView
                 Settings.System.STATUS_ICON_COLOR, 0);
         customColor = Settings.System.getInt(resolver,
                 Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
-        apply();
     }
 }
