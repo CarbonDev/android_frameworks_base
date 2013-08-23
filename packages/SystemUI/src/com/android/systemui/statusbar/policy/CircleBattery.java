@@ -90,7 +90,7 @@ public class CircleBattery extends ImageView {
     private int mCircleAnimSpeed;
     private int mCircleReset;
 
-    private int customColor = 0;
+    private boolean customColor;
     private int color = 0;
 
     // runnable to invalidate view via mHandler.postDelayed() call
@@ -146,7 +146,7 @@ public class CircleBattery extends ImageView {
             color = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUS_ICON_COLOR, 0);
             customColor = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.ICON_COLOR_BEHAVIOR, 0);
+                    Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
 
             if (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_RESET, 0) == 1) {
