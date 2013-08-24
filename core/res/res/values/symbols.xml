@@ -243,6 +243,7 @@
   <java-symbol type="attr" name="drawer_shadow"/>
   <java-symbol type="attr" name="drawer_background"/>
   <java-symbol type="attr" name="ic_drawer"/>
+  <java-symbol type="attr" name="nd_divider_color"/>
 
   <java-symbol type="bool" name="action_bar_embed_tabs" />
   <java-symbol type="bool" name="action_bar_embed_tabs_pre_jb" />
