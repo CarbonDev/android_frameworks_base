@@ -197,7 +197,7 @@
     <color name="keyguard_avatar_frame_pressed_color">#ff35b5e5</color>
 
     <!-- Navigation drawer dividers -->
-    <color name="nd_divider_color_holo_dark">#80c9c9c9</color>
-    <color name="nd_divider_color_holo_light">#80e3e3e3</color>
+    <color name="nd_divider_color_holo_dark">#66c9c9c9</color>
+    <color name="nd_divider_color_holo_light">#66e3e3e3</color>
 </resources>
 
