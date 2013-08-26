@@ -4757,13 +4757,6 @@ public final class Settings {
         public static final String NAVIGATION_BAR_COLOR = "navigation_bar_color";
 
         /**
-         * wake up when plugged or unplugged
-         *
-         * @hide
-         */
-        public static final String WAKEUP_WHEN_PLUGGED_UNPLUGGED = "wakeup_when_plugged_unplugged";
-
-        /**
          * @hide
          */
         public static final String NAVIGATION_BAR_ALPHA_CONFIG = "navigation_bar_alpha_config";
