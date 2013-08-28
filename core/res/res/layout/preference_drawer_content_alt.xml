@@ -72,13 +72,13 @@
     </LinearLayout>
 
     <ListView android:id="@android:id/list"
-        android:layout_width="280dp"
+        android:layout_width="265dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="?android:attr/drawer_background"
+        android:divider="?android:attr/nd_divider_color"
+        android:dividerHeight="1dp"
+        android:background="#3A3A3A"
         android:scrollbarStyle="@integer/preference_screen_header_scrollbarStyle"
         android:drawSelectorOnTop="false"
         android:cacheColorHint="@android:color/transparent"

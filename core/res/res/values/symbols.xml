@@ -1114,6 +1114,7 @@
   <java-symbol type="layout" name="preference" />
   <java-symbol type="layout" name="preference_header_item" />
   <java-symbol type="layout" name="preference_drawer_content" />
+  <java-symbol type="layout" name="preference_drawer_content_alt" />
   <java-symbol type="layout" name="preference_list_content" />
   <java-symbol type="layout" name="preference_list_content_single" />
   <java-symbol type="layout" name="preference_list_fragment" />
