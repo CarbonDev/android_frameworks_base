@@ -657,4 +657,7 @@
     <string name="halo_tutorial2">Move me: 2x-tap &amp; drag</string>
     <string name="halo_tutorial3">Browse tasks: Horizontal drag</string>
 
+    <!-- Label in drop down to identify brightness slider -->
+    <string name="brightness_label">Brightness</string>
+
 </resources>

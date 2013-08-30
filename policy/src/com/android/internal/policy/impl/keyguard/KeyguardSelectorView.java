@@ -75,13 +75,17 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private String[] mStoredTargets;
     private int mTargetOffset;
     private boolean mIsScreenLarge;
-    private UnlockReceiver receiver;
+    private UnlockReceiver mUnlockReceiver;
     private IntentFilter filter;
+    private boolean mReceiverRegistered = false;
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
 
         public void onTrigger(View v, int target) {
-            mContext.unregisterReceiver(receiver);
+            if (mReceiverRegistered) {
+                mContext.unregisterReceiver(mUnlockReceiver);
+                mReceiverRegistered = false;
+            }
             if (mStoredTargets == null) {
                 final int resId = mGlowPadView.getResourceIdForTarget(target);
                 switch (resId) {
@@ -239,8 +243,11 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mUnlockBroadcasted = false;
         filter = new IntentFilter();
         filter.addAction(UnlockReceiver.ACTION_UNLOCK_RECEIVER);
-        receiver = new UnlockReceiver();
-        mContext.registerReceiver(receiver, filter);
+        if (mUnlockReceiver == null) {
+            mUnlockReceiver = new UnlockReceiver();
+        }
+        mContext.registerReceiver(mUnlockReceiver, filter);
+        mReceiverRegistered = true;
     }
 
     public void setCarrierArea(View carrierArea) {
@@ -446,11 +453,22 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     @Override
     public void onPause() {
         KeyguardUpdateMonitor.getInstance(getContext()).removeCallback(mInfoCallback);
+        if (mReceiverRegistered) {
+            mContext.unregisterReceiver(mUnlockReceiver);
+            mReceiverRegistered = false;
+        }
     }
 
     @Override
     public void onResume(int reason) {
         KeyguardUpdateMonitor.getInstance(getContext()).registerCallback(mInfoCallback);
+        if (!mReceiverRegistered) {
+            if (mUnlockReceiver == null) {
+               mUnlockReceiver = new UnlockReceiver();
+            }
+            mContext.registerReceiver(mUnlockReceiver, filter);
+            mReceiverRegistered = true;
+        }
     }
 
     @Override
@@ -484,7 +502,10 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                     mCallback.dismiss(false);
                 }
             }
-            mContext.unregisterReceiver(receiver);
+            if (mReceiverRegistered) {
+                mContext.unregisterReceiver(mUnlockReceiver);
+                mReceiverRegistered = false;
+            }
         }
     }
 }
