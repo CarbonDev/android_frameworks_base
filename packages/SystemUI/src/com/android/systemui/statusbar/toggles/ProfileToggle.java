@@ -67,7 +67,8 @@ public class ProfileToggle extends BaseToggle {
                 mIsRegistered = true;
 
                 IntentFilter filter = new IntentFilter();
-                filter.addAction(ProfileManagerService.INTENT_ACTION_PROFILE_SELECTED);
+                filter.addAction(ProfileManager.INTENT_ACTION_PROFILE_SELECTED);
+                filter.addAction(ProfileManager.INTENT_ACTION_PROFILE_UPDATED);
                 mContext.registerReceiver(mProfileReceiver, filter);
             }
         }
