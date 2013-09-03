@@ -80,8 +80,8 @@ public class FastChargeToggle extends StatefulToggle {
     }
 
     private void setFastCharge(final boolean on) {
-        Intent fastChargeIntent = new Intent("com.android.settings.ACTION_CHANGE_FCHARGE_STATE");
-        fastChargeIntent.setPackage("com.android.settings");
+        Intent fastChargeIntent = new Intent("com.carbon.settings.ACTION_CHANGE_FCHARGE_STATE");
+        fastChargeIntent.setPackage("com.carbon.settings");
         fastChargeIntent.putExtra("newState", on);
         mContext.sendBroadcast(fastChargeIntent);
         scheduleViewUpdate();
