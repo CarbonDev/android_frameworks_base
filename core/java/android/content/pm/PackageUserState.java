@@ -29,7 +29,6 @@ public class PackageUserState {
     public boolean notLaunched;
     public boolean installed;
     public int enabled;
-    public boolean privacyGuard;
 
     public String lastDisableAppCaller;
 
@@ -39,7 +38,6 @@ public class PackageUserState {
     public PackageUserState() {
         installed = true;
         enabled = COMPONENT_ENABLED_STATE_DEFAULT;
-        privacyGuard = false;
     }
 
     public PackageUserState(PackageUserState o) {
