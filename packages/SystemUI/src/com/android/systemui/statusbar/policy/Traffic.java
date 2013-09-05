@@ -181,7 +181,7 @@ public class Traffic extends TextView {
                 }
                 setTextColor(mTrafficColor);
             } else {
-                mTrafficColor = Settings.System.getInt(resolver,
+                mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.STATUSBAR_CLOCK_COLOR, -2);
                 if (mTrafficColor == Integer.MIN_VALUE
                         || mTrafficColor == -2) {
