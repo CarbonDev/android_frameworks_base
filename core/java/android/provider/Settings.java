@@ -6694,6 +6694,12 @@ public final class Settings {
         public static final String KILL_APP_LONGPRESS_BACK = "kill_app_longpress_back";
 
         /**
+         * Whether newly installed apps should run with privacy guard by default
+         * @hide
+         */
+         public static final String PRIVACY_GUARD_DEFAULT = "privacy_guard_default";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
@@ -6739,6 +6745,7 @@ public final class Settings {
             UI_NIGHT_MODE,
             DIALPAD_AUTOCOMPLETE,
             UI_INVERTED_MODE
+            PRIVACY_GUARD_DEFAULT
         };
 
         /**
