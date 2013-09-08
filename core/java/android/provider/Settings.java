@@ -4275,9 +4275,15 @@ public final class Settings {
                 "task_close",
                 "task_to_front",
                 "task_to_back",
+                "wallpaper_open",
+                "wallpaper_close",
+                "wallpaper_intra_open",
+                "wallpaper_intra_close",
         };
 
         public static final String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
+
+        public static final String ANIMATION_CONTROLS_NO_OVERRIDE = "animation_controls_no_override";
 
         /**
          * Whether to use keyguard or homescreen widgets
