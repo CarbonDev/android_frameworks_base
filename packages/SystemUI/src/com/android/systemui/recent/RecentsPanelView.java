@@ -22,7 +22,9 @@ import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
+import android.app.SearchManager;
 import android.app.TaskStackBuilder;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -103,7 +105,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     private ImageView mClearRecents;
+    private ImageView mGNowRecents;
     private LinearColorBar mRamUsageBar;
+    private SearchManager mSearchManager;
 
     private long mFreeMemory;
     private long mTotalMemory;
@@ -378,6 +382,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
             mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
+            mGNowRecents.setVisibility(View.VISIBLE);
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -513,6 +518,23 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     } catch (Exception e) {
                         Log.d(TAG, "Flush caches failed!");
                     }
+                    return true;
+                }
+            });
+        }
+
+        mGNowRecents = (ImageView) findViewById(R.id.recents_google_assist);
+        if (mGNowRecents != null){
+            mGNowRecents.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchAssistAction();
+                }
+            });
+            mGNowRecents.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    launchAssistLongPressAction();
                     return true;
                 }
             });
@@ -879,6 +901,45 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             }
         });
         popup.show();
+    }
+
+    private void launchAssistLongPressAction() {
+        // launch the search activity
+        Intent intent = new Intent(Intent.ACTION_SEARCH_LONG_PRESS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            // TODO: This only stops the factory-installed search manager.  
+            // Need to formalize an API to handle others
+            SearchManager searchManager = getSearchManager();
+            if (searchManager != null) {
+                searchManager.stopSearch();
+            }
+            mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
+        } catch (ActivityNotFoundException e) {
+            Log.w(TAG, "No activity to handle assist long press action.", e);
+        }
+    }
+
+    private void launchAssistAction() {
+        Intent intent = ((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
+                .getAssistIntent(mContext, true, UserHandle.USER_CURRENT);
+        if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            try {
+                mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
+            } catch (ActivityNotFoundException e) {
+                Log.w(TAG, "No activity to handle assist action.", e);
+            }
+        }
+    }
+
+    private SearchManager getSearchManager() {
+        if (mSearchManager == null) {
+            mSearchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
+        }
+        return mSearchManager;
     }
 
     private void updateRamBar() {
