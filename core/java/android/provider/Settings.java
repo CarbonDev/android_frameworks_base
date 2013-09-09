@@ -3065,6 +3065,13 @@ public final class Settings {
         public static final String QS_DISABLE_PANEL = "qs_disable_panel";
 
         /**
+         * Google Assistant in Recents
+         *
+         * @hide
+         */
+        public static final String RECENTS_TARGET_ASSIST = "recents_target_assist";
+
+        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide

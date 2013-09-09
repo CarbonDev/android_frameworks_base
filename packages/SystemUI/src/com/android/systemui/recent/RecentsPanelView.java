@@ -377,12 +377,14 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         if (show) {
             // if there are no apps, bring up a "No recent apps" message
+            boolean showGIcon = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.RECENTS_TARGET_ASSIST, 0) == 1;
             boolean noApps = mRecentTaskDescriptions != null
                     && (mRecentTaskDescriptions.size() == 0);
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
             mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
-            mGNowRecents.setVisibility(View.VISIBLE);
+            mGNowRecents.setVisibility(showGIcon ? View.VISIBLE : View.GONE);
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
