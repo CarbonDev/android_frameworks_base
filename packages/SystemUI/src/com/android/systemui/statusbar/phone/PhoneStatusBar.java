@@ -420,49 +420,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             } catch (RemoteException ex) { }
         }
     };
-=======
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SCREEN_BRIGHTNESS_MODE), false, this, mCurrentUserId);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANDED_VIEW_WIDGET), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_SHORTCUTS_TOGGLE), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER), false, this, UserHandle.USER_ALL);
-            update();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            update();
-        }
-
-        public void update() {
-            ContentResolver resolver = mContext.getContentResolver();
-            boolean autoBrightness = Settings.System.getIntForUser(
-                    resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0, mCurrentUserId) ==
-                    Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
-            mBrightnessControl = !autoBrightness && Settings.System.getInt(
-                    resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
-            mNotificationShortcutsToggle = Settings.System.getIntForUser(resolver,
-                    Settings.System.NOTIFICATION_SHORTCUTS_TOGGLE, 0, UserHandle.USER_CURRENT) != 0;
-            mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(resolver,
-                    Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
-            if (mCarrierLabel != null) {
-                toggleCarrierAndWifiLabelVisibility();
-            }
-        }
-    }
->>>>>>> 47ff892... Framework: Notification Shortcuts (1/2)
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     private boolean mUserSetup = false;
@@ -3720,9 +3677,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             updateStatusBar();
         }
 
-        mNotificationShortcutsToggle = Settings.System.getIntForUser(resolver,
+        mNotificationShortcutsToggle = Settings.System.getIntForUser(cr,
                     Settings.System.NOTIFICATION_SHORTCUTS_TOGGLE, 0, UserHandle.USER_CURRENT) != 0;
-        mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(resolver,
+        mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(cr,
                 Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
         if (mCarrierLabel != null) {
             toggleCarrierAndWifiLabelVisibility();
