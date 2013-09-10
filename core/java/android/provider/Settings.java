@@ -287,7 +287,7 @@ public final class Settings {
      */
     @SdkConstant(SdkConstantType.ACTIVITY_INTENT_ACTION)
     public static final String ACTION_NOTIFICATION_SHORTCUTS_SETTINGS =
-            "android.settings.slim.notificationshortcuts.NOTIFICATION_SHORTCUTS";
+            "com.carbon.settings.fragments.notificationshortcuts.NotificationShortcuts";
 
     /**
      * Activity Action: Show settings to allow configuration of locale.
