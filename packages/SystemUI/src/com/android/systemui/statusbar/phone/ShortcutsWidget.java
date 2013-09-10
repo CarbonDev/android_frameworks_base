@@ -491,7 +491,7 @@ public class ShortcutsWidget extends LinearLayout {
                 mExternalLongClickListener.onLongClick(v);
             }
             try {
-                Intent i = new Intent("com.carbon.settings.fragments.notificationshortcuts.NotificationShortcuts");
+                Intent i = new Intent("com.carbon.settings.fragments.notificationshortcuts.NOTIFICATION_SHORTCUTS");
                 i.addCategory(Intent.CATEGORY_DEFAULT);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(i);
