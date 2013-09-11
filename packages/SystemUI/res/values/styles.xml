@@ -153,6 +153,7 @@
       <item name="android:layout_marginRight">4dp</item>
       <item name="android:paddingBottom">1dp</item>
       <item name="android:layout_gravity">left|bottom</item>
+      <item name="android:fontFamily">sans-serif-condensed</item>
       <item name="android:textSize">11dp</item>
       <item name="android:textStyle">bold</item>
       <item name="android:shadowColor">#FF000000</item>
@@ -165,14 +166,15 @@
       <item name="android:layout_marginRight">9.5dp</item>
       <item name="android:paddingBottom">1dp</item>
       <item name="android:layout_gravity">left|bottom</item>
+      <item name="android:fontFamily">sans-serif-condensed</item>
       <item name="android:textSize">12dp</item>
       <item name="android:textStyle">normal</item>
-      <item name="android:textColor">@android:color/holo_blue_light</item>
     </style>
 
     <style name="Battery_Center">
       <item name="android:layout_marginRight">0dp</item>
       <item name="android:layout_gravity">center</item>
+      <item name="android:fontFamily">sans-serif-condensed</item>
       <item name="android:textSize">9dp</item>
       <item name="android:textStyle">bold</item>
       <item name="android:shadowColor">#FF000000</item>
@@ -194,8 +196,6 @@
         <item name="android:textSize">14dp</item>
         <item name="android:textColor">#ff3a3b39</item>
     </style>
-    
-    
 
     <style name="TextAppearance.QuickSettings.TileView.User" parent="@style/TextAppearance.QuickSettings.TileView">
         <item name="android:background">#CC000000</item>
