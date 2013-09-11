@@ -73,6 +73,7 @@ public class SbBatteryController extends LinearLayout {
     private boolean mPlugged = false;
 
     private boolean customColor;
+    protected int mBatteryTextColor = com.android.internal.R.color.holo_blue_dark;
     private int color = 0;
 
     public static final int STYLE_ICON_ONLY = 0;
@@ -275,6 +276,29 @@ public class SbBatteryController extends LinearLayout {
                 Settings.System.STATUS_ICON_COLOR, 0);
         customColor = Settings.System.getInt(cr,
                 Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
+
+        int defaultColor = getResources().getColor(com.android.internal.R.color.holo_blue_dark);
+
+        if (customColor) {
+            mBatteryTextColor = Settings.System.getInt(cr,
+                    Settings.System.STATUS_ICON_COLOR, defaultColor);
+            if (mBatteryTextColor == Integer.MIN_VALUE) {
+                // flag to reset the color
+                mBatteryTextColor = defaultColor;
+            }
+            mBatteryTextOnly.setTextColor(mBatteryTextColor);
+            mBatteryTextCM.setTextColor(mBatteryTextColor);
+        } else {
+            mBatteryTextColor = Settings.System.getInt(cr,
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR, -2);
+            if (mBatteryTextColor == Integer.MIN_VALUE
+                    || mBatteryTextColor == -2) {
+                // flag to reset the color
+                mBatteryTextColor = defaultColor;
+            }
+            mBatteryTextOnly.setTextColor(mBatteryTextColor);
+            mBatteryTextCM.setTextColor(mBatteryTextColor);
+        }
 
         switch (mBatteryStyle) {
             case STYLE_ICON_ONLY:
