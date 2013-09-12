@@ -452,7 +452,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         updateHalo();
     }
 
-    protected void updateHalo() {
+    public void updateHalo() {
         mHaloEnabled = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HALO_ENABLED, 0) == 1;
         mHaloActive = Settings.System.getInt(mContext.getContentResolver(),
