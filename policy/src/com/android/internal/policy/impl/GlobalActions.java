@@ -475,13 +475,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 });
         }
 
-        // net: silent mode
-        if ((Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_SOUND_ENABLED, 1) == 1) &&
-                (mShowSilentToggle)) {
-            mItems.add(mSilentModeAction);
-        }
-
         // next: Torch
         if (mEnableTorchToggle) {
             Slog.e(TAG, "Adding torch");
@@ -503,6 +496,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             });
         } else {
             Slog.e(TAG, "Not adding torch");
+        }
+
+        // net: silent mode
+        if ((Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_SOUND_ENABLED, 1) == 1) &&
+                (mShowSilentToggle)) {
+            mItems.add(mSilentModeAction);
         }
 
         // last NavBar Hide
