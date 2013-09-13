@@ -17,17 +17,13 @@
 package com.android.systemui.statusbar.halo;
 
 import android.os.Handler;
-<<<<<<< HEAD
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.ContentObserver;
-import android.graphics.ColorFilterMaker;
-=======
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
->>>>>>> b443699... HALO Mods (1/2)
+import android.database.ContentObserver;
+import android.graphics.ColorFilterMaker;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.ColorFilter;
