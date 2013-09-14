@@ -23,4 +23,9 @@
         <item>@drawable/ic_qs_perf_profile_perf</item>
     </string-array>
 
+    <!-- Active display -->
+    <array name="ad_targets_unlock_only">
+        <item>@drawable/ic_ad_target_unlock</item>
+    </array>
+
 </resources>
