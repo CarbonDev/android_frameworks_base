@@ -26,7 +26,7 @@ public class Traffic extends TextView {
 	float speed;
 	float totalRxBytes;
 
-        protected int mTrafficColor = com.android.internal.R.color.holo_blue_light;
+    protected int mTrafficColor = com.android.internal.R.color.holo_blue_light;
 
 	class SettingsObserver extends ContentObserver {
 		SettingsObserver(Handler handler) {
@@ -36,23 +36,19 @@ public class Traffic extends TextView {
 		void observe() {
 			ContentResolver resolver = mContext.getContentResolver();
 			resolver.registerContentObserver(Settings.System
-					.getUriFor(Settings.System.STATUS_BAR_TRAFFIC), false,
-                                        this);
-                        resolver.registerContentObserver(Settings.System
-                                         .getUriFor(Settings.System.STATUSBAR_CLOCK_COLOR), false,
-                                         this);
-                        resolver.registerContentObserver(Settings.System
-                                        .getUriFor(Settings.System.STATUS_ICON_COLOR), false,
-                                         this);
-                        resolver.registerContentObserver(Settings.System
-                                         .getUriFor(Settings.System.ICON_COLOR_BEHAVIOR), false,
-                                         this);
+					.getUriFor(Settings.System.STATUS_BAR_TRAFFIC), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUSBAR_CLOCK_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_ICON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.ICON_COLOR_BEHAVIOR), false, this);
 		}
 
 		@Override
 		public void onChange(boolean selfChange) {
 			updateSettings();
-                        updateColorSettings();
+            updateColorSettings();
 		}
 	}
 
@@ -85,6 +81,7 @@ public class Traffic extends TextView {
 					getHandler());
 		}
 		updateSettings();
+		updateColorSettings();
 	}
 
 	@Override
@@ -166,29 +163,29 @@ public class Traffic extends TextView {
 			setVisibility(View.GONE);
 	}
 
-        private void updateColorSettings() {
-            int defaultColor = getResources().getColor(
-                    com.android.internal.R.color.holo_blue_light);
-            boolean customColor = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
+    private void updateColorSettings() {
+        int defaultColor = getResources().getColor(
+                com.android.internal.R.color.holo_blue_light);
+        boolean customColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
 
-            if (customColor) {
-                mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.STATUS_ICON_COLOR, defaultColor);
-                if (mTrafficColor == Integer.MIN_VALUE) {
-                    // flag to reset the color
-                    mTrafficColor = defaultColor;
-                }
-                setTextColor(mTrafficColor);
-            } else {
-                mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.STATUSBAR_CLOCK_COLOR, -2);
-                if (mTrafficColor == Integer.MIN_VALUE
-                        || mTrafficColor == -2) {
-                    // flag to reset the color
-                    mTrafficColor = defaultColor;
-                }
-                setTextColor(mTrafficColor);
+        if (customColor) {
+            mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUS_ICON_COLOR, defaultColor);
+            if (mTrafficColor == Integer.MIN_VALUE) {
+                // flag to reset the color
+                mTrafficColor = defaultColor;
             }
+            setTextColor(mTrafficColor);
+        } else {
+            mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_CLOCK_COLOR, -2);
+            if (mTrafficColor == Integer.MIN_VALUE
+                    || mTrafficColor == -2) {
+                // flag to reset the color
+                mTrafficColor = defaultColor;
+            }
+            setTextColor(mTrafficColor);
         }
+    }
 }
