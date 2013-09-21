@@ -3379,7 +3379,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 } else {
                     // Landscape screen; nav bar goes to the right.
-                    int left = displayWidth - overscanRight - navWidth;
+                    int left = displayWidth - overscanRight
+                            - mNavigationBarWidthForRotation[displayRotation];
                     mTmpNavigationFrame.set(left, 0, displayWidth - overscanRight, displayHeight);
                     if (!mNavBarAutoHide)
                         mStableRight = mStableFullscreenRight = mTmpNavigationFrame.left;
