@@ -17,7 +17,6 @@
 
 package com.android.internal.policy.impl;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManagerNative;
@@ -247,9 +246,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     /** If true, hitting shift & menu will broadcast Intent.ACTION_BUG_REPORT */
     boolean mEnableShiftMenuBugReports = false;
-
-    // Kill task
-    private final static String SysUIPackage = "com.android.systemui";
 
     boolean mHeadless;
     boolean mSafeMode;
@@ -993,31 +989,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
     };
-
-    public static class KillTask implements Runnable {
-         private Context mContext;
-         public KillTask(Context context) {
-             this.mContext = context;
-         }
-         public void run() {
-            final Intent intent = new Intent(Intent.ACTION_MAIN);
-            final ActivityManager am = (ActivityManager) mContext
-                    .getSystemService(Activity.ACTIVITY_SERVICE);
-            String defaultHomePackage = "com.android.launcher";
-            intent.addCategory(Intent.CATEGORY_HOME);
-            final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
-            if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
-                defaultHomePackage = res.activityInfo.packageName;
-            }
-            String packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
-            if (SysUIPackage.equals(packageName))
-                return; // don't kill SystemUI
-            if (!defaultHomePackage.equals(packageName)) {
-                am.forceStopPackage(packageName);
-                Toast.makeText(mContext, R.string.app_killed_message, Toast.LENGTH_SHORT).show();
-            }
-        }
-     }
 
     private final Runnable mRingerChordLongPress = new Runnable() {
         public void run() {
@@ -2809,8 +2780,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (Settings.Secure.getInt(mContext.getContentResolver(),
                     Settings.Secure.KILL_APP_LONGPRESS_BACK, 0) == 1) {
                 if (down && repeatCount == 0) {
-                    KillTask mKillTask = new KillTask(mContext);
-                    mHandler.postDelayed(mKillTask, mBackKillTimeout);
+                    mHandler.postDelayed(mBackLongPress, mBackKillTimeout);
                 }
             }
         }
