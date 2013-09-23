@@ -130,7 +130,6 @@ public class ActiveDisplayView extends FrameLayout {
     private Sensor mLightSensor;
     private Sensor mProximitySensor;
     private boolean mProximityIsFar = true;
-    private boolean mWakedByPocketMode = false;
     private boolean mIsInBrightLight = false;
     private LinearLayout mOverflowNotifications;
     private LayoutParams mRemoteViewLayoutParams;
@@ -187,7 +186,6 @@ public class ActiveDisplayView extends FrameLayout {
 
         public void onTrigger(final View v, final int target) {
             if (target == UNLOCK_TARGET) {
-                mWakedByPocketMode = false;
                 mNotification = null;
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
@@ -202,7 +200,6 @@ public class ActiveDisplayView extends FrameLayout {
                     }
                 }
             } else if (target == OPEN_APP_TARGET) {
-                mWakedByPocketMode = false;
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
                     try {
@@ -666,7 +663,6 @@ public class ActiveDisplayView extends FrameLayout {
     }
 
     private void turnScreenOff() {
-        mWakedByPocketMode = false;
         try {
             mPM.goToSleep(SystemClock.uptimeMillis(), 0);
         } catch (RemoteException e) {
@@ -995,20 +991,11 @@ public class ActiveDisplayView extends FrameLayout {
                 if (value >= mProximitySensor.getMaximumRange()) {
                     mProximityIsFar = true;
                     if (!isScreenOn() && mPocketModeEnabled && !isOnCall()) {
-                        mWakedByPocketMode = true;
-
                         mNotification = getNextAvailableNotification();
                         if (mNotification != null) showNotification(mNotification, true);
                     }
                 } else {
                     mProximityIsFar = false;
-                    if (isScreenOn() && mPocketModeEnabled && !isOnCall() && mWakedByPocketMode) {
-                        mWakedByPocketMode = false;
-
-                        restoreBrightness();
-                        cancelTimeoutTimer();
-                        turnScreenOff();
-                    }
                 }
             } else if (event.sensor.equals(mLightSensor)) {
                 boolean isBright = mIsInBrightLight;
