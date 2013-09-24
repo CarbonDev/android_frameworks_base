@@ -46,7 +46,6 @@ public class PackageUserState {
         notLaunched = o.notLaunched;
         enabled = o.enabled;
         lastDisableAppCaller = o.lastDisableAppCaller;
-        privacyGuard = o.privacyGuard;
         disabledComponents = o.disabledComponents != null
                 ? new HashSet<String>(o.disabledComponents) : null;
         enabledComponents = o.enabledComponents != null

@@ -263,7 +263,6 @@ class PackageSettingBase extends GrantedPermissions {
         state.stopped = stopped;
         state.notLaunched = notLaunched;
         state.lastDisableAppCaller = lastDisableAppCaller;
-        state.privacyGuard = privacyGuard;
         state.enabledComponents = enabledComponents;
         state.disabledComponents = disabledComponents;
     }
