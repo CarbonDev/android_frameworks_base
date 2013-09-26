@@ -144,15 +144,6 @@
                     android:layout_gravity="bottom|left"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/recents_google_assist"
-                        android:clickable="true"
-                        android:layout_width="43dp"
-                        android:layout_height="43dp"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_recents_gassist" />
-		  
-		    
                     <ImageView android:id="@+id/recents_clear_BL"
                         android:clickable="true"
                         android:layout_width="43dp"
@@ -160,6 +151,14 @@
                         android:scaleType="center"
                         android:src="@drawable/ic_recents_clear" />
 
+                    <ImageView
+                        android:id="@+id/recents_google_assist"
+                        android:clickable="true"
+                        android:layout_width="43dp"
+                        android:layout_height="43dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_recents_gassist" />
+		 
                 </LinearLayout>
 
             </FrameLayout>
