@@ -108,6 +108,7 @@ import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.phone.Ticker;
+import com.android.systemui.statusbar.policy.HaloPolicy;
 
 public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
@@ -131,6 +132,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         DOWN2
     }
 
+    private HaloPolicy mHaloPolicy;
     private Context mContext;
     private PackageManager mPm;
     private Handler mHandler;
@@ -161,6 +163,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private String mNotificationText = "";
 
     private Paint mPaintHolo = new Paint();
+    private Paint mPaintHoloBlue = new Paint();
     private Paint mPaintWhite = new Paint();
     private Paint mPaintHoloRed = new Paint();
 
@@ -168,7 +171,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private boolean isBeingDragged = false;
     private boolean mHapticFeedback;
     private boolean mHideTicker;
-    private boolean mEnableColor;
     private boolean mNinjaMode;
     private boolean mFirstStart = true;
     private boolean mInitialized = false;
@@ -179,6 +181,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private boolean mInteractionReversed = true;
     private boolean hiddenState = false;
     private boolean statusAnimation = false;
+    private boolean mEnableColor;
 
     private int mIconSize, mIconHalfSize;
     private int mScreenWidth, mScreenHeight;
@@ -238,9 +241,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                    Settings.System.HALO_NINJA, 0) == 1;
 
             if (!selfChange) {
-                //mEffect.wake();
                 mBar.restartHalo();
-                //mEffect.ping(mPaintHoloBlue, HaloEffect.WAKE_TIME);
                 mEffect.nap(HaloEffect.SNAP_TIME + 1000);
                 if (mHideTicker) mEffect.sleep(HaloEffect.SNAP_TIME + HaloEffect.NAP_TIME + 2500, HaloEffect.SLEEP_TIME, false);
             }
@@ -282,6 +283,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         super(context, attrs, defStyle);
         mContext = context;
         mPm = mContext.getPackageManager();
+        mHaloPolicy = new HaloPolicy(mContext);
         mWindowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
         mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -320,11 +322,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                Settings.System.HALO_EFFECT_COLOR, 0xFF33B5E5);
 
         mPaintHolo.setAntiAlias(true);
-        if (mEnableColor) {
-            mPaintHolo.setColor(color);
-        } else {
-            mPaintHolo.setColor(mContext.getResources().getColor(R.color.halo_ping_color));
-        }
+        mPaintHolo.setColor(color);
+        mPaintHoloBlue.setAntiAlias(true);
+        mPaintHoloBlue.setColor(mContext.getResources().getColor(R.color.halo_ping_color));
         mPaintWhite.setAntiAlias(true);
         mPaintWhite.setColor(0xfff0f0f0);
         mPaintHoloRed.setAntiAlias(true);
@@ -496,7 +496,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
             // failed to register listener
         }
         if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
- 
         mNotificationData = mBar.getNotificationData();
         loadLastNotification(true);
     }
@@ -1284,9 +1283,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                     updateTriggerPosition(triggerWidth, mHaloY);
                 }});
             int haloCounterType = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.HALO_NOTIFY_COUNT, 4);
+                    Settings.System.HALO_NOTIFY_COUNT, HALO_NOTIFY_BOTH);
 
-            if (haloCounterType == 2 || haloCounterType == 4) {
+            if (haloCounterType == HALO_NOTIFY_TOTAL || haloCounterType == HALO_NOTIFY_BOTH) {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         if (mState != State.GESTURES && mState != State.DRAG) {
@@ -1379,11 +1378,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 mHaloStatusText.setFakeBoldText(true);
                 mHaloStatusText.setTextSize(mStatusTextSize);
                 mHaloStatusText.setAlpha(mHaloTime.getAlpha());
-                canvas.drawText(mEffect.getSimpleTime(), mStatusB_X, timePosY + mIconHalfSize, mHaloStatusText);
+                canvas.drawText(mHaloPolicy.getSimpleTime(), mStatusB_X, timePosY + mIconHalfSize, mHaloStatusText);
                 mHaloStatusText.setFakeBoldText(false);
                 mHaloStatusText.setTextSize(mStatusTextSize/2);
-                canvas.drawText(mEffect.getDayofWeek(), mStatusB_X, timePosY + mIconHalfSize + mStatusTextSize, mHaloStatusText);
-                canvas.drawText(mEffect.getDayOfMonth(), mStatusB_X, timePosY + mIconHalfSize + mStatusTextSize + (mStatusTextSize/2) + 5, mHaloStatusText);
+                canvas.drawText(mHaloPolicy.getDayofWeek(), mStatusB_X, timePosY + mIconHalfSize + mStatusTextSize, mHaloStatusText);
+                canvas.drawText(mHaloPolicy.getDayOfMonth(), mStatusB_X, timePosY + mIconHalfSize + mStatusTextSize + (mStatusTextSize/2) + 5, mHaloStatusText);
 
                 // Battery
                 float div1 = 1 - ((float) mHaloBattery.getAlpha()) / 225;
@@ -1392,20 +1391,20 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 mHaloStatusText.setFakeBoldText(true);
                 mHaloStatusText.setTextSize(mStatusTextSize);
                 mHaloStatusText.setAlpha(mHaloBattery.getAlpha());
-                canvas.drawText(mEffect.getBatteryLevel() + "%", mStatusB_X, batteryPosY + mIconHalfSize, mHaloStatusText);
+                canvas.drawText(mHaloPolicy.getBatteryLevel() + "%", mStatusB_X, batteryPosY + mIconHalfSize, mHaloStatusText);
                 mHaloStatusText.setFakeBoldText(false);
                 mHaloStatusText.setTextSize(mStatusTextSize/2);
-                String bStat = mEffect.getBatteryStatus() ?
+                String bStat = mHaloPolicy.getBatteryStatus() ?
                         mContext.getResources().getString(R.string.halo_battery_plugged) :
                         mContext.getResources().getString(R.string.halo_battery_unplugged);
-                if (mEffect.getBatteryLevel() == 100) bStat = mContext.getResources().getString(R.string.halo_battery_full);
+                if (mHaloPolicy.getBatteryLevel() == 100) bStat = mContext.getResources().getString(R.string.halo_battery_full);
                 canvas.drawText(bStat, mStatusB_X, batteryPosY + mIconHalfSize + mStatusTextSize, mHaloStatusText);
 
                 // Mobile Signal
                 float div2 = 1 - ((float) mHaloSignal.getAlpha()) / 225;
                 int signalPosY = (int) (mIconHalfSize - mStatusBubbleS.getWidth() / 2 - mIconSize * div2) + mStatusBubbleT.getWidth() + mStatusBubbleB.getWidth();
                 canvas.drawBitmap(mStatusBubbleS, mStatusB_X - mStatusBubbleS.getWidth() / 2, signalPosY, mHaloSignal);
-                if (!mEffect.getConnectionStatus()) {
+                if (!mHaloPolicy.getConnectionStatus()) {
                     mEffect.mHaloStatusText.setColor(0xff000000);
                 } else {
                     mEffect.mHaloStatusText.setColor(0xfff0f0f0);
@@ -1413,13 +1412,13 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 mHaloStatusText.setFakeBoldText(true);
                 mHaloStatusText.setTextSize(mStatusTextSize/1.5f);
                 mHaloStatusText.setAlpha(mHaloSignal.getAlpha());
-                canvas.drawText(mEffect.getProvider(), mStatusB_X, signalPosY + mIconHalfSize, mHaloStatusText);
+                canvas.drawText(mHaloPolicy.getProvider(), mStatusB_X, signalPosY + mIconHalfSize, mHaloStatusText);
                 mHaloStatusText.setFakeBoldText(false);
                 mHaloStatusText.setTextSize(mStatusTextSize/2);
-                canvas.drawText(mEffect.getDataStatus(), mStatusB_X, signalPosY + mIconHalfSize - mStatusTextSize, mHaloStatusText);
-                canvas.drawText( mEffect.getAirplaneModeStatus() ? mContext.getResources().getString(R.string.halo_aeroplane1) : mEffect.getSignalStatus(),
+                canvas.drawText(mHaloPolicy.getDataStatus(), mStatusB_X, signalPosY + mIconHalfSize - mStatusTextSize, mHaloStatusText);
+                canvas.drawText( mHaloPolicy.getAirplaneModeStatus() ? mContext.getResources().getString(R.string.halo_aeroplane1) : mHaloPolicy.getSignalStatus(),
                         mStatusB_X, signalPosY + mIconHalfSize + mStatusTextSize, mHaloStatusText);
-                if (mEffect.getAirplaneModeStatus()) canvas.drawText(mContext.getResources().getString(R.string.halo_aeroplane2), mStatusB_X,
+                if (mHaloPolicy.getAirplaneModeStatus()) canvas.drawText(mContext.getResources().getString(R.string.halo_aeroplane2), mStatusB_X,
                         signalPosY + mIconHalfSize + mStatusTextSize + (mStatusTextSize/2) + 5, mHaloStatusText);
             }
             // Horizontal Marker
@@ -1585,6 +1584,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         mEffect.animateHaloBatch(n.number, -1, alwaysFlip, delay, msgType);
     }
 
+    public void updateTicker(StatusBarNotification notification) {
+        loadLastNotification(true);
+    }
+
     // This is the android ticker callback
     public void updateTicker(StatusBarNotification notification, String text) {
         boolean allowed = false; // default off
@@ -1626,7 +1629,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                             tick(entry, HaloEffect.WAKE_TIME * 2, 1000, true, showMsgBox, false);
 
                             // Pop while not tasking, only if notification is certified fresh
-                            if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
+                            if (mEnableColor) {
+                                if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
+                            } else {
+                                if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHoloBlue, HaloEffect.WAKE_TIME * 2);
+                            }
                         }
                     }
                     break;
@@ -1776,7 +1783,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                 if (mHideTicker) mEffect.sleep(HaloEffect.SLEEP_DELAY + HaloEffect.WAKE_TIME * 2, HaloEffect.SLEEP_TIME, false);
                                 boolean showMsgBox = Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_MSGBOX, 1) == 1;
                                 tick(entry, HaloEffect.WAKE_TIME * 2, 1000, false, showMsgBox, false);
-                                mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
+                                if (mEnableColor) {
+                                    mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME * 2);
+                                } else {
+                                    mEffect.ping(mPaintHoloBlue, HaloEffect.WAKE_TIME * 2);
+                                }
                                 mPingNewcomer = false;
                             }
                     }
