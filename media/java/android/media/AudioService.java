@@ -800,7 +800,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
             mSafeVolumeEnabled = new Boolean(safeVolumeEnabled(cr));
 
             mVolumeKeysControlRingStream = Settings.System.getIntForUser(cr,
-                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
+                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1, UserHandle.USER_CURRENT) == 1;
         }
 
         mLinkNotificationWithVolume = Settings.System.getIntForUser(cr,
@@ -3789,7 +3789,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     mSafeVolumeEnabled = safeVolumeEnabled(mContentResolver);
                 } else if (uri.equals(Settings.System.getUriFor(Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM))) {
                     mVolumeKeysControlRingStream = Settings.System.getIntForUser(mContentResolver,
-                            Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
+                            Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1, UserHandle.USER_CURRENT) == 1;
                 }
             }
         }
