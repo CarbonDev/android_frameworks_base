@@ -250,7 +250,6 @@ public class CircleBattery extends ImageView {
                     Settings.System.STATUSBAR_BATTERY_ICON, 0));
 
         mObserver = new SettingsObserver(mHandler);
-
         mBatteryReceiver = new BatteryReceiver(mContext);
 
         initializeCircleVars();
