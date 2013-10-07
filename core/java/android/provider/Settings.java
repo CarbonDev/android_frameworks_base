@@ -3053,12 +3053,6 @@ public final class Settings {
          */
         public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
 
-	/**
-         * Do you want popups/floating windows?
-         * @hide
-         */
-        public static final String WE_WANT_POPUPS = "we_want_popups";
-
         /**
          * Pie menu, should default to 0 (no, show only when needed)
          * Restart Launcher
