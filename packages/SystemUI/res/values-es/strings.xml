@@ -205,15 +205,133 @@
     <string name="status_bar_help_title" msgid="1199237744086469217">"Las notificaciones aparecen aquí"</string>
     <string name="status_bar_help_text" msgid="7874607155052076323">"Desliza el dedo hacia abajo para acceder al contenido."\n"Vuelve a deslizar el dedo hacia abajo para acceder a los controles del sistema."</string>
 
-    <string name="quick_settings_screen_sleep">Bloquear</string>
-    <string name="quick_settings_ringer_on">Sonido ON</string>
-    <string name="quick_settings_ringer_off">Sonido OFF</string>
-    <string name="quick_settings_vibration_on">Vibración ON</string>
-    <string name="quick_settings_vibration_off">Vibración OFF</string>
-    <string name="quick_settings_label_enabled">ON</string>
-    <string name="quick_settings_label_disabled">OFF</string>
+    <!--  Carbon Strings can go here... -->
+
+    <string name="powerwidget_screen_timeout_toast">Tiempo de espera de pantalla establecido: %1$d %2$s</string>
+
+    <!-- Recents Ram Bar -->
+    <string name="memory">RAM</string>
+    <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
+    <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> libre</string>
+    <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
+    <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> en uso</string>
+
+    <!-- Quick Settings -->
+    <string name="quick_settings_gps">GPS</string>
+    <string name="quick_settings_gps_off">GPS off</string>
+    <string name="quick_settings_screen_sleep">Apagar</string>
+    <string name="quick_settings_ringer_on">Sonido on</string>
+    <string name="quick_settings_ringer_off">Sonido off</string>
+    <string name="quick_settings_vibration_on">Vibración on</string>
+    <string name="quick_settings_vibration_off">Vibración off</string>
+    <string name="quick_settings_label_enabled">On</string>
+    <string name="quick_settings_label_disabled">Off</string>
     <string name="quick_settings_ringer_normal">Sonido</string>
     <string name="quick_settings_lockscreen">Pantalla Bloqueo</string>
-    <string name="quick_settings_network_type">Red móvil</string>
+    <string name="quick_settings_network_type">Modo de red</string>
     <string name="quick_settings_report_bug">Informar de error</string>
+    <string name="quick_settings_sync">Sincr.</string>
+    <string name="quick_settings_sync_off">Sincr. off</string>
+    <string name="quick_settings_torch">Linterna</string>
+    <string name="quick_settings_torch_off">Linterna off</string>
+    <string name="quick_settings_nfc">NFC</string>
+    <string name="quick_settings_nfc_off">NFC off</string>
+    <string name="quick_settings_fcharge">Carga rápida</string>
+    <string name="quick_settings_screen_timeout">Tiempo de espera</string>
+    <string name="quick_settings_screen_timeout_summary" translatable="false">%1$d %2$s</string>
+    <string name="quick_settings_screen_timeout_summary_never">Nunca</string>
+    <string name="quick_settings_usb_tether_off_label">Desconectado</string>
+    <string name="quick_settings_usb_tether_connected_label">Anclaje off</string>
+    <string name="quick_settings_usb_tether_on_label">Anclaje</string>
+    <string name="quick_settings_wifiap">AP Wi-Fi</string>
+    <string name="quick_settings_wifiap_off">AP Wi-Fi off</string>
+    <string name="quick_settings_quiethours">Horas tranquilidad</string>
+    <string name="quick_settings_quiethours_off">Horas tranquilidad off</string>
+    <string name="quick_settings_lte">LTE</string>
+    <string name="quick_settings_lte_off">LTE off</string>
+    <string name="quick_settings_volume">Volumen</string>
+    <string name="quick_settings_camera_label">Cámara</string>
+    <string name="quick_settings_carbon_label">Ajustes Carbon</string>
+    <string name="quick_settings_powermenu_label">Menú apagado</string>
+    <string name="quick_settings_network_adb_disabled_label">Deshabilitado</string>
+    <string name="quick_settings_network_adb_enabled_label">Habilitado</string>
+    <string name="quick_settings_trds_label">Dark Carbon</string>
+    <string name="quick_settings_trds_on_label">Dark Carbon On</string>
+    <string name="quick_settings_trds_off_label">Dark Carbon Off</string>
+    <string name="quick_settings_music_play">Play</string>
+    <string name="quick_settings_music_pause">Pausa</string>
+
+    <!-- Camera tile toasts -->
+    <string name="quick_settings_camera_error_connect">No se puede conectar con la cámara</string>
+
+    <!-- Expanded desktop strings break the rules a bit - the icon identifies the feature, the string indicates current state -->
+    <string name="quick_settings_expanded_desktop">Expandido</string>
+    <string name="quick_settings_expanded_desktop_off">Normal</string>
+
+    <!-- QuickSettings: Profile [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_profile_label">Perfil</string>
+
+    <!-- Notification drawer toasts -->
+    <string name="calendar_error_alert">Aplicación de calendario no instalada.</string>
+    <string name="clock_error_alert">Aplicación de reloj no instalada.</string>
+
+    <!--  App window Strings -->
+    <string name="close">Cerrar</string>
+    <string name="app_window">Aplicaciones</string>
+    <string name="toggles">Interruptores</string>
+    <string name="ribbon">Ribbon</string>
+
+    <!--  Target/Action Strings -->
+    <string name="shortcut_label">Acciones AOKP</string>
+    <string name="action_home">Inicio</string>
+    <string name="action_back">Atrás</string>
+    <string name="action_recents">Recientes</string>
+    <string name="action_screenshot">Captura pantalla</string>
+    <string name="action_menu">Menú</string>
+    <string name="action_ime">Abrir selector IME</string>
+    <string name="action_kill">Cerrar proceso</string>
+    <string name="action_power">Botón encendido</string>
+    <string name="action_search">Búsqueda</string>
+    <string name="action_notifications">Notificaciones</string>
+    <string name="action_quicksettings">Ajustes rápidos</string>
+    <string name="action_lastapp">Última aplicación</string>
+    <string name="action_none">Vacío</string>
+
+    <string name="widgets">Widgets</string>
+    <string name="toggle_navbar">Barra nav. - Interruptor</string>
+    <string name="toggle_statusbar">Barra estado - Interruptor</string>
+    <string name="toggle_widgets">Widgets - Interruptor</string>
+    <string name="toggle_ring_vib">Sonar/Vib - Interruptor</string>
+    <string name="toggle_ring_silent">Sonar/Silencio - Interruptor</string>
+    <string name="toggle_ring_vib_silent">Sonar/Vib/Silencio - Interruptor</string>
+    <string name="app_killed_message">Aplicación cerrada</string>
+
+    <!-- Halo -->
+    <string name="halo_dismiss">Desechar notificación</string>
+    <string name="halo_hide">Ocultar</string>
+    <string name="halo_clear_all">Desechar todas las notificaciones</string>
+    <string name="halo_silence">Ocultar &amp; y silenciar hasta despertar</string>
+    <string name="halo_tutorial1">Esto es HALO</string>
+    <string name="halo_tutorial2">Muéveme: doble toque &amp; arrastra</string>
+    <string name="halo_tutorial3">Cambia entre notificaciones: Arrastre horizontal</string>
+    <string name="halo_battery_plugged">CARGANDO</string>
+    <string name="halo_battery_unplugged">PENDIENTES</string>
+    <string name="halo_battery_full">LLENO</string>
+    <string name="halo_aeroplane1">AVIÓN</string>
+    <string name="halo_aeroplane2">MODO</string>
+    <string name="halo_wifi_on">WI-FI ON</string>
+    <string name="halo_wifi_off">WI-FI OFF</string>
+    <string name="halo_signal_bars_4">LLENO</string>
+    <string name="halo_signal_bars_3">TRES BARRAS</string>
+    <string name="halo_signal_bars_2">DOS BARRAS</string>
+    <string name="halo_signal_bars_1">UNA BARRA</string>
+    <string name="halo_signal_bars_none">SIN BARRAS</string>
+
+    <string name="pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pie_hour_format_12">hh:mm</string>
+    <string name="pie_hour_format_24">HH:mm</string>
+    <string name="pie_am_pm">a</string>
+
+    <!-- Label in drop down to identify brightness slider -->
+    <string name="brightness_label">Brillo</string>
 </resources>
