@@ -50,6 +50,10 @@ public class NetworkStatsView extends LinearLayout {
 
     SettingsObserver mSettingsObserver;
 
+    protected int mTrafficColor = com.android.internal.R.color.holo_blue_light;
+    protected int defaultColor;
+    protected boolean customColor;
+
     public NetworkStatsView(Context context) {
         this(context, null);
     }
@@ -92,6 +96,12 @@ public class NetworkStatsView extends LinearLayout {
                     Settings.System.STATUS_BAR_NETWORK_STATS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUSBAR_CLOCK_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_ICON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.ICON_COLOR_BEHAVIOR), false, this);
             onChange(true);
         }
 
@@ -108,6 +118,11 @@ public class NetworkStatsView extends LinearLayout {
 
             mRefreshInterval = Settings.System.getLong(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL, 500);
+
+            defaultColor = getResources().getColor(
+                    com.android.internal.R.color.holo_blue_light);
+            customColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
 
             setVisibility(mActivated ? View.VISIBLE : View.GONE);
 
@@ -194,5 +209,24 @@ public class NetworkStatsView extends LinearLayout {
         tv.setText(fSpeed == (int) fSpeed ?
                 String.format("%d %s", (int)fSpeed, units) :
                 String.format("%.1f %s", fSpeed, units));
+
+        if (customColor) {
+            mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUS_ICON_COLOR, defaultColor);
+            if (mTrafficColor == Integer.MIN_VALUE) {
+                // flag to reset the color
+                mTrafficColor = defaultColor;
+            }
+            tv.setTextColor(mTrafficColor);
+        } else {
+            mTrafficColor = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_NETWORK_COLOR, -2);
+            if (mTrafficColor == Integer.MIN_VALUE
+                    || mTrafficColor == -2) {
+                // flag to reset the color
+                mTrafficColor = defaultColor;
+            }
+            tv.setTextColor(mTrafficColor);
+        }
     }
 }
