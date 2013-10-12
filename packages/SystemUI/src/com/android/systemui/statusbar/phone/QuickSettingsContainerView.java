@@ -84,8 +84,8 @@ public class QuickSettingsContainerView extends FrameLayout {
         // Calculate the cell width dynamically
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
-                (mNumColumns - 1) * mCellGap);
-        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumColumns);
+                (mNumFinalColumns - 1) * mCellGap);
+        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumFinalColumns);
         int cellHeight = 0;
         float cellGap = mCellGap;
 
@@ -126,7 +126,7 @@ public class QuickSettingsContainerView extends FrameLayout {
 
         // Set the measured dimensions.  We always fill the tray width, but wrap to the height of
         // all the tiles.
-        int numRows = (int) Math.ceil((float) cursor / mNumColumns);
+        int numRows = (int) Math.ceil((float) cursor / mNumFinalColumns);
         int newHeight = (int) ((numRows * cellHeight) + ((numRows - 1) * cellGap)) +
                 getPaddingTop() + getPaddingBottom();
         if (mSingleRow) {
@@ -163,16 +163,16 @@ public class QuickSettingsContainerView extends FrameLayout {
             QuickSettingsTileView child = (QuickSettingsTileView) getChildAt(i);
             ViewGroup.LayoutParams lp = child.getLayoutParams();
             if (child.getVisibility() != GONE) {
-                final int col = cursor % mNumColumns;
+                final int col = cursor % mNumFinalColumns;
                 final int colSpan = child.getColumnSpan();
 
                 final int childWidth = lp.width;
                 final int childHeight = lp.height;
 
-                int row = (int) (cursor / mNumColumns);
+                int row = (int) (cursor / mNumFinalColumns);
 
                 // Push the item to the next row if it can't fit on this one
-                if ((col + colSpan) > mNumColumns && !mSingleRow) {
+                if ((col + colSpan) > mNumFinalColumns && !mSingleRow) {
                     x = getPaddingStart();
                     y += childHeight + cellGap;
                     row++;
@@ -190,7 +190,7 @@ public class QuickSettingsContainerView extends FrameLayout {
                 // Offset the position by the cell gap or reset the position and cursor when we
                 // reach the end of the row
                 cursor += child.getColumnSpan();
-                if (cursor < (((row + 1) * mNumColumns)) || mSingleRow) {
+                if (cursor < (((row + 1) * mNumFinalColumns)) || mSingleRow) {
                     x += childWidth + cellGap;
                 } else if (!mSingleRow) {
                     x = getPaddingStart();
