@@ -3624,6 +3624,12 @@ public final class Settings {
         public static final String MVNO_ROAMING = "mvno_roaming";
 
         /**
+         * Whether or not to show circle battery around the lockscreen ring
+         * @hide
+         */
+        public static final String BATTERY_AROUND_LOCKSCREEN_RING = "battery_around_lockscreen_ring";
+
+        /**
          * Whether electronic beam animation is enabled or not
          * @hide
          */
