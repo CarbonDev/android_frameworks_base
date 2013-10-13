@@ -250,7 +250,7 @@ public class TransparencyManager {
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        final float defaultAlpha = new Float(mContext.getResources().getInteger(
+        final float defaultAlpha = 1 - new Float(mContext.getResources().getInteger(
                 R.integer.navigation_bar_transparency) / 255);
         String alphas[];
         String settingValue = Settings.System.getString(resolver,
