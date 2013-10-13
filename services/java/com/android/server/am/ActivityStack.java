@@ -290,6 +290,11 @@ final class ActivityStack {
     boolean mDismissKeyguardOnNextActivity = false;
 
     /**
+     * Is the privacy guard currently enabled?
+     */
+    String mPrivacyGuardPackageName = null;
+
+    /**
      * Save the most recent screenshot for reuse. This keeps Recents from taking two identical
      * screenshots, one for the Recents thumbnail and one for the pauseActivity thumbnail.
      */
@@ -1278,6 +1283,7 @@ final class ActivityStack {
         } else {
             next.cpuTimeAtResume = 0; // Couldn't get the cpu time of process
         }
+        updatePrivacyGuardNotificationLocked(next);
     }
 
     /**
@@ -1830,6 +1836,32 @@ final class ActivityStack {
         }
 
         return true;
+    }
+
+    private final void updatePrivacyGuardNotificationLocked(ActivityRecord next) {
+        if (android.provider.Settings.Secure.getIntForUser(mContext.getContentResolver(),
+            android.provider.Settings.Secure.PRIVACY_GUARD_NOTIFICATION,
+            1, UserHandle.USER_CURRENT) == 0) {
+            return;
+        }
+        if (mPrivacyGuardPackageName != null && mPrivacyGuardPackageName.equals(next.packageName)) {
+            return;
+        }
+
+        int privacy = mService.mAppOpsService.getPrivacyGuardSettingForPackage(
+                next.app.uid, next.packageName);
+
+        if (mPrivacyGuardPackageName != null && privacy == AppOpsManager.PRIVACY_GUARD_DISABLED) {
+            Message msg = mService.mHandler.obtainMessage(
+                    ActivityManagerService.CANCEL_PRIVACY_NOTIFICATION_MSG, next.userId);
+            msg.sendToTarget();
+            mPrivacyGuardPackageName = null;
+        } else if (privacy > AppOpsManager.PRIVACY_GUARD_DISABLED) {
+            Message msg = mService.mHandler.obtainMessage(
+                    ActivityManagerService.POST_PRIVACY_NOTIFICATION_MSG, privacy, 0, next);
+            msg.sendToTarget();
+            mPrivacyGuardPackageName = next.packageName;
+        }
     }
 
     private final void startActivityLocked(ActivityRecord r, boolean newTask,
