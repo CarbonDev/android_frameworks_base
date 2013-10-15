@@ -64,6 +64,8 @@ import static com.android.internal.util.cm.QSConstants.TILE_WIFI;
 import static com.android.internal.util.cm.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.cm.QSConstants.TILE_EXPDESKTOP;
 import static com.android.internal.util.cm.QSConstants.TILE_TRDS;
+import static com.android.internal.util.cm.QSConstants.TILE_SCREENSHOT;
+import static com.android.internal.util.cm.QSConstants.TILE_HALO;
 import com.android.internal.util.cm.QSUtils;
 
 import com.android.systemui.quicksettings.AirplaneModeTile;
@@ -103,6 +105,8 @@ import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
 import com.android.systemui.quicksettings.ExpandedDesktopTile;
 import com.android.systemui.quicksettings.TRDSTile;
+import com.android.systemui.quicksettings.ScreenshotTile;
+import com.android.systemui.quicksettings.HaloTile;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.R;
 
@@ -268,6 +272,10 @@ public class QuickSettingsController {
                 if (QSUtils.adbEnabled(resolver)) {
                     qs = new NetworkAdbTile(mContext, this);
                 }
+            } else if (tile.equals(TILE_SCREENSHOT)) {
+                qs = new ScreenshotTile(mContext, this);
+            } else if (tile.equals(TILE_HALO)) {
+                qs = new HaloTile(mContext, this, mHandler);
             }
             if (qs != null) {
                 qs.setupQuickSettingsTile(inflater, mContainerView);
