@@ -4307,4 +4307,7 @@
     <string name="toast_rotation_unlocked">Display rotation unlocked</string>
     <string name="toast_rotation_locked">Display rotation locked</string>
 
+    <!-- Description of the Random button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_random">Reload random buttons</string>
+
 </resources>
