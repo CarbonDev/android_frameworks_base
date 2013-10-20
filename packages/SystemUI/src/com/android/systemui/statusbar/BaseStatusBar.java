@@ -511,6 +511,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             @Override
             public void onChange(boolean selfChange) {
                 updateHalo();
+                updatePieControls();
             }});
 
         // Listen for HALO state
