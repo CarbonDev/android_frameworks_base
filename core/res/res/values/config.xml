@@ -1296,4 +1296,7 @@
          it is disabled by default so devices need to add an overlay to enable -->
     <string name="config_fastChargePath" translatable="false"></string>
 
+    <!-- Device supports LED flashlight -->
+    <bool name="config_enableTorch">false</bool>
+
 </resources>
