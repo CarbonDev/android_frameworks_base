@@ -20,6 +20,8 @@ import android.Manifest;
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.app.PendingIntent;
+import android.app.ProfileGroup;
+import android.app.ProfileManager;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
@@ -55,6 +57,7 @@ public class AudioManager {
     private final boolean mUseVolumeKeySounds;
     private final Binder mToken = new Binder();
     private static String TAG = "AudioManager";
+    private final ProfileManager mProfileManager;
 
     /**
      * Broadcast intent, a hint for applications that audio is about to become
@@ -218,6 +221,8 @@ public class AudioManager {
     public static final int STREAM_DTMF = AudioSystem.STREAM_DTMF;
     /** @hide The audio stream for text to speech (TTS) */
     public static final int STREAM_TTS = AudioSystem.STREAM_TTS;
+    /** @hide The audio stream for incall music delivery */
+    public static final int STREAM_INCALL_MUSIC = AudioSystem.STREAM_INCALL_MUSIC;
     /** Number of audio streams */
     /**
      * @deprecated Use AudioSystem.getNumStreamTypes() instead
@@ -236,7 +241,8 @@ public class AudioManager {
         7,  // STREAM_BLUETOOTH_SCO
         7,  // STREAM_SYSTEM_ENFORCED
         11, // STREAM_DTMF
-        11  // STREAM_TTS
+        11, // STREAM_TTS
+        4   // STREAM_INCALL_MUSIC
     };
 
     /**
@@ -432,6 +438,7 @@ public class AudioManager {
                 com.android.internal.R.bool.config_useMasterVolume);
         mUseVolumeKeySounds = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_useVolumeKeySounds);
+        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
     }
 
     private static IAudioService getService()
@@ -1044,6 +1051,26 @@ public class AudioManager {
      * current ringer mode that can be queried via {@link #getRingerMode()}.
      */
     public boolean shouldVibrate(int vibrateType) {
+        String packageName = mContext.getPackageName();
+        // Don't apply profiles for "android" context, as these could
+        // come from the NotificationManager, and originate from a real package.
+        if (!packageName.equals("android")) {
+            ProfileGroup profileGroup = mProfileManager.getActiveProfileGroup(packageName);
+            if (profileGroup != null) {
+                Log.v(TAG, "shouldVibrate, group: " + profileGroup.getUuid()
+                        + " mode: " + profileGroup.getVibrateMode());
+                switch (profileGroup.getVibrateMode()) {
+                    case OVERRIDE :
+                        return true;
+                    case SUPPRESS :
+                        return false;
+                    case DEFAULT :
+                        // Drop through
+                }
+            }
+        } else {
+            Log.v(TAG, "Not applying override for 'android' package");
+        }
         IAudioService service = getService();
         try {
             return service.shouldVibrate(vibrateType);

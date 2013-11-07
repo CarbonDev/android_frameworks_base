@@ -417,6 +417,7 @@ public interface WindowManagerPolicy {
 
         public void shutdown(boolean confirm);
         public void rebootSafeMode(boolean confirm);
+        public void reboot();
 
         /**
          * Return the window manager lock needed to correctly call "Lw" methods.
@@ -1139,6 +1140,11 @@ public interface WindowManagerPolicy {
     public boolean hasNavigationBar();
 
     /**
+     * Specifies whether device can generate KEY_ACTION_MENU keypress
+     */
+    public boolean hasMenuKeyEnabled();
+
+    /**
      * Lock the device now.
      */
     public void lockNow(Bundle options);
@@ -1193,4 +1199,15 @@ public interface WindowManagerPolicy {
      * @param enabled Whether touch exploration is enabled.
      */
     public void setTouchExplorationEnabled(boolean enabled);
+
+    /**
+     * A window animation has been scheduled
+     */
+    public void windowAnimationStarted();
+
+    /**
+     * Animating windows has finished
+     */
+    public void windowAnimationFinished();
+
 }

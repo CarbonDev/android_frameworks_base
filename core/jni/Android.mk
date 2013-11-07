@@ -83,6 +83,7 @@ LOCAL_SRC_FILES:= \
 	android_util_Process.cpp \
 	android_util_StringBlock.cpp \
 	android_util_XmlBlock.cpp \
+	android_util_PackageRedirectionMap.cpp \
 	android/graphics/AutoDecodeCancel.cpp \
 	android/graphics/Bitmap.cpp \
 	android/graphics/BitmapFactory.cpp \
@@ -160,6 +161,7 @@ LOCAL_C_INCLUDES += \
 	$(call include-path-for, libhardware_legacy)/hardware_legacy \
 	$(TOP)/frameworks/av/include \
 	$(TOP)/system/media/camera/include \
+	external/e2fsprogs/lib \
 	external/skia/src/core \
 	external/skia/src/pdf \
 	external/skia/src/images \
@@ -181,6 +183,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libmemtrack \
 	libandroidfw \
 	libexpat \
+	libext2_blkid \
 	libnativehelper \
 	liblog \
 	libcutils \
