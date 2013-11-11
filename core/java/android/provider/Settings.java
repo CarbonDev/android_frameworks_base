@@ -3568,6 +3568,8 @@ public final class Settings {
          * Immersive mode global actions switch
          * 0 = no
          * 1 = yes
+         * 2 = hide navbar
+         * 3 = hide statusbar
          * @hide
          */
         public static final String IMMERSIVE_MODE = "immersive_mode";
