@@ -3085,6 +3085,12 @@ public final class Settings {
         public static final String POWER_MENU_REBOOT_ENABLED = "power_menu_reboot_enabled";
 
         /**
+         * Whether the power menu immersive is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_IMMERSIVE_ENABLED = "power_menu_immersive_enabled";
+
+        /**
          * Whether power menu screenshot is enabled
          * @hide
          */
@@ -3276,6 +3282,14 @@ public final class Settings {
           * @hide
           */
          public static final String KEY_APP_SWITCH_ACTION = "key_app_switch_action";
+
+        /**
+         * Immersive mode global actions switch
+         * 0 = no
+         * 1 = yes
+         * @hide
+         */
+        public static final String IMMERSIVE_MODE = "immersive_mode";
 
         /**
          * Weather to minimize lockscreen challenge on screen turned on

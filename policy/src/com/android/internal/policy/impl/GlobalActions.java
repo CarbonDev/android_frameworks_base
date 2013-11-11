@@ -112,6 +112,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private Action mSilentModeAction;
     private ToggleAction mAirplaneModeOn;
+    private ToggleAction mImmersiveModeOn;
 
     private MyAdapter mAdapter;
 
@@ -223,6 +224,27 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         } else {
             mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
         }
+
+        mImmersiveModeOn = new ToggleAction(
+                R.drawable.ic_lock_immersive_mode,
+                R.drawable.ic_lock_immersive_mode_off,
+                R.string.global_actions_toggle_immersive_mode,
+                R.string.global_actions_immersive_mode_on_status,
+                R.string.global_actions_immersive_mode_off_status) {
+
+            void onToggle(boolean on) {
+                changeImmersiveModeSystemSettings(on);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onImmersiveChanged();
 
         mAirplaneModeOn = new ToggleAction(
                 R.drawable.ic_lock_airplane_mode,
@@ -342,6 +364,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         return false;
                     }
                 });
+        }
+
+        // next: immersive
+        // only shown if enabled
+        boolean showImmersive =
+                Settings.System.getIntForUser(cr,
+                        Settings.System.IMMERSIVE_MODE, 0, UserHandle.USER_CURRENT) == 1
+                && Settings.System.getIntForUser(cr,
+                        Settings.System.POWER_MENU_IMMERSIVE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        if (showImmersive) {
+            mItems.add(mImmersiveModeOn);
         }
 
         // next: screenshot
@@ -1214,6 +1247,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (!mHasTelephony) {
             mAirplaneState = on ? ToggleAction.State.On : ToggleAction.State.Off;
         }
+    }
+
+    private void onImmersiveChanged() {
+        boolean immersiveModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.IMMERSIVE_MODE,
+                0, UserHandle.USER_CURRENT) == 1;
+        mImmersiveModeOn.updateState(expandDesktopModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
+    }
+
+    /**
+     * Change the immersive mode system setting
+     */
+    private void changeImmersiveModeSystemSetting(boolean on) {
+        Settings.System.putIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.IMMERSIVE_MODE,
+                on ? 1 : 0, UserHandle.USER_CURRENT);
     }
 
     private static final class GlobalActionsDialog extends Dialog implements DialogInterface {
