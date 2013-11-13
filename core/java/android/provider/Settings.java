@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 The Android Open Source Project
+ * This code has been modified. Portions copyright (C) 2013, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3475,6 +3476,12 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY = "power_ui_low_battery_warning_policy";
+
+        /**
+         * Allows to show the background activity back the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
 
         /**
          * Should the non-intrsive incall ui be used
