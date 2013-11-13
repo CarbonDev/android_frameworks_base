@@ -91,9 +91,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.systemui.BatteryMeterView;
+import com.android.systemui.BatteryCircleMeterView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
+import com.android.systemui.quicksettings.BatteryTile;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.GestureRecorder;
@@ -298,6 +301,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
+    BatteryTile mQSB;
+    private BatteryMeterView mBattery;
+    private BatteryCircleMeterView mCircleBattery;
+
     // XXX: gesture research
     private final GestureRecorder mGestureRec = DEBUG_GESTURES
         ? new GestureRecorder("/sdcard/statusbar_gestures.dat")
@@ -348,6 +355,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED), false, this);
             update();
         }
 
@@ -363,6 +380,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                     Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
             mBrightnessControl = !autoBrightness && Settings.System.getInt(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
+            updateBatteryIcons();
+        }
+    }
+
+    private void updateBatteryIcons() {
+        if (mQSB != null) {
+            mQSB.updateBattery();
+        }
+        if (mBattery != null && mCircleBattery != null) {
+            mBattery.updateSettings();
+            mCircleBattery.updateSettings();
         }
     }
 
@@ -680,7 +708,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         final SignalClusterView signalCluster =
                 (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
 
-
         mNetworkController.addSignalCluster(signalCluster);
         signalCluster.setNetworkController(mNetworkController);
 
@@ -807,6 +834,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
 
         // listen for USER_SETUP_COMPLETE setting (per-user)
         resetUserSetupObserver();
+
+        mBattery = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
+        mCircleBattery = (BatteryCircleMeterView) mStatusBarView.findViewById(R.id.circle_battery);
+        updateBatteryIcons();
 
         return mStatusBarView;
     }
