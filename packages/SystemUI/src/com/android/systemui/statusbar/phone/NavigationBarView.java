@@ -88,6 +88,7 @@ public class NavigationBarView extends LinearLayout {
 
     // used to disable the camera icon in navbar when disabled by DPM
     private boolean mCameraDisabledByDpm;
+    private boolean mCameraDisabledByUser;
 
     // simplified click handler to be used when device is in accessibility mode
     private final OnClickListener mAccessibilityClickListener = new OnClickListener() {
@@ -159,6 +160,7 @@ public class NavigationBarView extends LinearLayout {
 
         mBarTransitions = new NavigationBarTransitions(this);
 
+        disableCameraByUser();
         mCameraDisabledByDpm = isCameraDisabledByDpm();
         watchForDevicePolicyChanges();
     }
@@ -341,8 +343,29 @@ public class NavigationBarView extends LinearLayout {
         final View cameraButton = getCameraButton();
         if (cameraButton != null) {
             cameraButton.setVisibility(
-                    shouldShowSearch && !mCameraDisabledByDpm ? View.VISIBLE : View.GONE);
+                    shouldShowSearch && !mCameraDisabledByDpm
+                    && !mCameraDisabledByUser ? View.VISIBLE : View.GONE);
         }
+    }
+
+    protected void disableCameraByUser() {
+        Resources keyguardResources;
+        PackageManager pm = mContext.getPackageManager();
+        try {
+            keyguardResources = pm.getResourcesForApplication("com.android.keyguard");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        final boolean cameraDefault = keyguardResources.getBoolean(
+                keyguardResources.getIdentifier(
+                "com.android.keyguard:bool/kg_enable_camera_default_widget", null, null));
+        mCameraDisabledByUser = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_CAMERA_WIDGET,
+                cameraDefault ? 1 : 0,
+                UserHandle.USER_CURRENT) == 0;
     }
 
     private boolean isCameraDisabledByDpm() {
