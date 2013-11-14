@@ -254,6 +254,10 @@ public class ActiveDisplayView extends FrameLayout {
 
         public void onFinishFinalAnimation() {
         }
+
+        public void onTargetChange(View v, int target) {
+        }
+
     };
 
     /**
@@ -1399,4 +1403,5 @@ public class ActiveDisplayView extends FrameLayout {
         utils.setCurrentUser(UserHandle.USER_OWNER);
         return utils.getPowerButtonInstantlyLocks();
     }
+
 }

@@ -141,4 +141,45 @@
     <!-- Description of an application permission that lets lets an application access the ThemeManagerService -->
     <string name="permdesc_accessThemeService">Allows an application to set/reset themes. Not for use by normal applications.</string>
 
+    <!-- Kill app toast -->
+    <string name="app_killed_message">App Killed</string>
+
+    <!-- Off/On/Toggle -->
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="toggle">Toggle</string>
+
+    <!-- Slim Shortcut Actions -->
+    <string name="shortcut_picker">Slim Shortcuts</string>
+    <string name="shortcut_immersive">Immersive Mode</string>
+    <string name="shortcut_quiethours">Quiethours</string>
+    <string name="shortcut_rotation">Rotation</string>
+    <string name="shortcut_torch">Torch Toggle</string>
+    <string name="shortcut_reboot">Reboot</string>
+    <string name="shortcut_recovery">Recovery</string>
+    <string name="shortcut_last_app">Last App</string>
+    <string name="shortcut_power_menu">Power Menu</string>
+    <string name="shortcut_screenshot">Screenshot</string>
+    <string name="shortcut_screensleep">Go to Sleep</string>
+    <string name="shortcut_volume">Volume</string>
+    <string name="shortcut_toggle_title">Action to perform</string>
+    <string name="shortcut_chamber">Chamber of Secrets</string>
+    <string name="chamber_disabled">Chamber of secrets is closed</string>
+    <string name="chamber_title">Input Settings string</string>
+    <string name="chamber_message">Input a Settings string that is either an on and off (checkbox) function or possibly a list-preference. For example, quiet_hours_ringer or similar. Settings can be found in the Settings.java file. WARNING: This process is dangerous!</string>
+    <string name="chamber_invalid">This is an invalid input. Be careful.</string>
+    <string name="chamber_checkbox">Checkbox</string>
+    <string name="chamber_chk_message">Is this setting a checkbox setting?</string>
+    <string name="chamber_int">Input values</string>
+    <string name="chamber_int_message">Input the values you\'d like the setting to toggle between. Separate each value with a comma. Color settings accept hex-values such as #FF00aacc or basic color values like red, green, and yellow.</string>
+    <string name="chamber_name_title">Shortcut name</string>
+    <string name="chamber_name_message">Give the shortcut a name to display with the icon.</string>
+    <string name="chamber_name_toast">Using default name</string>
+
+    <!-- Dialog Cancel/OK -->
+    <string name="cancel">Cancel</string>
+    <string name="dlg_ok">Ok</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>
