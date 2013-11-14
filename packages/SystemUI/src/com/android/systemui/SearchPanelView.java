@@ -482,8 +482,11 @@ public class SearchPanelView extends FrameLayout implements
                 try {
                     Drawable customIcon;
                     if (iconFile.exists()) {
-                        customIcon = resize(
-                            new BitmapDrawable(getResources(), iconFile.getAbsolutePath()));
+                        customIcon = new BitmapDrawable(getResources(),
+                                        ImageHelper.getRoundedCornerBitmap(
+                                        new BitmapDrawable(getResources(),
+                                        iconFile.getAbsolutePath()).getBitmap()));
+                        customIcon = ImageHelper.resize(mContext, customIcon, 50);
                     } else {
                         customIcon = new BitmapDrawable(getResources(),
                                     ImageHelper.getColoredBitmap(ImageHelper.resize(mContext,
