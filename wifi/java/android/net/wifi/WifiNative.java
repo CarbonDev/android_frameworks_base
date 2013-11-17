@@ -1012,6 +1012,4 @@ public class WifiNative {
         }
         return channels;
     }
-
-    public native static boolean setMode(int mode);
 }
