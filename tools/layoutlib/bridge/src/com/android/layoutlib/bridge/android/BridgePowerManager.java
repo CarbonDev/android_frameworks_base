@@ -125,9 +125,4 @@ public class BridgePowerManager implements IPowerManager {
     public void wakeUp(long time) throws RemoteException {
         // pass for now.
     }
-
-    @Override
-    public void cpuBoost(int duration) throws RemoteException {
-        // pass for now
-    }
 }
