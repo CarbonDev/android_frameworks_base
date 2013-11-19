@@ -26,9 +26,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -44,7 +44,6 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.EventLog;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.IWindowManager;
 import android.view.MotionEvent;
@@ -73,6 +72,7 @@ import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class SearchPanelView extends FrameLayout implements
@@ -463,19 +463,6 @@ public class SearchPanelView extends FrameLayout implements
             return blankDrawable;
         }
 
-        if (!action.startsWith("**") && pm != null) {
-            mAppIsBinded = true;
-            try {
-                Intent in = Intent.parseUri(action, 0);
-                aInfo = in.resolveActivityInfo(pm, PackageManager.GET_ACTIVITIES);
-                if (aInfo == null) {
-                    return noneDrawable;
-                }
-            } catch (Exception e) {
-                return noneDrawable;
-            }
-        }
-
         if (customIconUri != null && !customIconUri.equals(ButtonsConstants.ICON_EMPTY)
                 || customIconUri != null
                 && customIconUri.startsWith(ButtonsConstants.SYSTEM_ICON_IDENTIFIER)) {
@@ -543,13 +530,35 @@ public class SearchPanelView extends FrameLayout implements
         if (action.equals(ButtonsConstants.ACTION_TORCH))
             return new TargetDrawable(
                 mResources, mResources.getDrawable(R.drawable.ic_action_torch));
+        if (action.equals(ButtonsConstants.ACTION_EXPANDED_DESKTOP))
+            return new TargetDrawable(
+                mResources, R.drawable.ic_action_expanded_desktop);
         if (action.equals(ButtonsConstants.ACTION_ASSIST))
             return new TargetDrawable(
                 mResources, com.android.internal.R.drawable.ic_action_assist_generic);
 
-        if (aInfo != null && pm != null) {
-            return new TargetDrawable(mResources,
-                setStateListDrawable(ImageHelper.resize(mContext, aInfo.loadIcon(pm), 50)));
+        if (!action.startsWith("**") && pm != null) {
+            try {
+                mAppIsBinded = true;
+                Drawable d = null;
+                String extraIconPath = action.replaceAll(".*?hasExtraIcon=", "");
+                if (extraIconPath != null && !extraIconPath.isEmpty()) {
+                    File f = new File(Uri.parse(extraIconPath).getPath());
+                    if (f.exists()) {
+                        d = new BitmapDrawable(mContext.getResources(),
+                                f.getAbsolutePath());
+                    }
+                }
+                if (d == null) {
+                    d = pm.getActivityIcon(Intent.parseUri(action, 0));
+                }
+                return new TargetDrawable(mResources,
+                        setStateListDrawable(ImageHelper.resize(mContext, d, 50)));
+            } catch (NameNotFoundException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
         return noneDrawable;
     }
@@ -576,16 +585,6 @@ public class SearchPanelView extends FrameLayout implements
         selector.addState(new int[] {android.R.attr.state_enabled,
             -android.R.attr.state_active, android.R.attr.state_focused}, iconActivated);
         return selector;
-    }
-
-    private Drawable resize(Drawable image) {
-        int size = 50;
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources()
-                .getDisplayMetrics());
-
-        Bitmap d = ((BitmapDrawable) image).getBitmap();
-        Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, px, px, false);
-        return new BitmapDrawable(mContext.getResources(), bitmapOrig);
     }
 
     public boolean hasAppBinded() {

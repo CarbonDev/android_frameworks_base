@@ -23,6 +23,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.input.InputManager;
+import android.Manifest;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
@@ -122,6 +123,16 @@ public class SlimActions {
                 }
                 context.sendBroadcast(new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"));
                 return;
+            } else if (action.equals(ButtonsConstants.ACTION_EXPANDED_DESKTOP)) {
+                boolean expandDesktopModeOn = Settings.System.getIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.EXPANDED_DESKTOP_STATE,
+                        0, UserHandle.USER_CURRENT) == 1;
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.EXPANDED_DESKTOP_STATE,
+                        expandDesktopModeOn ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
             } else if (action.equals(ButtonsConstants.ACTION_KILL)) {
                 if (isKeyguardShowing) {
                     return;
@@ -154,6 +165,10 @@ public class SlimActions {
                     barService.toggleScreenshot();
                 } catch (RemoteException e) {
                 }
+                return;
+            } else if (action.equals(ButtonsConstants.ACTION_SCREEN_RECORD)) {
+                final Intent recordIntent = new Intent("org.chameleonos.action.NOTIFY_RECORD_SERVICE");
+                context.sendBroadcast(recordIntent, Manifest.permission.RECORD_SCREEN);
                 return;
             } else if (action.equals(ButtonsConstants.ACTION_NOTIFICATIONS)) {
                 if (isKeyguardShowing && isKeyguardSecure) {

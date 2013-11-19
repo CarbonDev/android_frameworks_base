@@ -30,6 +30,7 @@ public class ButtonsConstants {
     public static final String ACTION_QS                   = "**quicksettings**";
     public static final String ACTION_RECENTS              = "**recents**";
     public static final String ACTION_SCREENSHOT           = "**screenshot**";
+    public static final String ACTION_SCREEN_RECORD        = "**screen_record**";
     public static final String ACTION_IME                  = "**ime**";
     public static final String ACTION_LAST_APP             = "**lastapp**";
     public static final String ACTION_KILL                 = "**kill**";
@@ -39,6 +40,7 @@ public class ButtonsConstants {
     public static final String ACTION_VIB_SILENT           = "**ring_vib_silent**";
     public static final String ACTION_POWER_MENU           = "**power_menu**";
     public static final String ACTION_TORCH                = "**torch**";
+    public static final String ACTION_EXPANDED_DESKTOP     = "**expanded_desktop**";
     public static final String ACTION_KEYGUARD_SEARCH      = "**keyguard_search**";
 
     // no action
