@@ -65,6 +65,8 @@
     <string name="quick_settings_lte">LTE</string>
     <string name="quick_settings_lte_off">LTE off</string>
     <string name="quick_settings_volume">Volume</string>
+    <string name="quick_settings_music_play">Play</string>
+    <string name="quick_settings_music_pause">Pause</string>
     <string name="quick_settings_camera_label">Camera</string>
     <string name="quick_settings_network_adb_disabled_label">Disabled</string>
     <string name="quick_settings_network_adb_enabled_label">Enabled</string>
@@ -72,6 +74,7 @@
     <string name="quick_settings_immersive_mode_off">Immersive Off</string>
     <string name="quick_settings_wifi_display_label">Connected</string>
     <string name="quick_settings_wifi_display_no_connection_label">Available</string>
+    <string name="quick_settings_screenshot_label">Screenshot</string>
 
     <!-- Expanded desktop strings break the rules a bit - the icon identifies the feature, the string indicates current state -->
     <string name="quick_settings_expanded_desktop">Expanded</string>
@@ -110,8 +113,13 @@
     <string name="quick_settings_battery_charging">Charging</string>
     <string name="quick_settings_battery_discharging">Discharging</string>
 
-    <!--ScreenShot Trash-->
+    <!-- Screenshot -->
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_screenshot">Capture screenshot</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_screenshot">Allows the app to cature a screenshot. This is protected by SystemUI.</string>
     <string name="screenshot_notification_delete">Delete</string>
+    <string name="screenshot_toast">Screenshot in %1$d seconds</string>
 
     <!-- Development shortcut -->
     <string name="advanced_dev_option_wipe_app">Wipe app data</string>
