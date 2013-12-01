@@ -3551,6 +3551,12 @@ public final class Settings {
         */
         public static final String NOTIFICATION_BACKGROUND_ALPHA = "notification_background_alpha";
 
+       /**
+        * Sets the alpha (transparency) of the notification
+        * @hide
+        */
+        public static final String NOTIFICATION_ALPHA = "notification_alpha";
+
         /**
          * Whether to allow notification vibration while notification alerts are disabled
          * (e.g. during phone calls). The vibration pattern to be used will be a subtle one;
