@@ -226,14 +226,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         mImmersiveModeOn = new ToggleAction(
-                R.drawable.ic_lock_immersive_mode,
-                R.drawable.ic_lock_immersive_mode_off,
+                R.drawable.ic_lock_immersive,
+                R.drawable.ic_lock_immersive_off,
                 R.string.global_actions_toggle_immersive_mode,
                 R.string.global_actions_immersive_mode_on_status,
                 R.string.global_actions_immersive_mode_off_status) {
 
             void onToggle(boolean on) {
-                changeImmersiveModeSystemSettings(on);
+                changeImmersiveModeSystemSetting(on);
             }
 
             public boolean showDuringKeyguard() {
@@ -368,11 +368,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         // next: immersive
         // only shown if enabled
-        boolean showImmersive =
-                Settings.System.getIntForUser(cr,
-                        Settings.System.IMMERSIVE_MODE, 0, UserHandle.USER_CURRENT) == 1
-                && Settings.System.getIntForUser(cr,
-                        Settings.System.POWER_MENU_IMMERSIVE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        boolean showImmersive = Settings.System.getIntForUser(cr,
+                    Settings.System.POWER_MENU_IMMERSIVE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
         if (showImmersive) {
             mItems.add(mImmersiveModeOn);
         }
@@ -1254,7 +1251,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mContext.getContentResolver(),
                 Settings.System.IMMERSIVE_MODE,
                 0, UserHandle.USER_CURRENT) == 1;
-        mImmersiveModeOn.updateState(expandDesktopModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
+        mImmersiveModeOn.updateState(immersiveModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
     }
 
     /**

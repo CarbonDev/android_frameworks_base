@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
