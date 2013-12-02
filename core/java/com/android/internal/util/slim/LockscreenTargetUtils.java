@@ -80,8 +80,10 @@ public final class LockscreenTargetUtils {
 
         PackageManager pm = context.getPackageManager();
         Resources keyguardResources = null;
+        final String keyguardPackage = context.getString(
+                com.android.internal.R.string.config_keyguardPackage);
         try {
-            keyguardResources = pm.getResourcesForApplication("com.android.keyguard");
+            keyguardResources = pm.getResourcesForApplication(keyguardPackage);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +94,7 @@ public final class LockscreenTargetUtils {
 
         inactivelayer[0] = new InsetDrawable(keyguardResources.getDrawable(
                     keyguardResources.getIdentifier(
-                    "com.android.keyguard:drawable/ic_lockscreen_lock_pressed",
+                    keyguardPackage + ":drawable/ic_lockscreen_lock_pressed",
                     null, null)), 0, 0, 0, 0);
         inactivelayer[1] = new InsetDrawable(front, inset, inset, inset, inset);
 
@@ -138,19 +140,21 @@ public final class LockscreenTargetUtils {
 
         PackageManager pm = context.getPackageManager();
         Resources keyguardResources = null;
+        final String keyguardPackage = context.getString(
+                com.android.internal.R.string.config_keyguardPackage);
         try {
-            keyguardResources = pm.getResourcesForApplication("com.android.keyguard");
+            keyguardResources = pm.getResourcesForApplication(keyguardPackage);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         final Resources res = context.getResources();
         int inset = keyguardResources.getDimensionPixelSize(keyguardResources.getIdentifier(
-                "com.android.keyguard:dimen/lockscreen_target_inset", null, null));
+                keyguardPackage + ":dimen/lockscreen_target_inset", null, null));
 
         if (TextUtils.equals(type, GlowPadView.ICON_FILE)) {
             inset += keyguardResources.getDimensionPixelSize(keyguardResources.getIdentifier(
-                    "com.android.keyguard:dimen/lockscreen_target_icon_file_inset", null, null));
+                    keyguardPackage + ":dimen/lockscreen_target_icon_file_inset", null, null));
         }
 
         return inset;

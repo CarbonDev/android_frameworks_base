@@ -51,6 +51,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.hardware.Camera;
 import android.media.RemoteControlClient;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1623,7 +1624,8 @@ public class KeyguardHostView extends KeyguardViewBase {
                 Settings.System.LOCKSCREEN_CAMERA_WIDGET,
                 mContext.getResources().getBoolean(
                     R.bool.kg_enable_camera_default_widget) ? 1 : 0,
-                UserHandle.USER_CURRENT) == 1) {
+                UserHandle.USER_CURRENT) == 1
+                && Camera.getNumberOfCameras() > 0) {
             View cameraWidget =
                     CameraWidgetFrame.create(mContext, mCameraWidgetCallbacks, mActivityLauncher);
             if (cameraWidget != null) {

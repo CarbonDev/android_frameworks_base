@@ -30,12 +30,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
@@ -132,6 +136,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     private ArrayList<ButtonConfig> mButtonsConfig;
     private List<Integer> mButtonIdList;
+
+    private boolean mHasCmKeyguard = false;
+    private boolean mModLockDisabled = true;
+    private SettingsObserver mObserver;
 
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
@@ -274,7 +282,15 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         mIMECursorDisabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.VOLUME_KEY_CURSOR_CONTROL, 0,
                 UserHandle.USER_CURRENT) > 0;
-    }
+
+        mObserver = new SettingsObserver(new Handler());
+
+        final String keyguardPackage = mContext.getString(
+                com.android.internal.R.string.config_keyguardPackage);
+        final Bundle keyguardMetadata = getApplicationMetadata(mContext, keyguardPackage);
+        mHasCmKeyguard = keyguardMetadata != null &&
+                keyguardMetadata.getBoolean("com.cyanogenmod.keyguard", false);
+     }
 
     private void watchForDevicePolicyChanges() {
         final IntentFilter filter = new IntentFilter();
@@ -770,7 +786,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         View searchLight = getSearchLight();
         if (searchLight != null) {
-            setVisibleOrGone(searchLight, disableHome && !disableSearch);
+            setVisibleOrGone(searchLight, disableHome && !disableSearch && mModLockDisabled);
         }
 
         final boolean shouldShowCamera = disableHome
@@ -933,6 +949,18 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         updateSettings();
 
         watchForAccessibilityChanges();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mObserver.observe();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mObserver.unobserve();
     }
 
     private void watchForAccessibilityChanges() {
@@ -1227,4 +1255,54 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         pw.println();
     }
 
+    private static Bundle getApplicationMetadata(Context context, String pkg) {
+        if (pkg != null) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                ApplicationInfo ai = pm.getApplicationInfo(pkg, PackageManager.GET_META_DATA);
+                return ai.metaData;
+            } catch (NameNotFoundException e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private class SettingsObserver extends ContentObserver {
+        private boolean mObserving = false;
+
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            mObserving = true;
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.LOCKSCREEN_MODLOCK_ENABLED),
+                false, this);
+
+            // intialize mModlockDisabled
+            onChange(false);
+        }
+
+        void unobserve() {
+            if (mObserving) {
+                mContext.getContentResolver().unregisterContentObserver(this);
+                mObserving = false;
+            }
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            if (mHasCmKeyguard) {
+                mModLockDisabled = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_MODLOCK_ENABLED, 1) == 0;
+            } else {
+                mModLockDisabled = true;
+            }
+            setDisabledFlags(mDisabledFlags, true /* force */);
+        }
+    }
 }

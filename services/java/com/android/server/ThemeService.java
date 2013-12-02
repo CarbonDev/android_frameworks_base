@@ -38,6 +38,7 @@ import android.content.res.IThemeChangeListener;
 import android.content.res.IThemeService;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
@@ -454,9 +455,43 @@ public class ThemeService extends IThemeService.Stub {
         return true;
     }
 
-    private void updateLockscreen(String pkgName) {
-        // TODO: implement actual behavior
-        sleepQuiet(100);
+    private boolean updateLockscreen(String pkgName) {
+        boolean success = false;
+        success = setCustomLockScreenWallpaper(pkgName);
+
+        if (success) {
+            mContext.sendBroadcastAsUser(new Intent(Intent.ACTION_KEYGUARD_WALLPAPER_CHANGED),
+                    UserHandle.ALL);
+        }
+        return success;
+    }
+
+    private boolean setCustomLockScreenWallpaper(String pkgName) {
+        try {
+            if (HOLO_DEFAULT.equals(pkgName)) {
+                final Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(),
+                        com.android.internal.R.drawable.default_wallpaper);
+                WallpaperManager.getInstance(mContext).setKeyguardBitmap(bmp);
+            } else {
+                //Get input WP stream from the theme
+                Context themeCtx = mContext.createPackageContext(pkgName,
+                        Context.CONTEXT_IGNORE_SECURITY);
+                AssetManager assetManager = themeCtx.getAssets();
+                String wpPath = ThemeUtils.getLockscreenWallpaperPath(assetManager);
+                if (wpPath == null) {
+                    Log.w(TAG, "Not setting lockscreen wp because wallpaper file was not found.");
+                    return false;
+                }
+                InputStream is = ThemeUtils.getInputStreamFromAsset(themeCtx,
+                        "file:///android_asset/" + wpPath);
+
+                WallpaperManager.getInstance(mContext).setKeyguardStream(is);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "There was an error setting lockscreen wp for pkg " + pkgName, e);
+            return false;
+        }
+        return true;
     }
 
     private boolean updateWallpaper(String pkgName) {
@@ -617,14 +652,6 @@ public class ThemeService extends IThemeService.Stub {
                             e);
                 }
             }
-        }
-    }
-
-    private void sleepQuiet(long ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

@@ -49,8 +49,9 @@ import android.graphics.Rect;
 import android.hardware.input.InputManager;
 import android.Manifest;
 import android.media.AudioManager;
-import android.media.AudioSystem;
 import android.media.IAudioService;
+import android.media.AudioService;
+import android.media.AudioSystem;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -70,12 +71,8 @@ import android.os.UEventObserver;
 import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
-
-import com.android.internal.util.cm.DevUtils;
-
 import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
-
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
@@ -97,6 +94,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.VolumePanel;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
@@ -104,22 +102,18 @@ import android.view.WindowManagerPolicy;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.VolumePanel;
-import android.media.IAudioService;
-import android.media.AudioService;
-import android.media.AudioManager;
 
 import com.android.internal.R;
 import com.android.internal.policy.PolicyManager;
 import com.android.internal.policy.impl.keyguard.KeyguardServiceDelegate;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.telephony.ITelephony;
+import com.android.internal.util.cm.DevUtils;
 import com.android.internal.util.gesture.EdgeGesturePosition;
 import com.android.internal.util.slim.ButtonsConstants;
 import com.android.internal.util.slim.Converter;
 import com.android.internal.util.slim.HwKeyHelper;
 import com.android.internal.util.slim.SlimActions;
-
 import com.android.internal.widget.PointerLocationView;
 
 import java.io.File;
@@ -127,7 +121,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
-import java.util.List;
 
 import static android.view.WindowManager.LayoutParams.*;
 import static android.view.WindowManagerPolicy.WindowManagerFuncs.LID_ABSENT;
@@ -335,7 +328,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mTouchExplorationEnabled = false;
     boolean mTranslucentDecorEnabled = true;
 
-    int mBackKillTimeout;
     int mPointerLocationMode = 0; // guarded by mLock
     boolean mHasMenuKeyEnabled;
 
@@ -2199,8 +2191,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // Ignore
                 }
             }
-
-            // Construct the Toast
 
             Window win = PolicyManager.makeNewWindow(context);
             final TypedArray ta = win.getWindowStyle();

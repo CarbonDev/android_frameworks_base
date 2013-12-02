@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2012-2014 The CyanogenMod Project
+<!-- Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,5 +14,8 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="wifi_combo_margin_end">-6dp</dimen>
+    <!-- Wallpaper picker -->
+    <dimen name="wallpaperThumbnailWidth">106.5dp</dimen>
+    <dimen name="wallpaperThumbnailHeight">94.5dp</dimen>
+    <dimen name="wallpaperItemIconSize">32dp</dimen>
 </resources>

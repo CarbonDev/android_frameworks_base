@@ -19,16 +19,4 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">KeyguardTestActivity</string>
-    <string name="secure_app_name">UnifiedCamera</string>
-    <string name="none_menu_item">No security</string>
-    <string name="pin_menu_item">PIN</string>
-    <string name="password_menu_item">Password</string>
-    <string name="pattern_menu_item">Pattern</string>
-    <string name="sim_pin_menu_item">SIM PIN</string>
-    <string name="sim_puk_menu_item">SIM PUK</string>
-    <string name="add_widget_item">Choose widget...</string>
-    <string name="on_screen_turned_off">onScreenTurnedOff</string>
-    <string name="on_screen_turned_on">onScreenTurnedOn</string>
-    <string name="do_keyguard">doKeyguard</string>
-    <string name="verify_unlock">verifyUnlock</string>
 </resources>
