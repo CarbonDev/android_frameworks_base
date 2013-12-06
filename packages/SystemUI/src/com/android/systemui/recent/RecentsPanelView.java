@@ -38,6 +38,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -104,6 +105,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     private ImageView mClearRecents;
+    private int clearAllButton;
 
     public static interface RecentsScrollView {
         public int numItemsInOneScreenful();
@@ -369,7 +371,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     }
 
     private void updateClearButton() {
-        int clearAllButton = Settings.System.getInt(mContext.getContentResolver(),
+        clearAllButton = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.CLEAR_RECENTS_BUTTON, Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT);
 
         if (clearAllButton != Constants.CLEAR_ALL_BUTTON_OFF) {
@@ -929,6 +931,34 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             bottom += getBottomPaddingOffset();
         }
         mRecentsContainer.drawFadedEdges(canvas, left, right, top, bottom);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        if (mClearRecents != null) {
+            MarginLayoutParams lp = (MarginLayoutParams) mClearRecents.getLayoutParams();
+            switch (clearAllButton) {
+                case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
+                    lp.topMargin = insets.top;
+                    lp.leftMargin = insets.left;
+                    break;
+                case Constants.CLEAR_ALL_BUTTON_TOP_RIGHT:
+                    lp.topMargin = insets.top;
+                    lp.rightMargin = insets.right;
+                    break;
+                case Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT:
+                    lp.bottomMargin = insets.bottom;
+                    lp.leftMargin = insets.left;
+                    break;
+                case Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT:
+                    lp.bottomMargin = insets.bottom;
+                    lp.rightMargin = insets.right;
+                    break;
+            }
+            mClearRecents.setLayoutParams(lp);
+        }
+
+        return super.fitSystemWindows(insets);
     }
 
     class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
