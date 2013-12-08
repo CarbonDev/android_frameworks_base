@@ -6,11 +6,15 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 
+import java.lang.Math;
+import java.math.BigInteger;
 import java.util.List;
 
 public class DevUtils {
@@ -59,5 +63,14 @@ public class DevUtils {
             // Do nothing; just let it go.
         }
         return targetKilled;
+    }
+
+    /** Extract the color into RGB instead ARGB **/
+    public static int extractRGB(int color) {
+        return color & 0x00FFFFFF;
+    }
+
+    public static int extractAlpha(int color) {
+        return (color >> 24) & 0x000000FF;
     }
 }
