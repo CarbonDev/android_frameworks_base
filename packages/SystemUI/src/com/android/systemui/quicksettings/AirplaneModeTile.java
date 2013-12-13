@@ -35,6 +35,7 @@ public class AirplaneModeTile extends QuickSettingsTile implements NetworkSignal
                 mContext.sendBroadcast(intent);
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
+                }
             }
         };
         mOnLongClick = new OnLongClickListener() {
