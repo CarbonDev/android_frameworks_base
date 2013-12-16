@@ -34,8 +34,10 @@ import android.app.ActivityManagerNative;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -62,6 +64,9 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.util.DisplayMetrics;
@@ -239,6 +244,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     // top bar
     View mNotificationPanelHeader;
     View mDateTimeView;
+    View mClockViewExpanded;
+    View mDateViewExpanded;
     View mClearButton;
     ImageView mSettingsButton, mNotificationButton;
 
@@ -665,8 +672,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
 
         mDateTimeView = mNotificationPanelHeader.findViewById(R.id.datetime);
         if (mDateTimeView != null) {
-            mDateTimeView.setOnClickListener(mClockClickListener);
             mDateTimeView.setEnabled(true);
+        }
+
+        mClockViewExpanded = mNotificationPanelHeader.findViewById(R.id.clock);
+        if (mClockViewExpanded != null) {
+            mClockViewExpanded.setOnClickListener(mClockClickListener);
+            mClockViewExpanded.setOnLongClickListener(mClockLongClickListener);
+        }
+
+        mDateViewExpanded = mNotificationPanelHeader.findViewById(R.id.date);
+        if (mDateViewExpanded != null) {
+            mDateViewExpanded.setOnClickListener(mDateClickListener);
+            mDateViewExpanded.setOnLongClickListener(mDateLongClickListener);
         }
 
         mSettingsButton = (ImageView) mStatusBarWindow.findViewById(R.id.settings_button);
@@ -2844,7 +2862,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         } catch (RemoteException e) {
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
+        try {
+            mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
+        } catch ( ActivityNotFoundException e) {
+            Log.v(TAG, "ActivityNotFound: " + intent);
+        }
         animateCollapsePanels();
     }
 
@@ -2862,7 +2884,37 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     private View.OnClickListener mClockClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             startActivityDismissingKeyguard(
-                    new Intent(Intent.ACTION_QUICK_CLOCK), true); // have fun, everyone
+                    new Intent(AlarmClock.ACTION_SHOW_ALARMS), true);
+        }
+    };
+
+    private View.OnLongClickListener mClockLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            startActivityDismissingKeyguard(
+                    new Intent(AlarmClock.ACTION_SET_ALARM), true);
+            return true;
+        }
+    };
+
+    private View.OnClickListener mDateClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+            builder.appendPath("time");
+            ContentUris.appendId(builder, System.currentTimeMillis());
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(builder.build());
+            startActivityDismissingKeyguard(intent, true);
+        }
+    };
+
+    private View.OnLongClickListener mDateLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_INSERT);
+            intent.setData(Events.CONTENT_URI);
+            startActivityDismissingKeyguard(intent, true);
+            return true;
         }
     };
 
