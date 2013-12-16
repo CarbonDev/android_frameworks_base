@@ -25,6 +25,7 @@ import com.android.internal.R;
 import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContentResolver;
@@ -306,12 +307,20 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         for (final ButtonConfig config : powerMenuConfig) {
             // power off
             if (config.getClickAction().equals(PolicyConstants.ACTION_POWER_OFF)) {
+                final boolean quickbootEnabled = Settings.System.getInt(
+                    mContext.getContentResolver(), "enable_quickboot", 0) == 1;
                 mItems.add(
                     new SinglePressAction(PolicyHelper.getPowerMenuIconImage(mContext,
                             config.getClickAction(), config.getIcon(), true),
                             config.getClickActionDescription()) {
 
                         public void onPress() {
+                            // goto quickboot mode
+                            if (quickbootEnabled) {
+                                startQuickBoot();
+                                return;
+                            }
+
                             // shutdown by making sure radio and power are handled accordingly.
                             mWindowManagerFuncs.shutdown(true);
                         }
@@ -1328,6 +1337,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
             return mEdgeGestureService;
         }
+    }
+
+    private void startQuickBoot() {
+        Intent intent = new Intent("org.codeaurora.action.QUICKBOOT");
+        intent.putExtra("mode", 0);
+        try {
+            mContext.startActivityAsUser(intent,UserHandle.CURRENT);
+        } catch (ActivityNotFoundException e) {}
     }
 
     private static final class GlobalActionsDialog extends Dialog implements DialogInterface {
