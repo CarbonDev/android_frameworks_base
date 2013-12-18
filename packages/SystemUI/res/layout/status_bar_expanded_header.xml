@@ -42,6 +42,7 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Clock"
             android:layout_centerVertical="true"
+            android:clickable="true"
             />
 
         <com.android.systemui.statusbar.policy.DateView
@@ -50,6 +51,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Date"
             android:layout_toEndOf="@id/clock"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:layout_centerVertical="true"
             />
     </RelativeLayout>
