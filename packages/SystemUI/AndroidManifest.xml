@@ -93,6 +93,9 @@
                 android:description="@string/permdesc_screenshot"
                 android:label="@string/permlab_screenshot" />
 
+    <!-- Record Audio QuickRecord -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:persistent="true"
         android:allowClearUserData="false"
