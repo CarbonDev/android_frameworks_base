@@ -191,4 +191,7 @@
     <string name="pie_hour_format_12">hh:mm</string>
     <string name="pie_hour_format_24">HH:mm</string>
 
+    <!-- Content description for the add quick settings tile button. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_desc_add_quick_settings">Add Quick settings.</string>
+
 </resources>
