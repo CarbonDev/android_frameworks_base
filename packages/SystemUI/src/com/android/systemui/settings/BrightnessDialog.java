@@ -89,7 +89,7 @@ public class BrightnessDialog extends Dialog implements
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClassName("com.android.settings",
-                        "com.android.settings.cyanogenmod.AutoBrightnessSetup");
+                        "com.android.settings.carbon.AutoBrightnessSetup");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
