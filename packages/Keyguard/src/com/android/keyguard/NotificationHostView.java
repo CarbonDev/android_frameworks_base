@@ -62,7 +62,7 @@ public class NotificationHostView extends FrameLayout {
 
     private static final float SWIPE = 0.2f;
     private static final int ANIMATION_MAX_DURATION = 500;
-    private static final int PPS = 1000;
+    private static final int PPS = 3000;
     private static final int MAX_ALPHA = 150;
 
     //Here we store dimissed notifications so we don't add them again in onFinishInflate
@@ -232,7 +232,7 @@ public class NotificationHostView extends FrameLayout {
                             preventClick = true;
                             v.cancelPendingInputEvents();
                             mScrollView.requestDisallowInterceptTouchEvent(true);
-                            v.setX(x);
+                            v.setTranslationX(x);
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -588,9 +588,11 @@ public class NotificationHostView extends FrameLayout {
 
     private int getDurationFromDistance (View v, int targetX, int targetY, float ppms) {
         int distance = 0;
-        if (targetY == v.getY()) distance = Math.abs(Math.round(v.getX()) - targetX);
-        else if (targetX == v.getX()) distance = Math.abs(Math.round(v.getY() - targetY));
-        else distance = (int) Math.abs(Math.round(Math.sqrt((v.getX() - targetX)*(v.getX() * targetX)+(v.getY() - targetY)*(v.getY() - targetY))));
+        float x = v.getX();
+        float y = v.getY();
+        if (targetY == y) distance = Math.abs(Math.round(x) - targetX);
+        else if (targetX == x) distance = Math.abs(Math.round(y - targetY));
+        else distance = (int) Math.abs(Math.round(Math.sqrt((x - targetX)*(x * targetX)+(y - targetY)*(y - targetY))));
         return Math.round(distance / ppms);
     }
 
