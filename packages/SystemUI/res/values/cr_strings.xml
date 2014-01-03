@@ -124,6 +124,7 @@
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permlab_screenshot">Allows the app to cature a screenshot. This is protected by SystemUI.</string>
     <string name="screenshot_notification_delete">Delete</string>
+    <string name="screenshot_delete_confirmation">Screenshot deleted.</string>
     <string name="screenshot_toast">Screenshot in %1$d seconds</string>
 
     <!-- Development shortcut -->
