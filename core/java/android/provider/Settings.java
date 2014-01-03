@@ -3289,6 +3289,12 @@ public final class Settings {
         public static final String SCREENSHOT_TOGGLE_DELAY = "screenshot_toggle_delay";
 
         /**
+         * Whether power menu screen record is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_SCREENRECORD_ENABLED = "power_menu_screenrecord_enabled";
+
+        /**
          * Enable Stylus Gestures
          *
          * @hide
