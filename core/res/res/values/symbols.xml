@@ -1782,7 +1782,6 @@
   <java-symbol type="dimen" name="subtitle_shadow_offset" />
   <java-symbol type="dimen" name="subtitle_outline_width" />
 
-
   <!-- Options that show upon long-pressing a key on the physical keyboard -->
   <java-symbol type="string" name="symbol_picker_0" />
   <java-symbol type="string" name="symbol_picker_1" />
