@@ -34,7 +34,14 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.notification.INotificationListener;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 import android.util.Log;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.android.internal.util.slim.QuietHoursHelper;
 
 public class NotificationViewManager {
     private final static String TAG = "Keyguard:NotificationViewManager";
@@ -55,6 +62,8 @@ public class NotificationViewManager {
     private INotificationManager mNotificationManager;
     private PowerManager mPowerManager;
     private NotificationHostView mHostView;
+
+    private Set<String> mExcludedApps = new HashSet<String>();
 
     public static Configuration config;
 
@@ -101,6 +110,8 @@ public class NotificationViewManager {
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_NOTIFICATIONS_EXCLUDED_APPS), false, this);
         }
 
         @Override
@@ -133,6 +144,10 @@ public class NotificationViewManager {
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_HEIGHT, notificationsHeight);
             offsetTop = Settings.System.getFloat(mContext.getContentResolver(),
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP, offsetTop);
+            String excludedApps = Settings.System.getString(mContext.getContentResolver(),
+                    Settings.System.LOCKSCREEN_NOTIFICATIONS_EXCLUDED_APPS);
+
+            createExcludedAppsSet(excludedApps);
         }
     }
 
@@ -141,8 +156,9 @@ public class NotificationViewManager {
             if (event.sensor.equals(ProximitySensor)) {
                 if (!mIsScreenOn) {
                     if (event.values[0] >= ProximitySensor.getMaximumRange()) {
-                        if (config.pocketMode && mTimeCovered != 0 && (config.showAlways || mHostView.getNotificationCount() > 0) &&
-                                System.currentTimeMillis() - mTimeCovered > MIN_TIME_COVERED) {
+                        if (config.pocketMode && mTimeCovered != 0 && (config.showAlways || mHostView.getNotificationCount() > 0)
+                                && System.currentTimeMillis() - mTimeCovered > MIN_TIME_COVERED
+                                && !QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {
                             wakeDevice();
                             mWokenByPocketMode = true;
                             mHostView.showAllNotifications();
@@ -169,7 +185,7 @@ public class NotificationViewManager {
             boolean ongoingAndReposted = sbn.isOngoing() && mHostView.containsNotification(sbn);
             if (mHostView.addNotification(sbn, (screenOffAndNotCovered || mIsScreenOn) && !ongoingAndReposted,
                         config.forceExpandedView) && config.wakeOnNotification && screenOffAndNotCovered
-                        && !ongoingAndReposted) {
+                        && !ongoingAndReposted && mTimeCovered == 0) {
                 wakeDevice();
             }
         }
@@ -177,6 +193,11 @@ public class NotificationViewManager {
         public void onNotificationRemoved(final StatusBarNotification sbn) {
             mHostView.removeNotification(sbn, false);
         }
+
+        public boolean isValidNotification(final StatusBarNotification sbn) {
+            return (!mExcludedApps.contains(sbn.getPackageName()));
+        }
+
     }
 
     public NotificationViewManager(Context context, KeyguardViewManager viewManager) {
@@ -247,9 +268,7 @@ public class NotificationViewManager {
     }
 
     private void wakeDevice() {
-        if (mTimeCovered == 0) {
-            mPowerManager.wakeUp(SystemClock.uptimeMillis());
-        }
+        mPowerManager.wakeUp(SystemClock.uptimeMillis());
     }
 
     public void onScreenTurnedOff() {
@@ -277,5 +296,16 @@ public class NotificationViewManager {
                 unregisterListeners();
             }
         }, ANIMATION_MAX_DURATION);
+    }
+
+    /**
+     * Create the set of excluded apps given a string of packages delimited with '|'.
+     * @param excludedApps
+     */
+    private void createExcludedAppsSet(String excludedApps) {
+        if (TextUtils.isEmpty(excludedApps))
+            return;
+        String[] appsToExclude = excludedApps.split("\\|");
+        mExcludedApps = new HashSet<String>(Arrays.asList(appsToExclude));
     }
 }
