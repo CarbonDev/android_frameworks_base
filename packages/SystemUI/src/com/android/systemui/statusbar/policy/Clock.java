@@ -76,8 +76,10 @@ public class Clock extends TextView implements DemoMode {
     public static final int STYLE_CLOCK_CENTER  = 1;
 
     public static final int FONT_BOLD = 0;
-    public static final int FONT_LIGHT = 1;
-    public static final int FONT_NORMAL = 2;
+    public static final int FONT_CONDENSED = 1;
+    public static final int FONT_LIGHT = 2;
+    public static final int FONT_LIGHT_ITALIC = 3;
+    public static final int FONT_NORMAL = 4;
 
     protected int mClockDateDisplay = CLOCK_DATE_DISPLAY_GONE;
     protected int mClockDateStyle = CLOCK_DATE_STYLE_UPPERCASE;
@@ -389,8 +391,14 @@ public class Clock extends TextView implements DemoMode {
             case FONT_BOLD:
                 setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
+            case FONT_CONDENSED:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
             case FONT_LIGHT:
                 setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FONT_LIGHT_ITALIC:
+                setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
             case FONT_NORMAL:
             default:
