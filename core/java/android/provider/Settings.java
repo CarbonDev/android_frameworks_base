@@ -4516,11 +4516,11 @@ public final class Settings {
         public static final String MENU_VISIBILITY = "menu_visibility";
 
         /**
-         * Should the non-intrusive incall ui be used
+         * Whether incomming call UI stays in background
          *
          * @hide
          */
-        public static final String NON_INTRUSIVE_INCALL = "non_intrusive_incall";
+        public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
 
         /**
          * Whether flip action during incomming call should mute or dismiss
