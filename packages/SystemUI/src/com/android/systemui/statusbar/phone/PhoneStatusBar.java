@@ -442,7 +442,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                     Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
             if (mCarrierLabel != null) {
                 toggleCarrierAndWifiLabelVisibility();
-          }
+            }
        }
     }
 
