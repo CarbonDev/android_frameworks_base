@@ -152,8 +152,10 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int N = getChildCount();
-        int x = getPaddingLeft();
+        final int N = getChildCount();
+        final int width = getWidth();
+
+        int x = getPaddingStart();
         int y = getPaddingTop();
         int cursor = 0;
 
@@ -170,41 +172,49 @@ public class QuickSettingsContainerView extends FrameLayout {
         }
 
         for (int i = 0; i < N; ++i) {
-            QuickSettingsTileView v = (QuickSettingsTileView) getChildAt(i);
-            ViewGroup.LayoutParams lp = v.getLayoutParams();
-            if (v.getVisibility() != GONE) {
-                int col = cursor % mNumFinalColumns;
-                int colSpan = v.getColumnSpan();
-                int row = cursor / mNumFinalColumns;
+            QuickSettingsTileView child = (QuickSettingsTileView) getChildAt(i);
+            ViewGroup.LayoutParams lp = child.getLayoutParams();
+            if (child.getVisibility() != GONE) {
+                final int col = cursor % mNumFinalColumns;
+                final int colSpan = child.getColumnSpan();
+
+                final int childWidth = lp.width;
+                final int childHeight = lp.height;
+
+                int row = (int) (cursor / mNumFinalColumns);
 
                 // Push the item to the next row if it can't fit on this one
                 if ((col + colSpan) > mNumFinalColumns && !mSingleRow) {
-                    x = getPaddingLeft();
-                    y += lp.height + cellGap;
+                    x = getPaddingStart();
+                    y += childHeight + mCellGap;
                     row++;
                 }
 
+                final int childLeft = isLayoutRtl() ? width - x - childWidth : x;
+                final int childRight = childLeft + childWidth;
+
+                final int childTop = y;
+                final int childBottom = childTop + childHeight;
+
                 // Layout the container
-                v.layout(x, y, x + lp.width, y + lp.height);
+                child.layout(childLeft, childTop, childRight, childBottom);
 
                 // Offset the position by the cell gap or reset the position and cursor when we
                 // reach the end of the row
-                cursor += v.getColumnSpan();
+                cursor += child.getColumnSpan();
                 if (cursor < (((row + 1) * mNumFinalColumns)) || mSingleRow) {
-                    x += lp.width + cellGap;
-                } else if (!mSingleRow) {
-                    x = getPaddingLeft();
-                    y += lp.height + cellGap;
+                    x += childWidth + mCellGap;
+                } else {
+                    x = getPaddingStart();
+                    y += childHeight + mCellGap;
                 }
             }
         }
     }
 
     private boolean isLandscape() {
-        final boolean isLandscape =
-            Resources.getSystem().getConfiguration().orientation
-                    == Configuration.ORIENTATION_LANDSCAPE;
-        return isLandscape;
+        return Resources.getSystem().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public int getTileTextSize() {
