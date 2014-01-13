@@ -234,9 +234,8 @@ public class KeyguardViewManager {
     }
 
     public void setBackgroundBitmap(Bitmap bmp) {
-        if (bmp != null && mSeeThrough) {
-            mBlurredImage = mBlurRadius > 0 ? blurBitmap(bmp, mBlurRadius)
-                : bmp;
+        if (bmp != null && mSeeThrough && mBlurRadius > 0) {
+            mBlurredImage = blurBitmap(bmp, mBlurRadius);
         } else {
             mBlurredImage = null;
         }
@@ -461,12 +460,16 @@ public class KeyguardViewManager {
             mKeyguardView.requestFocus();
         }
 
-        if(mBlurredImage != null) {
-            int currentRotation = mKeyguardView.getDisplay().getRotation() * 90;
-            mBlurredImage = rotateBmp(mBlurredImage, mLastRotation - currentRotation);
-            mLastRotation = currentRotation;
-            mIsCoverflow = false;
-            setCustomBackground(mBlurredImage);
+        if(mBlurredImage != null || (mSeeThrough && mBlurRadius == 0)) {
+            if (mBlurredImage != null) {
+                int currentRotation = mKeyguardView.getDisplay().getRotation() * 90;
+                mBlurredImage = rotateBmp(mBlurredImage, mLastRotation - currentRotation);
+                mLastRotation = currentRotation;
+                mIsCoverflow = false;
+                setCustomBackground(mBlurredImage);
+            } else {
+                updateShowWallpaper(false);
+            }
         } else {
             mIsCoverflow = true;
         }
