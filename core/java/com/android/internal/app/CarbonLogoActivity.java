@@ -85,7 +85,7 @@ public class CarbonLogoActivity extends Activity {
         final TextView letter = new TextView(this);
 
         letter.setTypeface(bold);
-        letter.setTextSize(200);
+        letter.setTextSize(300);
         letter.setTextColor(TEXT_COLOR);
         letter.setGravity(Gravity.CENTER);
         letter.setText("C");
