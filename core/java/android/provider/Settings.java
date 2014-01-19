@@ -3693,6 +3693,13 @@ public final class Settings {
         public static final String ACTIVE_DISPLAY_SHOW_DATE = "active_display_show_date";
 
         /**
+         * Quick Settings Smart Pulldown
+         *
+         * @hide
+         */
+        public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
+
+        /**
          * Whether to invert the colors when in bright light
          * @hide
          */
