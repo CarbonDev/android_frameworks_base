@@ -113,7 +113,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private Action mSilentModeAction;
     private ToggleAction mAirplaneModeOn;
-    private ToggleAction mImmersiveModeOn;
+    private ToggleAction mExpandDesktopModeOn;
 
     private MyAdapter mAdapter;
 
@@ -226,26 +226,26 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
         }
 
-        mImmersiveModeOn = new ToggleAction(
-                R.drawable.ic_lock_immersive,
-                R.drawable.ic_lock_immersive_off,
-                R.string.global_actions_toggle_immersive_mode,
-                R.string.global_actions_immersive_mode_on_status,
-                R.string.global_actions_immersive_mode_off_status) {
+        mExpandDesktopModeOn = new ToggleAction(
+                R.drawable.ic_lock_expanded_desktop,
+                R.drawable.ic_lock_expanded_desktop_off,
+                R.string.global_actions_toggle_expanded_desktop_mode,
+                R.string.global_actions_expanded_desktop_mode_on_status,
+                R.string.global_actions_expanded_desktop_mode_off_status) {
 
             void onToggle(boolean on) {
-                changeImmersiveModeSystemSetting(on);
+                changeExpandDesktopModeSystemSetting(on);
             }
 
             public boolean showDuringKeyguard() {
-                return true;
+                return false;
             }
 
             public boolean showBeforeProvisioning() {
                 return false;
             }
         };
-        onImmersiveChanged();
+        onExpandDesktopModeChanged();
 
         mAirplaneModeOn = new ToggleAction(
                 R.drawable.ic_lock_airplane_mode,
@@ -367,12 +367,16 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 });
         }
 
-        // next: immersive
-        // only shown if enabled
-        boolean showImmersive = Settings.System.getIntForUser(cr,
-                    Settings.System.POWER_MENU_IMMERSIVE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
-        if (showImmersive) {
-            mItems.add(mImmersiveModeOn);
+        // next: expanded desktop toggle
+        // only shown if enabled and expanded desktop is enabled, disabled by default
+        boolean showExpandedDesktop =
+                Settings.System.getIntForUser(cr,
+                        Settings.System.EXPANDED_DESKTOP_STYLE, 0, UserHandle.USER_CURRENT) != 0
+                && Settings.System.getIntForUser(cr,
+                        Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+
+        if (showExpandedDesktop) {
+            mItems.add(mExpandDesktopModeOn);
         }
 
         // next: screenshot
@@ -1273,21 +1277,21 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private void onImmersiveChanged() {
-        boolean immersiveModeOn = Settings.System.getIntForUser(
+    private void onExpandDesktopModeChanged() {
+        boolean expandDesktopModeOn = Settings.System.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.IMMERSIVE_MODE,
+                Settings.System.EXPANDED_DESKTOP_STATE,
                 0, UserHandle.USER_CURRENT) == 1;
-        mImmersiveModeOn.updateState(immersiveModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
+        mExpandDesktopModeOn.updateState(expandDesktopModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
     }
 
     /**
-     * Change the immersive mode system setting
+     * Change the expand desktop mode system setting
      */
-    private void changeImmersiveModeSystemSetting(boolean on) {
+    private void changeExpandDesktopModeSystemSetting(boolean on) {
         Settings.System.putIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.IMMERSIVE_MODE,
+                Settings.System.EXPANDED_DESKTOP_STATE,
                 on ? 1 : 0, UserHandle.USER_CURRENT);
     }
 

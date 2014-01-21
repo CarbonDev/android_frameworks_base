@@ -433,8 +433,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // What we last reported to system UI about whether the compatibility
     // menu needs to be displayed.
     boolean mLastFocusNeedsMenu = false;
-    // Expanded desktop mode
-    int mExpandedDesktopStyle = 0;
 
     FakeWindow mHideNavFakeWindow = null;
 
@@ -453,6 +451,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mHideLockScreen;
     boolean mForcingShowNavBar;
     int mForcingShowNavBarLayer;
+
+    int mExpandedDesktopStyle = -1;
 
     // States of keyguard dismiss.
     private static final int DISMISS_KEYGUARD_NONE = 0; // Keyguard not being dismissed.
@@ -677,6 +677,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.DEFAULT_INPUT_METHOD), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANDED_DESKTOP_STATE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANDED_DESKTOP_STYLE), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.IMMERSIVE_MODE_CONFIRMATIONS), false, this,
                     UserHandle.USER_ALL);
@@ -706,9 +712,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION), false, this,
-                    UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.IMMERSIVE_MODE), false, this,
                     UserHandle.USER_ALL);
 
             updateSettings();
@@ -1555,7 +1558,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     && !mCameraWakeScreen);
 
             mExpandedDesktopStyle = Settings.System.getIntForUser(resolver,
-                    Settings.System.IMMERSIVE_MODE, 0, UserHandle.USER_CURRENT);
+                    Settings.System.EXPANDED_DESKTOP_STYLE, 0, UserHandle.USER_CURRENT);
+            if (Settings.System.getIntForUser(resolver,
+                        Settings.System.EXPANDED_DESKTOP_STATE, 0, UserHandle.USER_CURRENT) == 0) {
+                mExpandedDesktopStyle = 0;
+            }
 
             updateKeyAssignments();
 
@@ -3957,11 +3964,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private boolean expandedDesktopHidesNavigationBar() {
-        return mExpandedDesktopStyle == 1 || mExpandedDesktopStyle == 2;
+        return mExpandedDesktopStyle != 0;
     }
 
     private boolean expandedDesktopHidesStatusBar() {
-        return mExpandedDesktopStyle == 1 || mExpandedDesktopStyle == 3;
+        return mExpandedDesktopStyle == 2;
     }
 
     private void offsetInputMethodWindowLw(WindowState win) {
@@ -5924,6 +5931,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         } else {
             mClearedBecauseOfForceShow = false;
         }
+        // The window who requested navbar force showing disappeared and next window wants
+        // to hide navbar. Instead of hiding we will make it transient. SystemUI will take care
+        // about hiding after timeout. This should not happen if next window is keyguard because
+        // transient state have more priority than translucent (why?) and cause bad UX
+        if (wasCleared && !mClearedBecauseOfForceShow
+                && (tmpVisibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0) {
+            mNavigationBarController.showTransient();
+            tmpVisibility |= View.NAVIGATION_BAR_TRANSIENT;
+            mWindowManagerFuncs.addSystemUIVisibilityFlag(View.NAVIGATION_BAR_TRANSIENT);
+        }
 
         int visibility = updateSystemBarsLw(win, mLastSystemUiFlags, tmpVisibility);
         final int diff = visibility ^ mLastSystemUiFlags;
@@ -5933,12 +5950,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return 0;
         }
 
-        if (wasCleared && !mClearedBecauseOfForceShow
-                && (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0) {
-            mNavigationBarController.showTransient();
-            visibility |= View.NAVIGATION_BAR_TRANSIENT;
-            mWindowManagerFuncs.addSystemUIVisibilityFlag(View.NAVIGATION_BAR_TRANSIENT);
-        }
         final int visibility2 = visibility;
         mLastSystemUiFlags = visibility;
         mLastFocusNeedsMenu = needsMenu;
