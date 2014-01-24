@@ -183,4 +183,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <!-- Active Display -->
+    <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
+
 </resources>
