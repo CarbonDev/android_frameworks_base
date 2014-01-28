@@ -267,6 +267,9 @@ public class GlowPadView extends View {
         if (a.getValue(R.styleable.GlowPadView_targetDrawables, outValue)) {
             internalSetTargetResources(outValue.resourceId);
         }
+        if (mTargetDrawables == null || mTargetDrawables.size() == 0) {
+            throw new IllegalStateException("Must specify at least one target drawable");
+        }
 
         // Read array of target descriptions
         if (a.getValue(R.styleable.GlowPadView_targetDescriptions, outValue)) {
@@ -631,10 +634,6 @@ public class GlowPadView extends View {
 
     private void internalSetTargetResources(int resourceId) {
         final ArrayList<TargetDrawable> targets = loadDrawableArray(resourceId);
-        if (targets.size() == 0) {
-            throw new IllegalStateException("Must specify at least one target drawable");
-        }
-
         mTargetDrawables = targets;
         mTargetResourceId = resourceId;
 
@@ -656,30 +655,12 @@ public class GlowPadView extends View {
         }
     }
 
-    private void internalSetTargetResources(ArrayList<TargetDrawable> targets) {
-        if (targets == null || targets.size() == 0) {
-            throw new IllegalStateException("Must specify at least one target drawable");
-        }
+    private void internalSetTargetResources(ArrayList<TargetDrawable> drawList) {
         mTargetResourceId = 0;
-        mTargetDrawables = targets;
-
-        int maxWidth = mHandleDrawable.getWidth();
-        int maxHeight = mHandleDrawable.getHeight();
-        final int count = targets.size();
-        for (int i = 0; i < count; i++) {
-            TargetDrawable target = targets.get(i);
-            maxWidth = Math.max(maxWidth, target.getWidth());
-            maxHeight = Math.max(maxHeight, target.getHeight());
-        }
-        if (mMaxTargetWidth != maxWidth || mMaxTargetHeight != maxHeight) {
-            mMaxTargetWidth = maxWidth;
-            mMaxTargetHeight = maxHeight;
-            requestLayout(); // required to resize layout and call updateTargetPositions()
-        } else {
-            updateTargetPositions(mWaveCenterX, mWaveCenterY);
-            updatePointCloudPosition(mWaveCenterX, mWaveCenterY);
-            hideTargets(false, false);
-        }
+        mTargetDrawables = drawList;
+        updateTargetPositions(mWaveCenterX, mWaveCenterY);
+        updatePointCloudPosition(mWaveCenterX, mWaveCenterY);
+        hideTargets(false, false);
     }
 
     /**
@@ -1514,15 +1495,5 @@ public class GlowPadView extends View {
             replaceTargetDrawables(mContext.getResources(), existingResId, existingResId);
         }
         return replaced;
-    }
-
-    public void setHandleDrawable(Drawable handle) {
-        Resources res = mContext.getResources();
-        if (handle != null) {
-            mHandleDrawable = new TargetDrawable(res, handle);
-        } else {
-            mHandleDrawable = new TargetDrawable(res, 0);
-        }
-        mHandleDrawable.setState(TargetDrawable.STATE_INACTIVE);
     }
 }

@@ -2687,12 +2687,6 @@ public final class Settings {
                 "lockscreen_use_widget_container_carousel";
 
         /**
-         * Stores values for custom lockscreen targets
-         * @hide
-         */
-        public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
-
-        /**
          * Lockscreen battery status visibility mode
          * 0 = show if charging
          * 1 = always show
