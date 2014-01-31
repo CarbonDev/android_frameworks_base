@@ -4,6 +4,7 @@ import android.R;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Camera;
@@ -88,5 +89,15 @@ public class QSUtils {
 
         public static boolean adbEnabled(ContentResolver resolver) {
             return (Settings.Global.getInt(resolver, Settings.Global.ADB_ENABLED, 0)) == 1;
+        }
+
+        public static boolean isTorchAvailable(Context context) {
+            PackageManager pm = context.getPackageManager();
+            try {
+                return pm.getPackageInfo(TorchConstants.APP_PACKAGE_NAME, 0) != null;
+            } catch (PackageManager.NameNotFoundException e) {
+                // ignored, just catched so we can return false below
+            }
+            return false;
         }
 }
