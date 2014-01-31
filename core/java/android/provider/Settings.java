@@ -2680,6 +2680,12 @@ public final class Settings {
         public static final String LOCKSCREEN_MAXIMIZE_WIDGETS = "lockscreen_maximize_widgets";
 
         /**
+         * Whether a custom lockscreen wallpaper is enabled
+         * @hide
+         */
+        public static final String LOCKSCREEN_WALLPAPER = "lockscreen_wallpaper";
+
+        /**
          * Whether to use the carousel as widget container on portrait view
          * @hide
          */
