@@ -145,6 +145,9 @@ public abstract class KeyguardAbsKeyInputView extends LinearLayout
             }
         });
 
+        mQuickUnlock = (Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL, 0) == 1);
+
         mPasswordEntry.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
