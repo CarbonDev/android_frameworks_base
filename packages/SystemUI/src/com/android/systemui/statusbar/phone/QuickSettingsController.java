@@ -35,6 +35,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_NETWORKADB;
 import static com.android.internal.util.cm.QSConstants.TILE_NETWORKMODE;
 import static com.android.internal.util.cm.QSConstants.TILE_NFC;
 import static com.android.internal.util.cm.QSConstants.TILE_PROFILE;
+import static com.android.internal.util.cm.QSConstants.TILE_POWERMENU;
 import static com.android.internal.util.cm.QSConstants.TILE_PERFORMANCE_PROFILE;
 import static com.android.internal.util.cm.QSConstants.TILE_QUIETHOURS;
 import static com.android.internal.util.cm.QSConstants.TILE_RINGER;
@@ -91,6 +92,7 @@ import com.android.systemui.quicksettings.NfcTile;
 import com.android.systemui.quicksettings.PerformanceProfileTile;
 import com.android.systemui.quicksettings.PreferencesTile;
 import com.android.systemui.quicksettings.ProfileTile;
+import com.android.systemui.quicksettings.PowerMenuTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
 import com.android.systemui.quicksettings.QuickRecordTile;
 import com.android.systemui.quicksettings.QuietHoursTile;
@@ -237,6 +239,8 @@ public class QuickSettingsController {
                 qs = new CarbonTile(mContext, this);
             } else if (tile.equals(TILE_RINGER)) {
                 qs = new RingerModeTile(mContext, this);
+            } else if (tile.equals(TILE_POWERMENU)) {
+                qs = new PowerMenuTile(mContext, this);
             } else if (tile.equals(TILE_SYNC)) {
                 qs = new SyncTile(mContext, this);
             } else if (tile.equals(TILE_WIFIAP) && mobileDataSupported) {
