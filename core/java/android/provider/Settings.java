@@ -3670,6 +3670,14 @@ public final class Settings {
         public static final String NOTIFICATION_CONVERT_SOUND_TO_VIBRATION = "convert_sound_to_vibration";
 
        /**
+        * Boolean value whether to allow the statusbar to be used as a
+        * brightness slider when collapsed
+        *
+        * @hide
+        */
+        public static final String STATUSBAR_BRIGHTNESS_SLIDER = "statusbar_brightness_slider";
+
+       /**
         * Sets the portrait background of notification drawer
         * @hide
         */
