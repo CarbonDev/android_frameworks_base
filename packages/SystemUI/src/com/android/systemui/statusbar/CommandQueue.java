@@ -61,6 +61,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_SCREENSHOT          = 19 << MSG_SHIFT;
     private static final int MSG_TOGGLE_LAST_APP            = 20 << MSG_SHIFT;
     private static final int MSG_TOGGLE_KILL_APP            = 21 << MSG_SHIFT;
+    private static final int MSG_SET_PIE_TRIGGER_MASK       = 22 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -103,6 +104,7 @@ public class CommandQueue extends IStatusBar.Stub {
         public void hideSearchPanel();
         public void cancelPreloadRecentApps();
         public void setWindowState(int window, int state);
+        public void setPieTriggerMask(int newMask, boolean lock);
         public void toggleNotificationShade();
         public void toggleQSShade();
         public void toggleScreenshot();
@@ -217,21 +219,21 @@ public class CommandQueue extends IStatusBar.Stub {
     public void toggleRecentApps() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_RECENT_APPS);
-            mHandler.obtainMessage(MSG_TOGGLE_RECENT_APPS, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_TOGGLE_RECENT_APPS);
         }
     }
 
     public void preloadRecentApps() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_PRELOAD_RECENT_APPS);
-            mHandler.obtainMessage(MSG_PRELOAD_RECENT_APPS, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_PRELOAD_RECENT_APPS);
         }
     }
 
     public void cancelPreloadRecentApps() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_CANCEL_PRELOAD_RECENT_APPS);
-            mHandler.obtainMessage(MSG_CANCEL_PRELOAD_RECENT_APPS, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_CANCEL_PRELOAD_RECENT_APPS);
         }
     }
 
@@ -242,38 +244,46 @@ public class CommandQueue extends IStatusBar.Stub {
         }
     }
 
+    public void setPieTriggerMask(int newMask, boolean lock) {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_SET_PIE_TRIGGER_MASK);
+            mHandler.obtainMessage(MSG_SET_PIE_TRIGGER_MASK,
+                    newMask, lock ? 1 : 0, null).sendToTarget();
+        }
+    }
+
     public void toggleNotificationShade() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_NOTIFICATION_SHADE);
-            mHandler.obtainMessage(MSG_TOGGLE_NOTIFICATION_SHADE, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_TOGGLE_NOTIFICATION_SHADE);
         }
     }
 
     public void toggleQSShade() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_QS_SHADE);
-            mHandler.obtainMessage(MSG_TOGGLE_QS_SHADE, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_TOGGLE_QS_SHADE);
         }
     }
 
     public void toggleScreenshot() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_SCREENSHOT);
-            mHandler.obtainMessage(MSG_TOGGLE_SCREENSHOT, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_TOGGLE_SCREENSHOT);
         }
     }
 
     public void toggleLastApp() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_LAST_APP);
-            mHandler.obtainMessage(MSG_TOGGLE_LAST_APP, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_TOGGLE_LAST_APP);
         }
     }
 
     public void toggleKillApp() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_KILL_APP);
-            mHandler.obtainMessage(MSG_TOGGLE_KILL_APP, 0, 0, null).sendToTarget();
+            mHandler.sendEmptyMessage(MSG_TOGGLE_KILL_APP);
         }
     }
 
@@ -356,6 +366,9 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_SET_WINDOW_STATE:
                     mCallbacks.setWindowState(msg.arg1, msg.arg2);
+                    break;
+                case MSG_SET_PIE_TRIGGER_MASK:
+                    mCallbacks.setPieTriggerMask(msg.arg1, msg.arg2 != 0);
                     break;
                 case MSG_TOGGLE_NOTIFICATION_SHADE:
                     mCallbacks.toggleNotificationShade();

@@ -39,6 +39,7 @@ public class ButtonsConstants {
     public static final String ACTION_VIB_SILENT           = "**ring_vib_silent**";
     public static final String ACTION_POWER_MENU           = "**power_menu**";
     public static final String ACTION_TORCH                = "**torch**";
+    public static final String ACTION_KEYGUARD_SEARCH      = "**keyguard_search**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";
@@ -66,6 +67,23 @@ public class ButtonsConstants {
     public static final String NAV_RING_CONFIG_DEFAULT =
           ACTION_ASSIST + ACTION_DELIMITER
         + ACTION_NULL   + ACTION_DELIMITER
+        + ICON_EMPTY;
+
+    public static final String PIE_SECOND_LAYER_CONFIG_DEFAULT =
+          ACTION_POWER_MENU    + ACTION_DELIMITER
+        + ACTION_NULL          + ACTION_DELIMITER
+        + ICON_EMPTY           + ACTION_DELIMITER
+        + ACTION_NOTIFICATIONS + ACTION_DELIMITER
+        + ACTION_NULL          + ACTION_DELIMITER
+        + ICON_EMPTY           + ACTION_DELIMITER
+        + ACTION_SEARCH        + ACTION_DELIMITER
+        + ACTION_NULL          + ACTION_DELIMITER
+        + ICON_EMPTY           + ACTION_DELIMITER
+        + ACTION_SCREENSHOT    + ACTION_DELIMITER
+        + ACTION_NULL          + ACTION_DELIMITER
+        + ICON_EMPTY           + ACTION_DELIMITER
+        + ACTION_IME           + ACTION_DELIMITER
+        + ACTION_NULL          + ACTION_DELIMITER
         + ICON_EMPTY;
 
 }
