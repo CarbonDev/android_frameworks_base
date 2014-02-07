@@ -51,6 +51,10 @@ public class BatteryController extends BroadcastReceiver {
         mChangeCallbacks.remove(cb);
     }
 
+    public void unregisterController(Context context) {
+        context.unregisterReceiver(this);
+    }
+
     public int getBatteryLevel() {
         return mLevel;
     }
