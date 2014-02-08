@@ -95,7 +95,17 @@ public class PolicyHelper {
 
         if (!clickAction.startsWith("**")) {
             try {
-                d = pm.getActivityIcon(Intent.parseUri(clickAction, 0));
+                String extraIconPath = clickAction.replaceAll(".*?hasExtraIcon=", "");
+                if (extraIconPath != null && !extraIconPath.isEmpty()) {
+                    File f = new File(Uri.parse(extraIconPath).getPath());
+                    if (f.exists()) {
+                        d = new BitmapDrawable(context.getResources(),
+                                f.getAbsolutePath());
+                    }
+                }
+                if (d == null) {
+                    d = pm.getActivityIcon(Intent.parseUri(clickAction, 0));
+                }
             } catch (NameNotFoundException e) {
                 Resources systemUiResources;
                 try {
@@ -187,6 +197,12 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_SCREEN_RECORD)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_screen_record);
+        } else if (clickAction.equals(PolicyConstants.ACTION_PIE)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_pie);
+        } else if (clickAction.equals(PolicyConstants.ACTION_NAVBAR)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_navbar);
         }
         return null;
     }

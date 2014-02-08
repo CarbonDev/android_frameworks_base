@@ -232,7 +232,17 @@ public class ButtonsHelper {
 
         if (!clickAction.startsWith("**")) {
             try {
-                d = pm.getActivityIcon(Intent.parseUri(clickAction, 0));
+                String extraIconPath = clickAction.replaceAll(".*?hasExtraIcon=", "");
+                if (extraIconPath != null && !extraIconPath.isEmpty()) {
+                    File f = new File(Uri.parse(extraIconPath).getPath());
+                    if (f.exists()) {
+                        d = new BitmapDrawable(context.getResources(),
+                                f.getAbsolutePath());
+                    }
+                }
+                if (d == null) {
+                    d = pm.getActivityIcon(Intent.parseUri(clickAction, 0));
+                }
             } catch (NameNotFoundException e) {
                 resId = systemUiResources.getIdentifier(
                     SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
@@ -327,6 +337,12 @@ public class ButtonsHelper {
         } else if (clickAction.equals(ButtonsConstants.ACTION_QS)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_qs", null, null);
+        } else if (clickAction.equals(ButtonsConstants.ACTION_PIE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_pie", null, null);
+        } else if (clickAction.equals(ButtonsConstants.ACTION_NAVBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_navbar", null, null);
         } else if (clickAction.equals(ButtonsConstants.ACTION_VIB)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_vib", null, null);
