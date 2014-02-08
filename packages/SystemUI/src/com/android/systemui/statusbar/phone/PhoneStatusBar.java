@@ -3228,6 +3228,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         int msg = (mExpandedVisible)
                 ? ((mQSPanelIsOpen) ? MSG_FLIP_TO_NOTIFICATION_PANEL : MSG_CLOSE_PANELS)
                 : MSG_OPEN_NOTIFICATION_PANEL;
+        if (msg == MSG_OPEN_NOTIFICATION_PANEL) {
+            try {
+                mWindowManagerService.toggleStatusBar();
+            } catch (RemoteException ex) {
+            }
+        }
         mHandler.removeMessages(msg);
         mHandler.sendEmptyMessage(msg);
     }
@@ -3242,6 +3248,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } else {
             msg = (mExpandedVisible)
                 ? MSG_CLOSE_PANELS : MSG_OPEN_QS_PANEL;
+        }
+        if (msg == MSG_OPEN_QS_PANEL) {
+            try {
+                mWindowManagerService.toggleStatusBar();
+            } catch (RemoteException ex) {
+            }
         }
         mHandler.removeMessages(msg);
         mHandler.sendEmptyMessage(msg);

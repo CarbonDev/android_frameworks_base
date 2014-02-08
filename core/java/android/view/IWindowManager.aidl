@@ -307,6 +307,13 @@ interface IWindowManager
     void toggleGlobalMenu();
 
     /**
+     * Toggle statusbar on expanded desktop
+     *
+     * @hide
+     */
+    void toggleStatusBar();
+
+    /**
      * Sets the current touch exploration state.
      *
      * @param enabled Whether touch exploration is enabled.
