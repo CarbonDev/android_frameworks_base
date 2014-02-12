@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Control the default theme mode for the UI to use.
+         One of the following values (See Configuration.java):
+             1 UI_THEME_MODE_NORMAL (default)
+             2 UI_THEME_MODE_HOLO_DARK
+             3 UI_THEME_MODE_HOLO_LIGHT -->
+    <integer name="config_uiThemeMode">1</integer>
+  
+</resources>
