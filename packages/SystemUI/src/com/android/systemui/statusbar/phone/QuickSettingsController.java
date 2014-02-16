@@ -23,6 +23,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_BATTERY;
 import static com.android.internal.util.cm.QSConstants.TILE_BLUETOOTH;
 import static com.android.internal.util.cm.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.cm.QSConstants.TILE_CAMERA;
+import static com.android.internal.util.cm.QSConstants.TILE_CARBON;
 import static com.android.internal.util.cm.QSConstants.TILE_DELIMITER;
 import static com.android.internal.util.cm.QSConstants.TILE_GPS;
 import static com.android.internal.util.cm.QSConstants.TILE_IMMERSIVE;
@@ -75,6 +76,7 @@ import com.android.systemui.quicksettings.BluetoothTile;
 import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
 import com.android.systemui.quicksettings.CameraTile;
+import com.android.systemui.quicksettings.CarbonTile;
 //import com.android.systemui.quicksettings.DockBatteryTile;
 import com.android.systemui.quicksettings.GPSTile;
 import com.android.systemui.quicksettings.ImmersiveTile;
@@ -226,6 +228,8 @@ public class QuickSettingsController {
                 qs = new BrightnessTile(mContext, this);
             } else if (tile.equals(TILE_CAMERA) && cameraSupported) {
                 qs = new CameraTile(mContext, this, mHandler);
+            } else if (tile.equals(TILE_CARBON)) {
+                qs = new CarbonTile(mContext, this);
             } else if (tile.equals(TILE_RINGER)) {
                 qs = new RingerModeTile(mContext, this);
             } else if (tile.equals(TILE_SYNC)) {
