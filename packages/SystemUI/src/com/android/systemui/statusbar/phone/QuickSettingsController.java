@@ -103,7 +103,7 @@ import com.android.systemui.quicksettings.TorchTile;
 import com.android.systemui.quicksettings.UsbTetherTile;
 import com.android.systemui.quicksettings.UserTile;
 import com.android.systemui.quicksettings.VolumeTile;
-import com.android.systemui.quicksettings.WiFiDisplayTile;
+import com.android.systemui.quicksettings.RemoteDisplayTile;
 import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
 
@@ -324,7 +324,7 @@ public class QuickSettingsController {
         }
         if (Settings.System.getIntForUser(resolver,
                     Settings.System.QS_DYNAMIC_WIFI, 1, UserHandle.USER_CURRENT) == 1) {
-            QuickSettingsTile qs = new WiFiDisplayTile(mContext, this);
+            QuickSettingsTile qs = new RemoteDisplayTile(mContext, this);
             qs.setupQuickSettingsTile(inflater, mContainerView);
             mQuickSettingsTiles.add(qs);
         }
