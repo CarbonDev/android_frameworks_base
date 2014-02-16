@@ -2729,6 +2729,12 @@ public final class Settings {
         public static final String LOCKSCREEN_GLOWPAD_TORCH = "lockscreen_glowpad_torch";
 
         /**
+         * Whether or not to show circle battery around the lockscreen ring
+         * @hide
+         */
+        public static final String BATTERY_AROUND_LOCKSCREEN_RING = "battery_around_lockscreen_ring";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide

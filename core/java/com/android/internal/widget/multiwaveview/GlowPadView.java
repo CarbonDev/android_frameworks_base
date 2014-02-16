@@ -1379,6 +1379,7 @@ public class GlowPadView extends View {
 
             canvas.drawArc(mArcRect, -90, mArcAngle, false, mArcPaint);
         }
+
         if (!TextUtils.isEmpty(mHandleText) && mPaintText.getAlpha() != 0) {
             float x = mHandleDrawable.getPositionX();
             float y = mHandleDrawable.getPositionY();
@@ -1600,4 +1601,10 @@ public class GlowPadView extends View {
         }
         mHandleDrawable.setState(TargetDrawable.STATE_INACTIVE);
     }
+
+    public void setArc(float angle, int color) {
+        mArcAngle = angle;
+        mArcPaint.setColor(color);
+    }
+
 }
