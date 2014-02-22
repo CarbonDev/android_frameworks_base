@@ -551,6 +551,10 @@ public class KeyguardViewMediator {
         mKeyguardViewManager.setBackgroundBitmap(bmp);
     }
 
+    public void setWallpaper(Bitmap bmp) {
+        mKeyguardViewManager.setWallpaper(bmp);
+    }
+
     /**
      * Let us know that the system is ready after startup.
      */
