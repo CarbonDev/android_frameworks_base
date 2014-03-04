@@ -46,14 +46,14 @@ import android.widget.TextView.OnEditorActionListener;
  */
 public class KeyguardSimPinView extends KeyguardAbsKeyInputView
         implements KeyguardSecurityView, OnEditorActionListener, TextWatcher {
-    private static final String LOG_TAG = "KeyguardSimPinView";
+    public static final String LOG_TAG = "KeyguardSimPinView";
     private static final boolean DEBUG = KeyguardViewMediator.DEBUG;
     public static final String TAG = "KeyguardSimPinView";
 
     protected ProgressDialog mSimUnlockProgressDialog = null;
     private CheckSimPin mCheckSimPinThread;
 
-    private AlertDialog mRemainingAttemptsDialog;
+    protected AlertDialog mRemainingAttemptsDialog;
     
     protected volatile boolean mSimCheckInProgress;
 
@@ -95,7 +95,7 @@ public class KeyguardSimPinView extends KeyguardAbsKeyInputView
         mPasswordEntry.setEnabled(true);
     }
 
-    private String getPinPasswordErrorMessage(int attemptsRemaining) {
+    protected String getPinPasswordErrorMessage(int attemptsRemaining) {
         String displayMessage;
 
         if (attemptsRemaining == 0) {
