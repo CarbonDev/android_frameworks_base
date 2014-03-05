@@ -55,6 +55,7 @@ interface IStatusBarService
     void setWindowState(int window, int state);
     void setPieTriggerMask(int newMask, boolean lock);
     void toggleNotificationShade();
+    void toggleSmartPulldown();
     void toggleQSShade();
     void toggleScreenshot();
     void toggleLastApp();
