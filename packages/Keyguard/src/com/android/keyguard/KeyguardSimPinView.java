@@ -233,7 +233,7 @@ public class KeyguardSimPinView extends KeyguardAbsKeyInputView
         return mSimUnlockProgressDialog;
     }
 
-    private Dialog getSimRemainingAttemptsDialog(int remaining) {
+    protected Dialog getSimRemainingAttemptsDialog(int remaining) {
         String msg = getPinPasswordErrorMessage(remaining);
         if (mRemainingAttemptsDialog == null) {
             Builder builder = new AlertDialog.Builder(mContext);
