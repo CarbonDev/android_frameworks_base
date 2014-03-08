@@ -288,6 +288,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mNotificationShortcutsHideCarrier;
 
     private SignalClusterView mSignalClusterView;
+    private MSimSignalClusterView mMSimSignalClusterView;
 
     // position
     int[] mPositionTmp = new int[2];
@@ -941,7 +942,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Other icons
         mLocationController = new LocationController(mContext); // will post a notification
         mBatteryController = new BatteryController(mContext);
-        mNetworkController = new NetworkController(mContext);
         mBluetoothController = new BluetoothController(mContext);
         mRotationLockController = new RotationLockController(mContext);
 
@@ -950,18 +950,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mCarrierAndWifiView = mStatusBarWindow.findViewById(R.id.carrier_wifi);
         mWifiView = mStatusBarWindow.findViewById(R.id.wifi_view);
 
-        mSignalClusterView = (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
-        mNetworkController.addSignalCluster(mSignalClusterView);
-        mSignalClusterView.setNetworkController(mNetworkController);
-
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             mMSimNetworkController = new MSimNetworkController(mContext);
-            MSimSignalClusterView mSimSignalCluster = (MSimSignalClusterView)
+            mMSimSignalClusterView = (MSimSignalClusterView)
                 mStatusBarView.findViewById(R.id.msim_signal_cluster);
             for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
-                mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
+                mMSimNetworkController.addSignalCluster(mMSimSignalClusterView, i);
             }
-            mSimSignalCluster.setNetworkController(mMSimNetworkController);
+            mMSimSignalClusterView.setNetworkController(mMSimNetworkController);
 
             mEmergencyCallLabel = (TextView)mStatusBarWindow.findViewById(
                                                           R.id.emergency_calls_only);
@@ -1007,11 +1003,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         } else {
             mNetworkController = new NetworkController(mContext);
-            final SignalClusterView signalCluster =
-                    (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
-
-            mNetworkController.addSignalCluster(signalCluster);
-            signalCluster.setNetworkController(mNetworkController);
+            mSignalClusterView = (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
+            mSignalTextView = (SignalClusterTextView)
+                    mStatusBarView.findViewById(R.id.signal_cluster_text);
+            mNetworkController.addSignalCluster(mSignalClusterView);
+            mNetworkController.addNetworkSignalChangedCallback(mSignalTextView);
+            mNetworkController.addSignalStrengthChangedCallback(mSignalTextView);
+            mSignalClusterView.setNetworkController(mNetworkController);
 
             final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
             if (isAPhone) {
@@ -1187,7 +1185,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mCircleBattery = (BatteryCircleMeterView) mStatusBarView.findViewById(R.id.circle_battery);
         updateBatteryIcons();
 
-        mNetworkController.setListener(this);
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            mMSimNetworkController.setListener(this);
+        } else {
+            mNetworkController.setListener(this);
+        }
 
         return mStatusBarView;
     }
