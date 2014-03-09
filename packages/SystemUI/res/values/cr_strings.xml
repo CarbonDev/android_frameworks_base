@@ -187,4 +187,8 @@
     <!-- Active Display -->
     <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
 
+    <string name="pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pie_hour_format_12">hh:mm</string>
+    <string name="pie_hour_format_24">HH:mm</string>
+
 </resources>

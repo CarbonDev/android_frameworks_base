@@ -49,6 +49,7 @@ import android.service.gesture.EdgeGestureManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Slog;
 import android.view.HapticFeedbackConstants;
@@ -79,7 +80,9 @@ import com.android.systemui.statusbar.pie.PieView.PieSlice;
 import com.android.systemui.statusbar.pie.PieSliceContainer;
 import com.android.systemui.statusbar.pie.PieSysInfo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Controller class for the default pie control.
@@ -874,6 +877,14 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
             return mContext.getString(R.string.pie_battery_status_charging, mBatteryLevel);
         }
         return mContext.getString(R.string.pie_battery_status_discharging, mBatteryLevel);
+    }
+
+    public String getSimpleTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                mContext.getString(is24Hours() ? R.string.pie_hour_format_24 :
+                R.string.pie_hour_format_12));
+        String amPm = sdf.format(new Date());
+        return amPm.toUpperCase();
     }
 
 }

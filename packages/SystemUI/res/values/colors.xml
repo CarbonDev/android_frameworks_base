@@ -57,8 +57,8 @@
     <color name="pie_text_color">#ffffffff</color>
     <color name="pie_foreground_color">#ffffffff</color>
     <color name="pie_background_color">#ff000000</color>
-    <color name="pie_selected_color">#ff5c5c5c</color>
+    <color name="pie_selected_color">#ffdbdbdb</color>
     <color name="pie_long_pressed_color">#ff8c8c8c</color>
-    <color name="pie_outline_color">#ff5c5c5c</color>
+    <color name="pie_outline_color">#ffe9e9e9</color>
 
 </resources>

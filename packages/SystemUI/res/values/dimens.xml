@@ -247,7 +247,7 @@
     <!-- Stroke width of the snap points -->
     <dimen name="pie_snap_outline">4dp</dimen>
 
-    <dimen name="pie_outline">2dp</dimen>
+    <dimen name="pie_outline">1dp</dimen>
     <dimen name="pie_textsize">14sp</dimen>
     <dimen name="pie_item_size">30dp</dimen>
 
