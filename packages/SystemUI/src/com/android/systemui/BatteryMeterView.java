@@ -247,7 +247,7 @@ public class BatteryMeterView extends View implements DemoMode {
 
         mWarningTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mWarningTextPaint.setColor(mColors[1]);
-        Typeface font = Typeface.create("sans-serif", Typeface.BOLD);
+        Typeface font = Typeface.create("sans-serif-condensed", Typeface.BOLD);
         mWarningTextPaint.setTypeface(font);
         mWarningTextPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -494,7 +494,7 @@ public class BatteryMeterView extends View implements DemoMode {
         mPercentageOnly = false;
         SHOW_100_PERCENT = false;
 
-        Typeface font = Typeface.create("sans-serif", Typeface.BOLD);
+        Typeface font = Typeface.create("sans-serif-condensed", Typeface.BOLD);
         if (mBatteryStyle == BATTERY_STYLE_NORMAL) {
             mShowIcon = true;
             mShowPercent = false;
@@ -515,6 +515,8 @@ public class BatteryMeterView extends View implements DemoMode {
 
         if (tracker.level <= 14 && !tracker.plugged) {
             mBatteryPaint.setColor(Color.RED);
+            mFramePaint.setColor(mContext.getResources().getColor(
+                    R.color.batterymeter_frame_color_low));
         } else if (mCustomColor) {
             mBatteryPaint.setColor(DevUtils.extractRGB(systemColor) | OPAQUE_MASK);
             mFramePaint.setColor(DevUtils.extractRGB(systemColor) | FRAME_MASK);

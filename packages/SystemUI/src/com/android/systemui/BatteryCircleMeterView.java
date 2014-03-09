@@ -31,8 +31,11 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -82,6 +85,8 @@ public class BatteryCircleMeterView extends ImageView {
     private Float   mTextRightX;    // precalculated x position for dock battery drawText()
 
     // quiet a lot of paint variables. helps to move cpu-usage from actual drawing to initialization
+    private Paint   mFrontPaint;
+    private Paint   mBackPaint;
     private Paint   mPaintFont;
     private Paint   mPaintGray;
     private Paint   mPaintSystem;
@@ -355,14 +360,23 @@ public class BatteryCircleMeterView extends ImageView {
 
         Resources res = getResources();
 
-        mPaintFont = new Paint();
-        mPaintFont.setAntiAlias(true);
-        mPaintFont.setDither(true);
-        mPaintFont.setStyle(Paint.Style.STROKE);
+        mFrontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mFrontPaint.setDither(true);
+        mFrontPaint.setStyle(Paint.Style.STROKE);
 
-        mPaintGray = new Paint(mPaintFont);
-        mPaintSystem = new Paint(mPaintFont);
-        mPaintRed = new Paint(mPaintFont);
+        mBackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBackPaint.setDither(true);
+        mBackPaint.setStyle(Paint.Style.STROKE);
+
+        mPaintFont = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintFont.setStyle(Paint.Style.STROKE);
+        Typeface font = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+        mPaintFont.setTypeface(font);
+        mPaintFont.setTextAlign(Align.CENTER);
+
+        mPaintSystem = new Paint(mFrontPaint);
+        mPaintRed = new Paint(mFrontPaint);
+        mPaintGray = new Paint(mBackPaint);
 
         if (mCustomColor) {
             mPaintSystem.setColor(systemColor);
@@ -371,12 +385,8 @@ public class BatteryCircleMeterView extends ImageView {
         }
         // could not find the darker definition anywhere in resources
         // do not want to use static 0x404040 color value. would break theming.
-        mPaintGray.setColor(res.getColor(R.color.darker_gray));
+        mPaintGray.setColor(res.getColor(com.android.systemui.R.color.batterymeter_frame_color));
         mPaintRed.setColor(res.getColor(R.color.holo_red_light));
-
-        // font needs some extra settings
-        mPaintFont.setTextAlign(Align.CENTER);
-        mPaintFont.setFakeBoldText(true);
     }
 
 
@@ -422,7 +432,12 @@ public class BatteryCircleMeterView extends ImageView {
         float strokeWidth = mCircleSize / 7f;
         mPaintRed.setStrokeWidth(strokeWidth);
         mPaintSystem.setStrokeWidth(strokeWidth);
-        mPaintGray.setStrokeWidth(strokeWidth / 3.5f);
+        if (mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE_PERCENT ||
+            mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE) {
+             mPaintGray.setStrokeWidth(strokeWidth / 3.5f);
+        } else {
+             mPaintGray.setStrokeWidth(strokeWidth);
+        }
         // calculate rectangle for drawArc calls
         int pLeft = getPaddingLeft();
         mRectLeft = new RectF(pLeft + strokeWidth / 2.0f, 0 + strokeWidth / 2.0f, mCircleSize

@@ -879,6 +879,17 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
         return mContext.getString(R.string.pie_battery_status_discharging, mBatteryLevel);
     }
 
+    public String getSimpleDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                mContext.getString(R.string.pie_date_format));
+        String date = sdf.format(new Date());
+        return date.toUpperCase();
+    }
+
+    public boolean is24Hours() {
+        return DateFormat.is24HourFormat(mContext);
+    }
+
     public String getSimpleTime() {
         SimpleDateFormat sdf = new SimpleDateFormat(
                 mContext.getString(is24Hours() ? R.string.pie_hour_format_24 :
