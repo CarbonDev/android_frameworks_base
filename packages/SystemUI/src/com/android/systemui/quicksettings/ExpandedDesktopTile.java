@@ -26,7 +26,10 @@ public class ExpandedDesktopTile extends QuickSettingsTile {
             public void onClick(View v) {
                 Settings.System.putIntForUser(mContext.getContentResolver(), Settings.System.EXPANDED_DESKTOP_STATE,
                         mEnabled ? 0 : 1, UserHandle.USER_CURRENT);
-            }
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
+          }
         };
 
         Uri stateUri = Settings.System.getUriFor(Settings.System.EXPANDED_DESKTOP_STATE);
