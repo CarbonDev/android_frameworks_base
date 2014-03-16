@@ -14,10 +14,10 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 
-public class ImmersiveTile extends QuickSettingsTile {
+public class ExpandedDesktopTile extends QuickSettingsTile {
     private boolean mEnabled = false;
 
-    public ImmersiveTile(Context context, 
+    public ExpandedDesktopTile(Context context, 
             QuickSettingsController qsc, Handler handler) {
         super(context, qsc);
 
@@ -49,11 +49,11 @@ public class ImmersiveTile extends QuickSettingsTile {
         mEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0, UserHandle.USER_CURRENT) == 1;
         if (mEnabled) {
-            mDrawable = R.drawable.ic_qs_immersive_on;
-            mLabel = mContext.getString(R.string.quick_settings_immersive_mode);
+            mDrawable = R.drawable.ic_qs_exp_desktop_on;
+            mLabel = mContext.getString(R.string.quick_settings_exp_desktop);
         } else {
             mDrawable = R.drawable.ic_qs_immersive_off;
-            mLabel = mContext.getString(R.string.quick_settings_immersive_mode_off);
+            mLabel = mContext.getString(R.string.quick_settings_exp_desktop_off);
         }
     }
 
