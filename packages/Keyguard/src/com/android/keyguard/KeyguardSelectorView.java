@@ -405,8 +405,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     public void updateResources() {
         String storedTargets = Settings.System.getStringForUser(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_TARGETS, UserHandle.USER_CURRENT);
-        ArrayList<String> description = new ArrayList<String>();
-        ArrayList<String> directionDescription = new ArrayList<String>();
         final Resources res = getResources();
 
         int frontColor = Settings.Secure.getIntForUser(
@@ -439,16 +437,10 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         TargetDrawable unlockTarget = new TargetDrawable(res, unlock);
 
         // Add unlock target
-        description.add(getResources().getString(
-            com.android.internal.R.string.description_target_unlock));
-        directionDescription.add(getResources().getString(
-            com.android.internal.R.string.accessibility_target_direction));
         if (storedTargets == null) {
             ArrayList<TargetDrawable> unlockDrawable = new ArrayList<TargetDrawable>();
             unlockDrawable.add(unlockTarget);
             mGlowPadView.setTargetResources(unlockDrawable);
-            mGlowPadView.setTargetDescriptions(description);
-            mGlowPadView.setDirectionDescriptions(directionDescription);
             mGlowPadView.setMagneticTargets(true);
         } else {
             mGlowPadView.setMagneticTargets(false);
