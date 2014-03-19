@@ -38,7 +38,7 @@ public class ButtonsHelper {
 
     private static final String SYSTEM_METADATA_NAME = "android";
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
-    private static final String SETTINGS_METADATA_NAME = "com.carbon.fibers";
+    private static final String SETTINGS_METADATA_NAME = "com.android.settings";
 
     // get and set the navbar configs from provider and return propper arraylist objects
     // @ButtonConfig

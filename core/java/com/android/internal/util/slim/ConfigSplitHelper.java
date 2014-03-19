@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class ConfigSplitHelper {
 
-    private static final String SETTINGS_METADATA_NAME = "com.carbon.fibers";
+    private static final String SETTINGS_METADATA_NAME = "com.android.settings";
 
     public static ArrayList<ButtonConfig> getButtonsConfigValues(Context context, String config,
                 String values, String entries, boolean isShortcut) {
