@@ -26,6 +26,7 @@ import com.android.internal.widget.ActionBarContainer;
 import com.android.internal.widget.ActionBarContextView;
 import com.android.internal.widget.ActionBarOverlayLayout;
 import com.android.internal.widget.ActionBarView;
+import com.android.internal.widget.FloatingWindowView;
 import com.android.internal.widget.ScrollingTabContainerView;
 
 import android.animation.Animator;
@@ -40,6 +41,12 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
@@ -56,6 +63,7 @@ import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -87,20 +95,20 @@ public class ActionBarImpl extends ActionBar {
 
     private TabImpl mSelectedTab;
     private int mSavedTabPosition = INVALID_POSITION;
-    
+
     private boolean mDisplayHomeAsUpSet;
 
     ActionModeImpl mActionMode;
     ActionMode mDeferredDestroyActionMode;
     ActionMode.Callback mDeferredModeDestroyCallback;
-    
+
     private boolean mLastMenuVisibility;
     private ArrayList<OnMenuVisibilityListener> mMenuVisibilityListeners =
             new ArrayList<OnMenuVisibilityListener>();
 
     private static final int CONTEXT_DISPLAY_NORMAL = 0;
     private static final int CONTEXT_DISPLAY_SPLIT = 1;
-    
+
     private static final int INVALID_POSITION = -1;
 
     private int mContextDisplayMode;
@@ -120,6 +128,8 @@ public class ActionBarImpl extends ActionBar {
 
     private Animator mCurrentShowAnim;
     private boolean mShowHideAnimationEnabled;
+
+    private FloatingWindowView mFloatingWindowView;
 
     final AnimatorListener mHideListener = new AnimatorListenerAdapter() {
         @Override
@@ -402,11 +412,65 @@ public class ActionBarImpl extends ActionBar {
     }
 
     public void setDisplayOptions(int options, int mask) {
-        final int current = mActionView.getDisplayOptions(); 
+        final int current = mActionView.getDisplayOptions();
         if ((mask & DISPLAY_HOME_AS_UP) != 0) {
             mDisplayHomeAsUpSet = true;
         }
         mActionView.setDisplayOptions((options & mask) | (current & ~mask));
+    }
+
+    /**
+     * @hide
+     */
+    public void setFloatingWindowBar(FloatingWindowView floatingWindowView) {
+        mFloatingWindowView = floatingWindowView;
+    }
+
+    private void changeFloatingWindowColor(int bg_color, int ic_color) {
+        mFloatingWindowView.setFloatingBackgroundColor(bg_color);
+        mFloatingWindowView.setFloatingColorFilter(ic_color);
+    }
+
+    private int getMainColorFromActionBarDrawable(Drawable drawable) {
+        if (drawable == null) {
+            return Color.TRANSPARENT;
+        }
+
+        Drawable copyDrawable = drawable.getConstantState().newDrawable();
+        if (copyDrawable instanceof ColorDrawable) {
+            return ((ColorDrawable) drawable).getColor();
+        }
+        Bitmap bitmap = drawableToBitmap(copyDrawable);
+        int pixel = bitmap.getPixel(0, 5);
+        int red = Color.red(pixel);
+        int blue = Color.blue(pixel);
+        int green = Color.green(pixel);
+        int alpha = Color.alpha(pixel);
+        return Color.argb(alpha, red, green, blue);
+    }
+
+    private Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        Bitmap bitmap;
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        if (width > 0 && height > 0) {
+            bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        } else {
+            bitmap = null;
+        }
+
+        return bitmap;
     }
 
     public void setBackgroundDrawable(Drawable d) {
@@ -628,6 +692,10 @@ public class ActionBarImpl extends ActionBar {
             mHiddenByApp = true;
             updateVisibility(false);
         }
+
+        if (mFloatingWindowView != null) {
+            changeFloatingWindowColor(Color.TRANSPARENT, Color.WHITE);
+        }
     }
 
     private void hideForActionMode() {
@@ -804,7 +872,7 @@ public class ActionBarImpl extends ActionBar {
             currentTheme.resolveAttribute(com.android.internal.R.attr.actionBarWidgetTheme,
                     outValue, true);
             final int targetThemeRes = outValue.resourceId;
-            
+
             if (targetThemeRes != 0 && mContext.getThemeResId() != targetThemeRes) {
                 mThemedContext = new ContextThemeWrapper(mContext, targetThemeRes);
             } else {
@@ -813,7 +881,7 @@ public class ActionBarImpl extends ActionBar {
         }
         return mThemedContext;
     }
-    
+
     @Override
     public boolean isTitleTruncated() {
         return mActionView != null && mActionView.isTitleTruncated();
@@ -840,13 +908,13 @@ public class ActionBarImpl extends ActionBar {
     }
 
     /**
-     * @hide 
+     * @hide
      */
     public class ActionModeImpl extends ActionMode implements MenuBuilder.Callback {
         private ActionMode.Callback mCallback;
         private MenuBuilder mMenu;
         private WeakReference<View> mCustomView;
-        
+
         public ActionModeImpl(ActionMode.Callback callback) {
             mCallback = callback;
             mMenu = new MenuBuilder(getThemedContext())
@@ -947,7 +1015,7 @@ public class ActionBarImpl extends ActionBar {
         public CharSequence getSubtitle() {
             return mContextView.getSubtitle();
         }
-        
+
         @Override
         public void setTitleOptionalHint(boolean titleOptional) {
             super.setTitleOptionalHint(titleOptional);

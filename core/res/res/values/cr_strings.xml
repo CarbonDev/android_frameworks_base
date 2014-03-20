@@ -306,6 +306,13 @@
     <string name="usb_ext_media_nomedia_notification_title">Removed USB storage</string>
     <string name="usb_ext_media_nomedia_notification_message">USB storage removed. Insert new media.</string>
 
+    <!-- Floating Window -->
+    <string name="floating_window_snap_top">Snap top</string>
+    <string name="floating_window_snap_bottom">Snap bottom</string>
+    <string name="floating_window_snap_left">Snap left</string>
+    <string name="floating_window_snap_right">Snap right</string>
+    <string name="floating_window_minimize">Minimize</string>
+
     <!-- Theme installation error notification -->
     <string name="theme_install_error_title">Failed to install theme</string>
     <string name="theme_install_error_message">%s failed to install</string>

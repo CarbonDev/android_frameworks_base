@@ -311,6 +311,7 @@ interface IWindowManager
      *
      * @hide
      */
+
     void toggleStatusBar();
 
     /**
@@ -319,4 +320,10 @@ interface IWindowManager
      * @param enabled Whether touch exploration is enabled.
      */
     void setTouchExplorationEnabled(boolean enabled);
+
+    /** FLOAT VIEW **/
+    Rect getAppFullscreenViewRect();
+    Rect getAppMinimumViewRect();
+    Rect getFloatViewRect();
+    void notifyFloatActivityTouched(IBinder token, boolean force);
 }
