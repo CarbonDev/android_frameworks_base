@@ -1053,6 +1053,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } else {
             addActiveDisplayView();
             addNavigationBarCallback(mNavigationBarView);
+            addAppCircleSidebar();
         }
 
         // Setup pie container if enabled
