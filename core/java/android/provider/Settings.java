@@ -2764,6 +2764,13 @@ public final class Settings {
         public static final String ACTIVE_DISPLAY_BYPASS = "active_display_bypass";
 
         /**
+         * Whether to hide the frame behind lockscreen widgets
+         * @hide
+         */
+        public static final String LOCKSCREEN_WIDGET_FRAME_ENABLED =
+                "lockscreen_widget_frame_enabled";
+
+        /**
          * Whether to not showing active display when there is annoying notifications.
          * @hide
          */
