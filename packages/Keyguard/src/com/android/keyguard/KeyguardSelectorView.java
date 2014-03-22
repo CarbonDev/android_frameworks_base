@@ -80,7 +80,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         "com.android.systemui.action_assist_icon";
 
     private Handler mHandler = new Handler();
-    private float mBatteryLevel;
+
     private KeyguardSecurityCallback mCallback;
     private GlowPadView mGlowPadView;
     private KeyguardShortcuts mShortcuts;
@@ -98,6 +98,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private String[] mStoredTargets;
     private int mTargetOffset;
     private GestureDetector mDoubleTapGesture;
+    private float mBatteryLevel;
     private int mTaps;
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
@@ -304,7 +305,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
 
         mSecurityMessageDisplay = new KeyguardMessageArea.Helper(this);
         View bouncerFrameView = findViewById(R.id.keyguard_selector_view_frame);
-
         mBouncerFrame =
                 KeyguardSecurityViewHelper.colorizeFrame(
                 mContext, bouncerFrameView.getBackground());
@@ -328,13 +328,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 }
             });
         }
-        mGlowTorchRunning = false;
-        mGlowTorch = Settings.System.getIntForUser(
-                mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_GLOWPAD_TORCH, 0,
-                UserHandle.USER_CURRENT) == 1;
-
-        mBouncerFrame = bouncerFrameView.getBackground();
 
         final boolean lockBeforeUnlock = Settings.Secure.getIntForUser(
                 mContext.getContentResolver(),
@@ -351,7 +344,11 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 ecaContainer.bringToFront();
             }
         }
-
+        mGlowTorchRunning = false;
+        mGlowTorch = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_GLOWPAD_TORCH, 0,
+                UserHandle.USER_CURRENT) == 1;
     }
 
     public void setCarrierArea(View carrierArea) {
@@ -400,9 +397,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mSearchDisabled = disabledBySimState || !searchActionAvailable || !searchTargetPresent
                 || !currentUserSetup;
         updateResources();
-
         updateLockscreenBattery(null);
-
     }
 
     public void updateResources() {
@@ -662,5 +657,4 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             mGlowPadView.setArc(0, 0);
         }
     }
-
 }
