@@ -421,8 +421,9 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                 mMoreButton.setVisibility(View.VISIBLE);
                 mDivider.setVisibility(View.VISIBLE);
                 mShowCombinedVolumes = true;
-                if (mCurrentOverlayStyle == VOLUME_OVERLAY_NONE) {
-                    addOtherVolumes();
+                if (mCurrentOverlayStyle == VOLUME_OVERLAY_NONE
+                        || mCurrentOverlayStyle == VOLUME_OVERLAY_SINGLE) {
+                    reorderSliders(mActiveStreamType);
                 }
                 mCurrentOverlayStyle = VOLUME_OVERLAY_EXPANDABLE;
                 break;
@@ -430,8 +431,9 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                 mMoreButton.setVisibility(View.GONE);
                 mDivider.setVisibility(View.GONE);
                 mShowCombinedVolumes = true;
-                if (mCurrentOverlayStyle == VOLUME_OVERLAY_NONE) {
-                    addOtherVolumes();
+                if (mCurrentOverlayStyle == VOLUME_OVERLAY_NONE
+                        || mCurrentOverlayStyle == VOLUME_OVERLAY_SINGLE) {
+                    reorderSliders(mActiveStreamType);
                     expand();
                 }
                 mCurrentOverlayStyle = VOLUME_OVERLAY_EXPANDED;
@@ -513,6 +515,11 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
     }
 
     private void reorderSliders(int activeStreamType) {
+        synchronized (this) {
+            if (mStreamControls == null) {
+                createSliders();
+            }
+        }
         mSliderGroup.removeAllViews();
 
         StreamControl active = mStreamControls.get(activeStreamType);
@@ -547,17 +554,9 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                     streamType == AudioManager.STREAM_NOTIFICATION) {
                 continue;
             }
-            synchronized (this) {
-                if (mStreamControls == null) {
-                    createSliders();
-                } else {
-                    StreamControl sc = mStreamControls.get(streamType);
-                    // To be sure it was not allready attached remove it.
-                    mSliderGroup.removeView(sc.group);
-                    mSliderGroup.addView(sc.group);
-                    updateSlider(sc);
-                }
-            }
+            StreamControl sc = mStreamControls.get(streamType);
+            mSliderGroup.addView(sc.group);
+            updateSlider(sc);
         }
     }
 
