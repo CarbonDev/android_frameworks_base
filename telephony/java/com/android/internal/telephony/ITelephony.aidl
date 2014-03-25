@@ -47,7 +47,7 @@ interface ITelephony {
     /**
      * Toggle between 3G and LTE (NT_MODE_CDMA, NT_MODE_GLOBAL)
      */
-    void toggleLTE();
+    void toggleLTE(boolean on);
 
     /**
      * If there is currently a call in progress, show the call screen.
