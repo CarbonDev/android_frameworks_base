@@ -75,7 +75,6 @@ public class MusicTile extends QuickSettingsTile {
     public MusicTile(Context context, QuickSettingsController qsc) {
         super(context, qsc);
 
-        mGenericCollapse = false;
         mRemoteController = new RemoteController(context, mRCClientUpdateListener);
         AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         manager.registerRemoteController(mRemoteController);
