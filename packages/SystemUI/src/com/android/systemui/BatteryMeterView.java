@@ -62,7 +62,6 @@ public class BatteryMeterView extends View implements DemoMode {
     public static final int BATTERY_STYLE_CIRCLE_PERCENT        = 4;
     public static final int BATTERY_STYLE_DOTTED_CIRCLE         = 5;
     public static final int BATTERY_STYLE_DOTTED_CIRCLE_PERCENT = 6;
-    public static final int BATTERY_STYLE_HIDE                  = 7;
 
     private static final int OPAQUE_MASK = 0xff000000;
     private static final int FRAME_MASK = 0x66000000;
@@ -510,9 +509,6 @@ public class BatteryMeterView extends View implements DemoMode {
             mShowPercent = true;
             mPercentageOnly = true;
             SHOW_100_PERCENT = true;
-        } else if (mBatteryStyle == BATTERY_STYLE_HIDE) {
-            mShowIcon = false;
-            mShowPercent = false;
         }
         mTextPaint.setTypeface(font);
 
