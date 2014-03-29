@@ -3881,7 +3881,14 @@ public final class Settings {
         public static final String CLEAR_RECENTS_BUTTON = "clear_recents_button";
 
         /**
-         * whether which Ram Usage Bar mode is used on recent switcher
+         * Recents RAM circle
+         * 0 - off, 1 - top left, 2 - top right, 3 - bottom left, 4 - bottom right
+         * @hide
+         */
+        public static final String RAM_CIRCLE = "ram_circle";
+
+        /**
+         * which Ram usage bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
          */
