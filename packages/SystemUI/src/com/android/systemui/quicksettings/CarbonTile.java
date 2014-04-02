@@ -22,7 +22,7 @@ public class CarbonTile extends QuickSettingsTile{
                 qsc.mBar.collapseAllPanels(true);
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.setComponent(ComponentName
-                        .unflattenFromString("com.carbon.fibers/.SettingsActivity"));
+                        .unflattenFromString("com.android.settings/com.carbon.fibers.SettingsActivity"));
                 intent.addCategory("android.intent.category.LAUNCHER");
                 startSettingsActivity(intent);
             }
