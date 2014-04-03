@@ -15,8 +15,6 @@
 
 package com.android.server;
 
-import android.provider.Settings.SettingNotFoundException;
-
 import com.android.internal.app.ThemeUtils;
 import com.android.internal.content.PackageMonitor;
 import com.android.internal.inputmethod.InputMethodUtils;
@@ -80,6 +78,7 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.AtomicFile;
