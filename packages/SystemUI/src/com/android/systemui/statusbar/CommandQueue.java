@@ -62,6 +62,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_LAST_APP            = 20 << MSG_SHIFT;
     private static final int MSG_TOGGLE_KILL_APP            = 21 << MSG_SHIFT;
     private static final int MSG_SET_PIE_TRIGGER_MASK       = 22 << MSG_SHIFT;
+    private static final int MSG_SET_AUTOROTATE_STATUS      = 23 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -103,6 +104,7 @@ public class CommandQueue extends IStatusBar.Stub {
         public void showSearchPanel();
         public void hideSearchPanel();
         public void cancelPreloadRecentApps();
+        public void setAutoRotate(boolean enabled);
         public void setWindowState(int window, int state);
         public void setPieTriggerMask(int newMask, boolean lock);
         public void toggleNotificationShade();
@@ -287,6 +289,14 @@ public class CommandQueue extends IStatusBar.Stub {
         }
     }
 
+    public void setAutoRotate(boolean enabled) {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_SET_AUTOROTATE_STATUS);
+            mHandler.obtainMessage(MSG_SET_AUTOROTATE_STATUS,
+                enabled ? 1 : 0, 0, null).sendToTarget();
+        }
+    }
+
     private final class H extends Handler {
         public void handleMessage(Message msg) {
             final int what = msg.what & MSG_MASK;
@@ -363,6 +373,9 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_CANCEL_PRELOAD_RECENT_APPS:
                     mCallbacks.cancelPreloadRecentApps();
+                    break;
+                case MSG_SET_AUTOROTATE_STATUS:
+                    mCallbacks.setAutoRotate(msg.arg1 != 0);
                     break;
                 case MSG_SET_WINDOW_STATE:
                     mCallbacks.setWindowState(msg.arg1, msg.arg2);

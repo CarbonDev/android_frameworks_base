@@ -38,6 +38,7 @@ oneway interface IStatusBar
     void toggleRecentApps();
     void preloadRecentApps();
     void cancelPreloadRecentApps();
+    void setAutoRotate(boolean enabled);
     void setWindowState(int window, int state);
     void setPieTriggerMask(int newMask, boolean lock);
     void toggleNotificationShade();
