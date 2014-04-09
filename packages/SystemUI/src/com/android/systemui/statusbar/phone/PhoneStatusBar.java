@@ -140,7 +140,6 @@ import com.android.systemui.statusbar.policy.MSimNetworkController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
-import com.android.systemui.statusbar.policy.RotationLockController;
 
 import com.android.systemui.omni.StatusHeaderMachine;
 
@@ -212,7 +211,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     BatteryController mBatteryController;
     LocationController mLocationController;
     NetworkController mNetworkController;
-    RotationLockController mRotationLockController;
     MSimNetworkController mMSimNetworkController;
 
     int mNaturalBarHeight = -1;
@@ -729,6 +727,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mCurrUiThemeMode = mContext.getResources().getConfiguration().uiThemeMode;
 
+        mLocationController = new LocationController(mContext);
+        mBatteryController = new BatteryController(mContext);
+        mBluetoothController = new BluetoothController(mContext);
+
         super.start(); // calls createAndAddWindows()
 
         addNavigationBar();
@@ -998,11 +1000,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setAreThereNotifications();
 
         // Other icons
-        mLocationController = new LocationController(mContext); // will post a notification
-        mBatteryController = new BatteryController(mContext);
-        mBluetoothController = new BluetoothController(mContext);
-        mRotationLockController = new RotationLockController(mContext);
-
         mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
         mCarrierAndWifiView = mStatusBarWindow.findViewById(R.id.carrier_wifi);
