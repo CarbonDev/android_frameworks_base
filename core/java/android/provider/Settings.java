@@ -4249,6 +4249,34 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_FONT_STYLE = "statusbar_clock_font_style";
 
         /**
+         * Sensitivity of all system shake events
+         * @hide
+         */
+        public static final String SHAKE_SENSITIVITY = "shake_sensitivity";
+
+        /**
+         * Apps where shake events are disabled
+         * @hide
+         */
+        public static final String DISABLED_SHAKE_APPS = "disabled_shake_apps";
+
+        /**
+         * Whether to enable the shake listener actions.
+         * @hide
+         */
+        public static final String SHAKE_LISTENER_ENABLED = "shake_listener_enabled";
+
+        /**
+         * Shake events for shaking along the x, y, and z axis.
+         * @hide
+         */
+        public static final String[] SHAKE_EVENTS_REGULAR = new String[] {
+            "shake_events_regular_x",
+            "shake_events_regular_y",
+            "shake_events_regular_z"
+        };
+
+        /**
         * @hide
         * Shows custom date before clock time
         * 0 - No Date
@@ -5799,6 +5827,36 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_TARGETS_COLOR = "lockscreen_targets_color";
+
+        /**
+         * Shake events for x,y,z cords
+         * @hide
+         */
+        public static final String[] LOCK_SHAKE_EVENTS = new String[] {
+            "lock_shake_events_x",
+            "lock_shake_events_y",
+            "lock_shake_events_z"
+        };
+
+        /**
+         *Whether shaking the device enables a secure screen
+         * @hide
+         */
+        public static final String LOCK_SHAKE_TEMP_SECURE = "lock_shake_temp_secure";
+
+        /**
+         *When LOCK_SHAKE_TEMP_SECURE is enabled, the time
+         *before a secure lock will auto-engage in milliseconds
+         * @hide
+         */
+        public static final String LOCK_SHAKE_SECURE_TIMER = "lock_shake_secure_timer";
+
+        /**
+         *Whether the device will unlock itself or not upon completeion
+         *of the insecure lock challenge
+         * @hide
+         */
+        public static final String LOCK_TEMP_SECURE_MODE = "lock_temp_secure_mode";
 
         /**
          * Whether lock pattern will vibrate as user enters (0 = false, 1 =

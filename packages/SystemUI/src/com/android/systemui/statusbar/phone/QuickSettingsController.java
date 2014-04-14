@@ -53,6 +53,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.cm.QSConstants.TILE_WIMAX;
 import static com.android.internal.util.cm.QSConstants.TILE_QUICKRECORD;
 import static com.android.internal.util.cm.QSConstants.TILE_THEME;
+import static com.android.internal.util.cm.QSConstants.TILE_SHAKE;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -103,6 +104,7 @@ import com.android.systemui.quicksettings.RingerModeTile;
 import com.android.systemui.quicksettings.ScreenshotTile;
 import com.android.systemui.quicksettings.ScreenTimeoutTile;
 import com.android.systemui.quicksettings.SleepScreenTile;
+import com.android.systemui.quicksettings.ShakeEventTile;
 import com.android.systemui.quicksettings.SyncTile;
 import com.android.systemui.quicksettings.ToggleLockscreenTile;
 import com.android.systemui.quicksettings.TorchTile;
@@ -309,6 +311,8 @@ public class QuickSettingsController {
                 qs = new ScreenshotTile(mContext, this, mHandler);
             } else if (tile.equals(TILE_QUICKRECORD)) {
                 qs = new QuickRecordTile(mContext, this);
+            } else if (tile.equals(TILE_SHAKE)) {
+                qs = new ShakeEventTile(mContext, this);
             } else if (tile.equals(TILE_THEME)) {
                 qs = new ThemeTile(mContext, this);
             } else if (tile.equals(TILE_NETWORKADB)) {
