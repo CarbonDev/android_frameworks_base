@@ -1910,4 +1910,6 @@
   <!-- SMS RIL_REQUEST_SEND_SMS_EXPECT_MORE -->
   <java-symbol type="bool" name="config_smsUseExpectMore" />
 
+  <java-symbol type="bool" name="config_batterySdCardAccessibility" />
+
 </resources>
