@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 
+import com.android.internal.util.slim.ButtonsConstants;
+import com.android.internal.util.slim.SlimActions;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
@@ -32,7 +34,7 @@ public class SleepScreenTile extends QuickSettingsTile {
 
             @Override
             public boolean onLongClick(View v) {
-                startSettingsActivity("android.settings.DISPLAY_SETTINGS");
+                SlimActions.processAction(mContext, ButtonsConstants.ACTION_POWER_MENU, true);
                 return true;
             }
         };
