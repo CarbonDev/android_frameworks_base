@@ -42,8 +42,6 @@
   <java-symbol type="integer" name="config_wallpaperMaxWidth" />
   <java-symbol type="string" name="config_legacyUmsLunFile" />
   <java-symbol type="bool" name="config_hasRemovableLid" />
-  <java-symbol type="string" name="config_deviceKeyHandlerLib" />
-  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
 
   <!-- Telephony -->
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
@@ -94,9 +92,6 @@
   <java-symbol type="string" name="minutes" />
   <java-symbol type="string" name="second" />
   <java-symbol type="string" name="seconds" />
-
-  <!-- Developer settings - Kill app back press -->
-  <java-symbol type="string" name="app_killed_message" />
 
   <!-- HW rotation lock -->
   <java-symbol type="string" name="toast_rotation_unlocked" />
