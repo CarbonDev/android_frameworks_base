@@ -190,7 +190,7 @@ public class BatteryCircleMeterView extends ImageView {
 
         mPathEffect = new DashPathEffect(new float[]{3,2},0);
 
-        updateSettings();
+        updateSettings(false);
     }
 
     @Override
@@ -248,7 +248,13 @@ public class BatteryCircleMeterView extends ImageView {
         if (padLevel >= 97) {
             padLevel = 100;
         }
-
+        if (mLevel > 14) {
+          if (mIsCharging) {
+            usePaint.setColor(mCircleTextChargingColor);
+          } else {
+            usePaint.setColor(mCircleColor);
+          }
+        }
         // draw thin gray ring first
         canvas.drawArc(drawRect, 270, 360, false, mPaintGray);
         // draw colored arc representing charge level
@@ -258,8 +264,8 @@ public class BatteryCircleMeterView extends ImageView {
         if (level < 100 && mPercentage) {
             if (level <= 14) {
                 mPaintFont.setColor(mPaintRed.getColor());
-            } else if (mIsCharging) {
-                mPaintFont.setColor(mCircleTextChargingColor);
+            } else if (mIsCharging && (level > 89)) {
+                mPaintFont.setColor(Color.GREEN);
             } else {
                 if (mCustomColor) {
                     mPaintFont.setColor(systemColor);
@@ -289,7 +295,7 @@ public class BatteryCircleMeterView extends ImageView {
         }
     }
 
-    public void updateSettings() {
+    public void updateSettings(final boolean isQuickSettingsTile) {
         Resources res = getResources();
         ContentResolver resolver = getContext().getContentResolver();
 
@@ -333,10 +339,14 @@ public class BatteryCircleMeterView extends ImageView {
         mRectLeft = null;
         mCircleSize = 0;
 
-        mActivated = (mBatteryStyle == BatteryMeterView.BATTERY_STYLE_CIRCLE ||
-                      mBatteryStyle == BatteryMeterView.BATTERY_STYLE_CIRCLE_PERCENT ||
-                      mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE ||
-                      mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE_PERCENT);
+        if (isQuickSettingsTile && mBatteryStyle == BatteryMeterView.BATTERY_STYLE_GONE) {
+            mActivated = false;
+        } else {
+             mActivated = (mBatteryStyle == BatteryMeterView.BATTERY_STYLE_CIRCLE ||
+                           mBatteryStyle == BatteryMeterView.BATTERY_STYLE_CIRCLE_PERCENT ||
+                           mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE ||
+                           mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE_PERCENT);
+        }
         mPercentage = (mBatteryStyle == BatteryMeterView.BATTERY_STYLE_CIRCLE_PERCENT ||
                        mBatteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE_PERCENT);
 

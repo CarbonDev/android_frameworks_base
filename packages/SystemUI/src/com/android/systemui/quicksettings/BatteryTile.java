@@ -94,10 +94,10 @@ public class BatteryTile extends QuickSettingsTile implements BatteryStateChange
         BatteryCircleMeterView circleBattery =
                 (BatteryCircleMeterView) mTile.findViewById(R.id.circle_battery);
         if (circleBattery != null) {
-            circleBattery.updateSettings();
+            circleBattery.updateSettings(true);
         }
         if (battery != null) {
-            battery.updateSettings();
+            battery.updateSettings(true);
         }
         updateResources();
     }
