@@ -40,7 +40,7 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/notifications/old/F1_MissedCall.ogg:system/media/audio/notifications/F1_MissedCall.ogg \
 	$(LOCAL_PATH)/notifications/old/F1_New_MMS.ogg:system/media/audio/notifications/F1_New_MMS.ogg \
 	$(LOCAL_PATH)/notifications/old/F1_New_SMS.ogg:system/media/audio/notifications/F1_New_SMS.ogg \
-	$(LOCAL_PATH)/notifications/old/F1_NewVoicemail.ogg:system/media/audio/notifications/F1_NewVoicemail \
+	$(LOCAL_PATH)/notifications/old/F1_NewVoicemail.ogg:system/media/audio/notifications/F1_NewVoicemail.ogg \
 	$(LOCAL_PATH)/notifications/old/Heaven.ogg:system/media/audio/notifications/Heaven.ogg \
 	$(LOCAL_PATH)/notifications/old/IM_Me.ogg:system/media/audio/notifications/IM_Me.ogg \
 	$(LOCAL_PATH)/notifications/old/Moonbeam.ogg:system/media/audio/notifications/Moonbeam.ogg \
