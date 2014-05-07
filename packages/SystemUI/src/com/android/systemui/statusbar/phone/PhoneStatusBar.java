@@ -638,8 +638,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void updateBatteryIcons() {
         if (mBattery != null && mCircleBattery != null) {
-            mBattery.updateSettings(false);
-            mCircleBattery.updateSettings(false);
+            mBattery.updateSettings();
+            mCircleBattery.updateSettings();
         }
     }
 
