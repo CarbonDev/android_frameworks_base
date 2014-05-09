@@ -24,8 +24,11 @@
     android:id="@+id/recents_root"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_marginTop="-25dp"
+    android:layout_marginBottom="-75dp"
     android:foreground="@drawable/bg_protect"
     systemui:recentItemLayout="@layout/status_bar_recent_item"
+    android:fitsSystemWindows="true"
     >
 
     <LinearLayout
@@ -84,6 +87,8 @@
             android:id="@+id/recents_bg_protect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="75dp"
             android:layout_alignParentBottom="true">
 
             <com.android.systemui.recent.RecentsVerticalScrollView
@@ -111,12 +116,18 @@
 
             </com.android.systemui.recent.RecentsVerticalScrollView>
 
+            <include layout="@layout/status_bar_no_recent_apps"
+                android:id="@+id/recents_no_apps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+
             <com.android.systemui.recent.CircleMemoryMeter
                 android:id="@+id/circle_meter"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="75dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="2dp"
                 android:layout_gravity="bottom|right" />
 
@@ -124,21 +135,13 @@
                 android:id="@+id/recents_clear_all"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="75dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="2dp"
                 android:layout_gravity="bottom|right"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_notify_clear" />
         </FrameLayout>
-
-        <include layout="@layout/status_bar_no_recent_apps"
-            android:id="@+id/recents_no_apps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
 
     </LinearLayout>
 
