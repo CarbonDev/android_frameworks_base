@@ -185,6 +185,9 @@
     <string name="perf_profile_bal">Balanced</string>
     <string name="perf_profile_perf">Performance</string>
 
+    <!-- WiFi turn off notification -->
+    <string name="notify_turn_wifi_off_title">Turn Wi-Fi off</string>
+
     <string name="permlab_interceptSmsSent">intercept outgoing SMS</string>
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_interceptSmsSent">Allows the app to
