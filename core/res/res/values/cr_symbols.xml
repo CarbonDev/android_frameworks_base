@@ -156,4 +156,11 @@
   <java-symbol type="drawable" name="ic_lock_navbar" />
   <java-symbol type="string" name="disable_navigation_pie_error" />
 
+  <!--Setting confirmation dialog-->
+  <java-symbol type="id" name="setting_confirmation_dialog_visual_hint" />
+  <java-symbol type="layout" name="setting_confirmation_dialog" />
+  <java-symbol type="string" name="setting_confirmation_ask_me_later" />
+  <java-symbol type="string" name="setting_confirmation_yes" />
+  <java-symbol type="string" name="setting_confirmation_no" />
+
 </resources>
