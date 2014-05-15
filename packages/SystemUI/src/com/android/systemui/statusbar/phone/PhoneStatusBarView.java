@@ -282,6 +282,7 @@ public class PhoneStatusBarView extends PanelBar {
         }
 
         mBar.animateHeadsUp(mNotificationPanel == panel, mPanelExpandedFractionSum);
-        mBar.updateCarrierAndWifiLabelVisibility(false);
+
+        mBar.updateCarrierLabelVisibility(false);
     }
 }
