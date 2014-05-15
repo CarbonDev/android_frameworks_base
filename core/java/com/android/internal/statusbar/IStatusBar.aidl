@@ -43,6 +43,7 @@ oneway interface IStatusBar
     void setPieTriggerMask(int newMask, boolean lock);
     void toggleNotificationShade();
     void toggleQSShade();
+    void toggleSmartPulldown();
     void toggleScreenshot();
     void toggleLastApp();
     void toggleKillApp();

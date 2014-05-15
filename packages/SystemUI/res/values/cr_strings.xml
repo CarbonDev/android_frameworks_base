@@ -249,4 +249,7 @@
     <string name="sim_slot_2" translatable="false">2</string>
     <string name="sim_slot_3" translatable="false">3</string>
 
+    <!-- Smart PullDown Warning -->
+    <string name="smart_pulldown_disabled">Smart pulldown is disabled</string>
+
 </resources>
