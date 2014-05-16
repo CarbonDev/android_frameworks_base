@@ -4342,6 +4342,13 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
 
+        /**
+         * Whether lockscreen rotation is enabled
+         * 0 = off, 1 = on, 2 = portrait, 3 = landscape
+         * @hide
+         */
+        public static final String LOCKSCREEN_ROTATION_ENABLED = "lockscreen_rotation_enabled";
+
          /**
          * Allows blurring the lockscreen background
          * @hide
