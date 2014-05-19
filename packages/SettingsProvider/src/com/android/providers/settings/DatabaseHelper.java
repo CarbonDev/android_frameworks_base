@@ -1573,7 +1573,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             upgradeVersion = 99;
         }
 
-        if (upgradeVersion == 100) {
+        if (upgradeVersion == 99) {
             db.beginTransaction();
             SQLiteStatement stmt = null;
             try {
