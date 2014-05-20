@@ -423,7 +423,9 @@ public class ResourcesManager {
         int count = assets.getBasePackageCount();
         if (count > 1) {
             packageName  = assets.getBasePackageName(1);
-        } else if (count <= 1) {
+        } else if (count == 1) {
+            packageName  = assets.getBasePackageName(0);
+        } else {
             return false;
         }
 
