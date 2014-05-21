@@ -76,6 +76,7 @@ public class BatteryMeterView extends View implements DemoMode {
     int[] mColors;
 
     boolean mShowIcon = true;
+    boolean mIsQuickSettings = false;
     boolean mShowPercent = false;
     Paint mFramePaint, mBatteryPaint, mWarningTextPaint, mTextPaint, mBoltPaint;
     int mButtonHeight;
@@ -139,7 +140,7 @@ public class BatteryMeterView extends View implements DemoMode {
 
                 setContentDescription(
                         context.getString(R.string.accessibility_battery_level, level));
-                updateSettings(false);
+                updateSettings(mIsQuickSettings);
             } else if (action.equals(ACTION_LEVEL_TEST)) {
                 testmode = true;
                 post(new Runnable() {
@@ -259,7 +260,7 @@ public class BatteryMeterView extends View implements DemoMode {
         mBoltPoints = loadBoltPoints(res);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-        updateSettings(false);
+        updateSettings(mIsQuickSettings);
     }
 
     private static float[] loadBoltPoints(Resources res) {
@@ -469,8 +470,10 @@ public class BatteryMeterView extends View implements DemoMode {
         mBatteryStyle = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_BATTERY, 0, UserHandle.USER_CURRENT);
 
+        mIsQuickSettings = isQuickSettingsTile;
+
         if (isQuickSettingsTile && mBatteryStyle == BATTERY_STYLE_GONE) {
-            mBatteryStyle = 0;
+            mBatteryStyle = BATTERY_STYLE_NORMAL;
         }
         mBatteryColor = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_BATTERY_COLOR, -2, UserHandle.USER_CURRENT);

@@ -76,6 +76,7 @@ public class BatteryTile extends QuickSettingsTile implements BatteryStateChange
 
     @Override
     void onPostCreate() {
+        updateBattery();
         updateTile();
         mController.addStateChangedCallback(this);
         super.onPostCreate();
@@ -89,16 +90,7 @@ public class BatteryTile extends QuickSettingsTile implements BatteryStateChange
 
     @Override
     public void onChangeUri(ContentResolver resolver, Uri uri) {
-        BatteryMeterView battery =
-                (BatteryMeterView) mTile.findViewById(R.id.image);
-        BatteryCircleMeterView circleBattery =
-                (BatteryCircleMeterView) mTile.findViewById(R.id.circle_battery);
-        if (circleBattery != null) {
-            circleBattery.updateSettings(true);
-        }
-        if (battery != null) {
-            battery.updateSettings(true);
-        }
+        updateBattery();
         updateResources();
     }
 
@@ -136,6 +128,19 @@ public class BatteryTile extends QuickSettingsTile implements BatteryStateChange
                     ? mContext.getString(R.string.quick_settings_battery_charging)
                     : mContext.getString(R.string.quick_settings_battery_discharging);
             }
+        }
+    }
+
+    private void updateBattery() {
+        BatteryMeterView battery =
+                (BatteryMeterView) mTile.findViewById(R.id.image);
+        BatteryCircleMeterView circleBattery =
+                (BatteryCircleMeterView) mTile.findViewById(R.id.circle_battery);
+        if (circleBattery != null) {
+            circleBattery.updateSettings(true);
+        }
+        if (battery != null) {
+            battery.updateSettings(true);
         }
     }
 
