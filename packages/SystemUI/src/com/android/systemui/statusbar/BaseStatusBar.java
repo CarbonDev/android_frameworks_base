@@ -94,7 +94,8 @@ import com.android.systemui.SystemUI;
 import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.recent.TaskDescription;
-import com.android.systemui.statusbar.notification.NotificationPeek;
+import com.android.systemui.statusbar.notification.NotificationHelper;
+import com.android.systemui.statusbar.notification.Peek;
 import com.android.systemui.statusbar.phone.Ticker;
 import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 import com.android.systemui.statusbar.phone.NavigationBarOverlay;
@@ -214,8 +215,11 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private EdgeGestureManager mEdgeGestureManager;
 
-    // Notification peek
-    protected NotificationPeek mNotificationPeek;
+    // Notification helper
+    protected NotificationHelper mNotificationHelper;
+
+    // Peek
+    protected Peek mPeek;
 
     // UI-specific methods
 
@@ -365,7 +369,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
 
         mStatusBarContainer = new FrameLayout(mContext);
-        mNotificationPeek = new NotificationPeek(this, mContext);
+        mPeek = new Peek(this, mContext);
+        mNotificationHelper = new NotificationHelper(this, mContext);
+ 
+        mPeek.setNotificationHelper(mNotificationHelper);
 
         // Connect in to the status bar manager service
         StatusBarIconList iconList = new StatusBarIconList();
@@ -444,6 +451,17 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
+    }
+
+    public Peek getPeekInstance() {
+        if(mPeek == null) mPeek = new Peek(this, mContext);
+        return mPeek;
+    }
+
+    public PowerManager getPowerManagerInstance() {
+        if(mPowerManager == null) mPowerManager
+                = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        return mPowerManager;
     }
 
     private void updateIconColor() {
@@ -1116,7 +1134,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             visibilityChanged(false);
 
             // hide notification peek screen
-            mNotificationPeek.dismissNotification();
+            mPeek.dismissNotification();
         }
     }
 
@@ -1166,7 +1184,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         updateNotificationIcons();
         maybeCollapseAfterNotificationRemoval(entry.row.isUserDismissed());
 
-        mNotificationPeek.removeNotification(entry.notification);
+        mPeek.removeNotification(entry.notification);
 
         return entry.notification;
     }
@@ -1238,8 +1256,17 @@ public abstract class BaseStatusBar extends SystemUI implements
         updateExpansionStates();
         updateNotificationIcons();
         mHandler.removeCallbacks(mPanelCollapseRunnable);
-
-        mNotificationPeek.showNotification(entry.notification, false);
+       
+        if (!mPowerManager.isScreenOn()) {
+            // screen off - check if peek is enabled
+            if (mNotificationHelper.isPeekEnabled()) {
+                mPeek.showNotification(entry.notification, false);
+            } else {
+                mPeek.addNotification(entry.notification);
+            }
+        } else {
+            mPeek.addNotification(entry.notification);
+        }
     }
 
     private void addNotificationViews(IBinder key, StatusBarNotification notification) {
@@ -1426,7 +1453,17 @@ public abstract class BaseStatusBar extends SystemUI implements
         } else {
             entry.content.setOnClickListener(null);
         }
-        mNotificationPeek.showNotification(entry.notification, true);
+
+        if (!mPowerManager.isScreenOn()) {
+            // screen off - check if peek is enabled
+            if (mNotificationHelper.isPeekEnabled()) {
+                mPeek.showNotification(entry.notification, true);
+            } else {
+                mPeek.addNotification(entry.notification);
+            }
+        } else {
+            mPeek.addNotification(entry.notification);
+        }
     }
 
     protected void notifyHeadsUpScreenOn(boolean screenOn) {
