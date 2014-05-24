@@ -110,8 +110,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     private ImageView mClearAllRecents;
+    private int clearAllStatus;
     private CircleMemoryMeter mRamCircle;
-    private int ramCircleStatus = Constants.RAM_CIRCLE_OFF;
+    private int ramCircleStatus;
 
     private LinearColorBar mRamUsageBar;
     private boolean mUpdateMemoryIndicator;
@@ -399,6 +400,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private void updateRamCircle() {
         ramCircleStatus = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.RAM_CIRCLE, Constants.RAM_CIRCLE_OFF);
+
         if (ramCircleStatus != Constants.RAM_CIRCLE_OFF) {
             mRamCircle.setVisibility(View.VISIBLE);
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)
@@ -426,13 +428,14 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     }
 
     private void updateClearButton() {
-        int clearAllButton = Settings.System.getInt(mContext.getContentResolver(),
+        clearAllStatus = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.CLEAR_RECENTS_BUTTON, Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT);
 
-        if (clearAllButton != Constants.CLEAR_ALL_BUTTON_OFF) {
+        if (clearAllStatus != Constants.CLEAR_ALL_BUTTON_OFF) {
             mClearAllRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mClearAllRecents.getLayoutParams();
-             switch (clearAllButton) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)
+                    mClearAllRecents.getLayoutParams();
+            switch (clearAllStatus) {
                 case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
                     layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
                     break;
