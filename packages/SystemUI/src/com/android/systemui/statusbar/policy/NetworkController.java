@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -1371,6 +1372,17 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
                     + " mQSWifiIconId=0x" + Integer.toHexString(mQSWifiIconId)
                     + " mEthernetIconId=0x" + Integer.toHexString(mEthernetIconId)
                     + " mBluetoothTetherIconId=0x" + Integer.toHexString(mBluetoothTetherIconId));
+        }
+
+        int hideLabels = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NOTIFICATION_HIDE_LABELS, 0, UserHandle.USER_CURRENT);
+         switch (hideLabels) {
+            case 1 : mobileLabel = "";
+                combinedLabel = wifiLabel;
+                break;
+            case 2 : wifiLabel = "";
+                combinedLabel = mobileLabel;
+                break;
         }
 
         // update QS
