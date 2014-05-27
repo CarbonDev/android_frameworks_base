@@ -43,29 +43,23 @@
         android:visibility="invisible"
         />
 
-    <LinearLayout
+    <include
+        layout="@layout/subs_label"
+        android:layout_height="@dimen/carrier_label_height"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:animateLayoutChanges="false"
-        >
-        <include
-            layout="@layout/subs_label"
-            android:layout_height="@dimen/carrier_label_height"
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom"
-            />
+        />
 
-        <include
-            layout="@layout/carrier_label"
-            android:layout_height="@dimen/carrier_label_height"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/close_handle_height"
-            android:layout_gravity="bottom"
-            />
-    </LinearLayout>
+    <include
+        layout="@layout/carrier_label"
+        android:layout_height="@dimen/carrier_label_height"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/close_handle_height"
+        android:layout_gravity="bottom"
+        />
+
     <LinearLayout
+        android:id="@+id/notification_panel_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/close_handle_underlap"
