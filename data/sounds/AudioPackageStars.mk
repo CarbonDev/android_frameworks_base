@@ -9,7 +9,7 @@ LOCAL_PATH:= frameworks/base/data/sounds
 
 # Simple files that do not require renaming
 NOTIFICATION_FILES := Ariel Ceres Carme Elara Europa Iapetus Io Rhea Salacia Titan Tethys
-RINGTONE_FILES := Callisto Dione Ganymede Luna Oberon Phobos Sedna Titania Triton Umbriel
+RINGTONE_FILES := Callisto Dione Ganymede Luna Oberon Phobos Sedna Triton Umbriel
 EFFECT_FILES := Effect_Tick KeypressReturn KeypressInvalid KeypressDelete KeypressSpacebar KeypressStandard \
         VideoRecord VideoStop camera_click camera_focus LowBattery Dock Undock Lock Unlock WirelessChargingStarted \
         Media_Volume VolumeIncremental
