@@ -7,7 +7,8 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src) \
     src/com/android/systemui/EventLogTags.logtags
 
 LOCAL_JAVA_LIBRARIES := telephony-common
-LOCAL_STATIC_JAVA_LIBRARIES := guava
+LOCAL_STATIC_JAVA_LIBRARIES := guava \
+    android-visualizer
 
 LOCAL_PACKAGE_NAME := SystemUI
 LOCAL_CERTIFICATE := platform
