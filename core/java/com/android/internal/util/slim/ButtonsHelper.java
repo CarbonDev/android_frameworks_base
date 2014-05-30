@@ -187,6 +187,38 @@ public class ButtonsHelper {
                     config);
     }
 
+    // get and set the notification shortcut configs
+    // from provider and return propper arraylist objects
+    // @ButtonConfig
+    public static ArrayList<ButtonConfig> getNotificationsShortcutConfig(Context context) {
+        String config = Settings.System.getStringForUser(
+                    context.getContentResolver(),
+                    Settings.System.NOTIFICATION_SHORTCUTS_CONFIG,
+                    UserHandle.USER_CURRENT);
+        if (config == null) {
+            config = "";
+        }
+
+        return (ConfigSplitHelper.getButtonsConfigValues(context, config, null, null, true));
+    }
+
+    public static void setNotificationShortcutConfig(
+            Context context, ArrayList<ButtonConfig> buttonsConfig, boolean reset) {
+        String config;
+        if (reset) {
+            config = "";
+            Settings.System.putInt(context.getContentResolver(),
+                Settings.System.NOTIFICATION_SHORTCUTS_COLOR, -2);
+            Settings.System.putInt(context.getContentResolver(),
+                Settings.System.NOTIFICATION_SHORTCUTS_COLOR_MODE, 0);
+        } else {
+            config = ConfigSplitHelper.setButtonsConfig(buttonsConfig, true);
+        }
+        Settings.System.putString(context.getContentResolver(),
+                    Settings.System.NOTIFICATION_SHORTCUTS_CONFIG,
+                    config);
+    }
+
     // get and set the lockcreen shortcut configs from provider and return propper arraylist objects
     // @ButtonConfig
     public static ArrayList<ButtonConfig> getLockscreenShortcutConfig(Context context) {
@@ -355,6 +387,9 @@ public class ButtonsHelper {
         } else if (clickAction.equals(ButtonsConstants.ACTION_TORCH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_torch", null, null);
+        } else if (clickAction.equals(ButtonsConstants.ACTION_THEME_SWITCH)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_theme_switch", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
