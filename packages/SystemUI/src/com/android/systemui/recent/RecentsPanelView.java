@@ -90,7 +90,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private PopupMenu mPopup;
     private View mRecentsScrim;
     private View mRecentsNoApps;
-    //private View mRecentsRamBar;
     private RecentsScrollView mRecentsContainer;
 
     private boolean mShowing;
@@ -109,14 +108,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private boolean mFitThumbnailToXY;
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
+
     private ImageView mClearAllRecents;
-    private int clearAllStatus;
     private CircleMemoryMeter mRamCircle;
-    private int ramCircleStatus;
-
-    private LinearColorBar mRamUsageBar;
     private boolean mUpdateMemoryIndicator;
-
+    private LinearColorBar mRamUsageBar;
     private long mFreeMemory;
     private long mTotalMemory;
     private long mCachedMemory;
@@ -398,14 +394,13 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     }
 
     private void updateRamCircle() {
-        ramCircleStatus = Settings.System.getInt(mContext.getContentResolver(),
+        int mRamCircleStatus = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.RAM_CIRCLE, Constants.RAM_CIRCLE_OFF);
 
-        if (ramCircleStatus != Constants.RAM_CIRCLE_OFF) {
-            mRamCircle.setVisibility(View.VISIBLE);
+        if (mRamCircleStatus != Constants.RAM_CIRCLE_OFF && mRamCircle != null) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)
                     mRamCircle.getLayoutParams();
-            switch (ramCircleStatus) {
+            switch (mRamCircleStatus) {
                 case Constants.RAM_CIRCLE_TOP_LEFT:
                     layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
                     break;
@@ -420,22 +415,22 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     break;
             }
             mRamCircle.setLayoutParams(layoutParams);
+            mRamCircle.setVisibility(View.VISIBLE);
             mUpdateMemoryIndicator = true;
-        } else {
+        } else if (mRamCircle != null) {
             mRamCircle.setVisibility(View.GONE);
             mUpdateMemoryIndicator = false;
         }
     }
 
     private void updateClearButton() {
-        clearAllStatus = Settings.System.getInt(mContext.getContentResolver(),
+        int mClearAllStatus = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.CLEAR_RECENTS_BUTTON, Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT);
 
-        if (clearAllStatus != Constants.CLEAR_ALL_BUTTON_OFF) {
-            mClearAllRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
+        if (mClearAllStatus != Constants.CLEAR_ALL_BUTTON_OFF && mClearAllRecents != null) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)
                     mClearAllRecents.getLayoutParams();
-            switch (clearAllStatus) {
+            switch (mClearAllStatus) {
                 case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
                     layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
                     break;
@@ -451,7 +446,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     break;
             }
             mClearAllRecents.setLayoutParams(layoutParams);
-        } else {
+            mClearAllRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
+        } else if (mClearAllRecents != null) {
             mClearAllRecents.setVisibility(View.GONE);
         }
     }
@@ -548,6 +544,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mRecentsScrim = findViewById(R.id.recents_bg_protect);
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
         mRamCircle = (CircleMemoryMeter) findViewById(R.id.circle_meter);
+        mRamUsageBar = (LinearColorBar) findViewById(R.id.ram_usage_bar);
 
         mClearAllRecents = (ImageView) findViewById(R.id.recents_clear_all);
         if (mClearAllRecents != null){
@@ -877,11 +874,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     mContext.getString(R.string.accessibility_recents_item_dismissed, ad.getLabel()));
             sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
             setContentDescription(null);
-            if (mUpdateMemoryIndicator) {
-                mRamCircle.updateMemoryInfo();
-            }
         }
         updateRamBar();
+        if (mUpdateMemoryIndicator) {
+            mRamCircle.updateMemoryInfo();
+        }
     }
 
     private void startApplicationDetailsActivity(String packageName) {
@@ -1027,10 +1024,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     }
 
     private void updateRamBar() {
-        mRamUsageBar = (LinearColorBar) findViewById(R.id.ram_usage_bar);
-
-        int mRamBarMode = (Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.RECENTS_RAM_BAR_MODE, 0));
+        int mRamBarMode = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.RECENTS_RAM_BAR_MODE, 0);
 
         if (mRamBarMode != 0 && mRamUsageBar != null) {
             long usedMem = 0;
@@ -1082,7 +1077,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
                     } catch (RemoteException e) {
                     }
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_MULTIPLE_TASK
                             | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
                             | Intent.FLAG_ACTIVITY_NO_HISTORY);
