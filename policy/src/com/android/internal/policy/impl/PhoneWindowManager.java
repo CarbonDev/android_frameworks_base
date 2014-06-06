@@ -1002,6 +1002,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mHandler.removeCallbacks(mScreenshotRunnable);
     }
 
+    private final Runnable mGlobalMenu = new Runnable() {
+        @Override
+        public void run() {
+            sendCloseSystemWindows(SYSTEM_DIALOG_REASON_GLOBAL_ACTIONS);
+            showGlobalActionsDialog(false);
+        }
+    };
+
     private void cancelPendingScreencastChordAction() {
         mHandler.removeCallbacks(mScreencastRunnable);
     }
@@ -4335,6 +4343,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (DEBUG_LAYOUT) Slog.v(TAG, "Input method: mDockBottom="
                 + mDockBottom + " mContentBottom="
                 + mContentBottom + " mCurBottom=" + mCurBottom);
+    }
+
+    /** {@inheritDoc} */
+    public void toggleGlobalMenu() {
+        mHandler.post(mGlobalMenu);
     }
 
     /** {@inheritDoc} */

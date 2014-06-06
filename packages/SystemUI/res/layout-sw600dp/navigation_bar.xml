@@ -69,13 +69,19 @@
                 android:visibility="invisible"
                 android:contentDescription="@string/accessibility_menu"
                 systemui:glowBackground="@drawable/ic_sysbar_highlight" />
+
+            <com.android.systemui.statusbar.policy.KeyButtonView android:id="@+id/ime_navigation_left"
+                 android:layout_width="48dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0"
+                 android:visibility="gone" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -107,7 +113,7 @@
                 systemui:glowBackground="@drawable/ic_sysbar_highlight"
                 android:contentDescription="@string/accessibility_recent"
                 />
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -133,7 +139,7 @@
             android:id="@+id/lights_out"
             android:visibility="gone"
             >
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -161,7 +167,7 @@
                 android:scaleType="center"
                 android:layout_weight="0"
                 />
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -237,7 +243,7 @@
                 android:layout_marginStart="2dp"
                 android:visibility="invisible"
                 />
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -269,7 +275,7 @@
                 systemui:glowBackground="@drawable/ic_sysbar_highlight"
                 android:contentDescription="@string/accessibility_recent"
                 />
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -285,6 +291,11 @@
                 android:contentDescription="@string/accessibility_menu"
                 systemui:glowBackground="@drawable/ic_sysbar_highlight"
                 />
+            <com.android.systemui.statusbar.policy.KeyButtonView android:id="@+id/ime_navigation_right"
+                 android:layout_width="48dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0"
+                 android:visibility="gone" />
         </LinearLayout>
 
         <!-- lights out layout to match exactly -->
@@ -295,7 +306,7 @@
             android:id="@+id/lights_out"
             android:visibility="gone"
             >
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -323,7 +334,7 @@
                 android:scaleType="center"
                 android:layout_weight="0"
                 />
-            <Space 
+            <Space
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

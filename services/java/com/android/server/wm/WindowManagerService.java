@@ -11052,6 +11052,12 @@ public class WindowManagerService extends IWindowManager.Stub
         mAnimator.removeDisplayLocked(displayId);
     }
 
+    /* @hide */
+    @Override
+    public void toggleGlobalMenu() {
+        mPolicy.toggleGlobalMenu();
+    }
+
     @Override
     public void onDisplayChanged(int displayId) {
         mH.sendMessage(mH.obtainMessage(H.DO_DISPLAY_CHANGED, displayId, 0));

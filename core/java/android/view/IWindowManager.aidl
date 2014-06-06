@@ -300,6 +300,13 @@ interface IWindowManager
     MagnificationSpec getCompatibleMagnificationSpecForWindow(in IBinder windowToken);
 
     /**
+     * Toggle global menu
+     *
+     * @hide
+     */
+    void toggleGlobalMenu();
+
+    /**
      * Sets the current touch exploration state.
      *
      * @param enabled Whether touch exploration is enabled.
