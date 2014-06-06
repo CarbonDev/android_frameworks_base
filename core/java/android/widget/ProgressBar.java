@@ -382,6 +382,11 @@ public class ProgressBar extends View {
 		mMirrorForRtl = a.getBoolean(R.styleable.ProgressBar_mirrorForRtl, mMirrorForRtl);
 
 		a.recycle();
+
+		// If not explicitly specified this view is important for accessibility.
+		if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+			setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+		}
 	}
 
 	/**
@@ -1254,7 +1259,7 @@ public class ProgressBar extends View {
 		}
 		if (mRefreshProgressRunnable != null) {
 			removeCallbacks(mRefreshProgressRunnable);
-            mRefreshIsPosted = false;
+			mRefreshIsPosted = false;
 		}
 		if (mAccessibilityEventSender != null) {
 			removeCallbacks(mAccessibilityEventSender);
