@@ -142,10 +142,6 @@ public class EqualizerTile extends QuickSettingsTile {
         };
     }
 
-    @Override
-    protected View getImageView() {
-        return mTile.findViewById(R.id.visualizer_view);
-    }
 
     @Override
     void onPostCreate() {
