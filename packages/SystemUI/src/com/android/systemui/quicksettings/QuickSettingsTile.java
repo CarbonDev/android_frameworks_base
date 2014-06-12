@@ -82,11 +82,11 @@ public class QuickSettingsTile implements OnClickListener {
     }
 
     public void switchToRibbonMode() {
-        TextView tv = (TextView) mTile.findViewById(R.id.text);
+        TextView tv = getLabelView();
         if (tv != null) {
             tv.setVisibility(View.GONE);
         }
-        View image = mTile.findViewById(R.id.image);
+        View image = getImageView();
         if (image != null) {
             MarginLayoutParams params = (MarginLayoutParams) image.getLayoutParams();
             int margin = mContext.getResources().getDimensionPixelSize(
@@ -94,6 +94,14 @@ public class QuickSettingsTile implements OnClickListener {
             params.topMargin = params.bottomMargin = margin;
             image.setLayoutParams(params);
         }
+    }
+
+    protected View getImageView() {
+        return mTile.findViewById(R.id.image);
+    }
+
+    protected TextView getLabelView() {
+        return (TextView) mTile.findViewById(R.id.text);
     }
 
     void onPostCreate() {}
@@ -111,7 +119,7 @@ public class QuickSettingsTile implements OnClickListener {
     }
 
     void updateQuickSettings() {
-        TextView tv = (TextView) mTile.findViewById(R.id.text);
+        TextView tv = getLabelView();
         if (tv != null) {
             tv.setText(mLabel);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
@@ -120,7 +128,7 @@ public class QuickSettingsTile implements OnClickListener {
                 tv.setTextColor(mTileTextColor);
             }
         }
-        ImageView image = (ImageView) mTile.findViewById(R.id.image);
+        ImageView image = getImageView();
         if (image != null) {
             image.setImageResource(mDrawable);
         }
