@@ -2451,8 +2451,13 @@ public final class Settings {
         /**
          * Whether incall glowpad background is transparent or not.  The value is
          * boolean (1 or 0).
-        */
+         */
         public static final String INCALL_GLOWPAD_TRANSPARENCY = "incall_glowpad_transparency";
+
+        /**
+         * Padding above and below dialpad keys in dialer.
+         */
+        public static final String DIALKEY_PADDING = "dialkey_padding";
 
         /**
          * Whether the hearing aid is enabled. The value is
