@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_data_connection_HP">HSPA+</string>
+
+    <!-- Content description of the data connection type DC-HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_data_connection_DC">DC-HSPA+</string>
+
+    <string name="accessibility_quick_settings_ringer">Звук <xliff:g id="state" example="Off">%s</xliff:g>.</string>
+    <string name="accessibility_quick_settings_vibration">Вибрация <xliff:g id="state" example="Off">%s</xliff:g>.</string>
+
+    <string name="bean_dream_settings_cid_title">Значки CyanogenMod</string>
+    <string name="bean_dream_settings_cid_summary">Показывать Сида вместе с «десертами» в заставке</string>
+
+    <!-- QuickSettings: Profile [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_profile_label">Профиль</string>
+
+    <!-- Power widget -->
+    <string name="powerwidget_screen_timeout_toast">Задержка выкл. экрана: %1$d %2$s</string>
+
+    <!-- Battery saver -->
+    <string name="battery_saver_start">Энергосбережение включено</string>
+    <string name="battery_saver_stop">Энергосбережение выключено</string>
+    <string name="battery_saver_change">Режим \"Энергосбережения\" сменил сеть на </string>
+    <string name="battery_saver_network">Сеть восстановлена</string>
+    <string name="battery_saver_data">Передача данных восстановлена</string>
+    <string name="battery_saver_brightness">Яркость восстановлена</string>
+    <string name="battery_saver_bluetooth">Bluetooth восстановлен</string>
+    <string name="battery_saver_location">GPS восстановлен</string>
+    <string name="battery_saver_wifi">Wi-Fi восстановлен</string>
+    <string name="battery_saver_cpu">Процессор восстановлен</string>
+    <string name="battery_saver_cpu_change">Режим \"Энергосбережения\" сменил частоту процессора на </string>
+    <string name="battery_saver_sync">Синхронизация восстановлена</string>
+    <string name="battery_saver_led">LED восстановлен</string>
+    <string name="battery_saver_vibrate">Вибрация восстановлена</string>
+    <string name="battery_saver_no_changes">Никакие настройки не были восстановлены</string>
+    <string name="battery_saver_all">Все настройки были восстановлены</string>
+    <string name="battery_saver_enable_ticker">Режим \"Энергосбережения\" запущен...</string>
+    <string name="battery_saver_enable_title">Режим \"Энергосбережения\"</string>
+    <string name="battery_saver_airplane_ticker">Режим полёта активирован из-за режима \"Энергосбережения\"</string>
+    <string name="battery_saver_airplane_text">Режим полёта активирован из-за режима \"Энергосбережения\", потому что сигнала не было более 5 минут</string>
+    <string name="battery_saver_disable">Выключен</string>
+
+    <!-- Battery saver modes -->
+    <string name="network_4G">4G/LTE</string>
+    <string name="network_3G_only">Только 3G</string>
+    <string name="network_3G_auto">Авто 2G/3G</string>
+    <string name="network_3G">2G/3G переключение</string>
+    <string name="network_2G">Только 2G</string>
+    <string name="network_lte">LTE (recommended)</string>
+    <string name="network_1x">1x</string>
+    <string name="network_global">Глобальная сеть</string>
+    <string name="quick_settings_network_unknown">Неизвестная!</string>
+
+    <!-- Battery saver mode Tile labels -->
+    <string name="quick_settings_battery_saver_label">Энергосбережение</string>
+    <string name="quick_settings_battery_saver_off_label">Энергосбережение выкл</string>
+
+    <!-- Quick Settings -->
+    <string name="quick_settings_gps">GPS</string>
+    <string name="quick_settings_gps_off">GPS выкл</string>
+    <string name="quick_settings_screen_sleep">Выключить экран</string>
+    <string name="quick_settings_ringer_on">Звук вкл</string>
+    <string name="quick_settings_ringer_off">Звук выкл</string>
+    <string name="quick_settings_vibration_on">Вибрация вкл</string>
+    <string name="quick_settings_vibration_off">Вибрация выкл</string>
+    <string name="quick_settings_label_enabled">Вкл</string>
+    <string name="quick_settings_label_disabled">Выкл</string>
+    <string name="quick_settings_ringer_normal">Звук</string>
+    <string name="quick_settings_lockscreen">Экран блокировки</string>
+    <string name="quick_settings_network_type">Режим сети</string>
+    <string name="quick_settings_report_bug">Отчёт об ошибке</string>
+    <string name="quick_settings_sync">Синхр.</string>
+    <string name="quick_settings_sync_off">Синхр. выкл</string>
+    <string name="quick_settings_torch">Фонарь</string>
+    <string name="quick_settings_torch_off">Фонарь выкл</string>
+    <string name="quick_settings_nfc">NFC</string>
+    <string name="quick_settings_nfc_off">NFC Выкл</string>
+    <string name="quick_settings_screen_timeout">Задержка</string>
+    <string name="quick_settings_screen_timeout_summary_never">Никогда</string>
+    <string name="quick_settings_usb_tether_off_label">Отсоединено</string>
+    <string name="quick_settings_usb_tether_connected_label">USB-модем выкл</string>
+    <string name="quick_settings_usb_tether_on_label">USB-модем</string>
+    <string name="quick_settings_wifiap">Wi-Fi модем</string>
+    <string name="quick_settings_wifiap_off">Wi-Fi модем выкл</string>
+    <string name="quick_settings_quiethours">Тихие часы</string>
+    <string name="quick_settings_quiethours_off">Тихие часы выкл</string>
+    <string name="quick_settings_lte">LTE</string>
+    <string name="quick_settings_lte_off">LTE выкл</string>
+    <string name="quick_settings_shakeevents">Встряхивание</string>
+    <string name="quick_settings_shakeevents_off">Встряхивание выкл</string>
+    <string name="quick_settings_volume">Громкость</string>
+    <string name="quick_settings_music_play">Играть</string>
+    <string name="quick_settings_music_pause">Пауза</string>
+    <string name="quick_settings_music_schedule_title">Таймер сна</string>
+    <string name="quick_settings_music_schedule_in_progress">Таймер запущен</string>
+    <string name="quick_settings_music_schedule_start">Запустить таймер</string>
+    <string name="quick_settings_music_schedule_cancel">Сбросить таймер</string>
+    <string name="quick_settings_music_schedule_update">Обновить таймер</string>
+    <string name="quick_settings_camera_label">Камера</string>
+    <string name="quick_settings_carbon_label">Настройки Carbon</string>
+    <string name="quick_settings_powermenu_label">Меню кнопки питания</string>
+    <string name="quick_settings_network_adb_disabled_label">Выкл</string>
+    <string name="quick_settings_network_adb_enabled_label">Вкл</string>
+    <string name="quick_settings_exp_desktop">Расширенный</string>
+    <string name="quick_settings_exp_desktop_off">Обычный</string>
+    <string name="quick_settings_wifi_display_label">Подключено</string>
+    <string name="quick_settings_wifi_display_no_connection_label">Доступно</string>
+    <string name="quick_settings_screenshot_label">Снимок экрана</string>
+    <string name="quick_settings_theme_switch_dark">Тёмный Carbon</string>
+    <string name="quick_settings_theme_switch_light">Светлый Carbon</string>
+    <string name="quick_settings_quick_record_deleted">Удалено...</string>
+    <string name="quick_settings_quick_record_nofile">Долгое нажатие</string>
+    <string name="quick_settings_quick_record_def">Быстрая запись</string>
+    <string name="quick_settings_quick_record_rec">Записывается...</string>
+    <string name="quick_settings_quick_record_save">Сохранено</string>
+    <string name="quick_settings_quick_record_play">Воспроизводится...</string>
+    <string name="quick_settings_quick_record_dialog_cancel">Закрыть</string>
+    <string name="quick_settings_quick_record_dialog">Воспроизвести запись\nДолгое нажатие для удаления</string>
+    <string name="quick_settings_bluetooth_multi_label">%1$d подключено</string>
+    <string name="quick_settings_equalizer">Эквалайзер</string>
+    <string name="quick_settings_compass_off">Компас выкл</string>
+    <string name="quick_settings_compass_init">Включение\u2026</string>
+
+    <!-- Title shown in recents popup for showing app in floating mode -->
+    <string name="status_bar_recent_floating_item_title">Плавающий режим</string>
+
+    <!-- Expanded desktop strings break the rules a bit - the icon identifies the feature, the string indicates current state -->
+    <string name="quick_settings_expanded_desktop">Расширенный</string>
+    <string name="quick_settings_expanded_desktop_off">Обычный</string>
+
+    <!-- Camera tile toasts -->
+    <string name="quick_settings_camera_error_connect">Не удаётся подключиться к камере</string>
+
+    <!-- Dialog title for navigation bar button selection -->
+    <string name="navbar_dialog_title">Выберите действие</string>
+    <string name="navbar_home_button">Домой</string>
+    <string name="navbar_recent_button">Недавние приложения</string>
+    <string name="navbar_search_button">Поиск</string>
+    <string name="navbar_back_button">Назад</string>
+    <string name="navbar_empty_button">Пустая кнопка</string>
+    <string name="navbar_menu_conditional_button">Меню (если доступно)</string>
+    <string name="navbar_menu_always_button">Меню (всегда)</string>
+    <string name="navbar_menu_big_button">Меню</string>
+
+    <!-- Battery status in pie controls -->
+    <string name="pie_battery_status_charging">Заряжается (<xliff:g id="percent">%d</xliff:g>%%)</string>
+    <string name="pie_battery_status_full">Заряжено</string>
+    <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% осталось</string>
+
+    <!-- Phone status in pie controls -->
+    <string name="pie_phone_status_no_service">Вне зоны обслуживания</string>
+    <string name="pie_phone_status_airplane_mode">Включен режим полета</string>
+    <string name="pie_phone_status_emergency_only">Только экстренные вызовы</string>
+
+    <!-- QS Battery Tile -->
+    <string name="quick_settings_battery_charging">Зарядка</string>
+    <string name="quick_settings_battery_discharging">Не заряжается</string>
+    <string name="quick_settings_battery_charged_label">Заряжена</string>
+
+    <!-- Screenshot -->
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_screenshot">Сделать снимок экрана</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_screenshot">Разрешить приложению сделать снимок экрана. Это действие защищено SystemUI.</string>
+    <string name="screenshot_notification_delete">Удалить</string>
+    <string name="screenshot_delete_confirmation">Снимок экрана удален</string>
+    <string name="screenshot_toast">Снимок экрана через %1$d сек.</string>
+
+    <!-- Title shown in notification popup for launching notification in floating mode -->
+    <string name="status_bar_notification_floating_item_title">Плавающий режим</string>
+
+    <!-- Development shortcut -->
+    <string name="advanced_dev_option_wipe_app">Стереть данные</string>
+    <string name="advanced_dev_option_force_stop">Остановить</string>
+
+    <!-- Kill app toast -->
+    <string name="app_killed_message">Приложение закрыто</string>
+
+    <!-- Recents Ram Bar -->
+    <string name="memory">RAM</string>
+    <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
+    <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> свободно</string>
+    <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
+    <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> занято</string>
+
+    <!-- Off/On/Toggle -->
+    <string name="off">Выкл</string>
+    <string name="on">Вкл</string>
+    <string name="toggle">Переключить</string>
+
+    <!-- Slim Shortcut Actions -->
+    <string name="shortcut_picker">Ярлыки Carbon</string>
+    <string name="shortcut_immersive">Обычный режим</string>
+    <string name="shortcut_quiethours">\"Тихие часы\"</string>
+    <string name="shortcut_rotation">Блокировка поворота</string>
+    <string name="shortcut_shakeevent">Действия встряхивания</string>
+    <string name="shortcut_torch">Фонарь</string>
+    <string name="shortcut_reboot">Перезагрузка</string>
+    <string name="shortcut_recovery">В рекавери</string>
+    <string name="shortcut_last_app">Предыдущее приложение</string>
+    <string name="shortcut_power_menu">Меню кнопки питания</string>
+    <string name="shortcut_screenshot">Снимок экрана</string>
+    <string name="shortcut_screensleep">Выключить экран</string>
+    <string name="shortcut_volume">Громкость</string>
+    <string name="shortcut_toggle_title">Действие</string>
+    <string name="shortcut_chamber">Тайная комната</string>
+    <string name="chamber_disabled">Тайная комната закрыта</string>
+    <string name="chamber_title">Введите строку настроек</string>
+    <string name="chamber_message">Введите строку настроек, которая является либо функцией флажка (вкл/выкл), либо настройкой списка. Например, quiet_hours_ringer и тому подобное. Настройки можно найти в файле исходного кода Settings.java. ВНИМАНИЕ: Эта функция опасна!</string>
+    <string name="chamber_invalid">Введено неверное значение. Будьте внимательны.</string>
+    <string name="chamber_checkbox">Флажок</string>
+    <string name="chamber_chk_message">Это настройка флажка?</string>
+    <string name="chamber_int">Вводимые значения</string>
+    <string name="chamber_int_message">Введите значения, между которыми вы бы хотели переключаться, через запятую. Цветовые настройки задаются шестнадцатеричными значениями, например, #FF00aacc или базовыми значениями, как red, green, или yellow.</string>
+    <string name="chamber_name_title">Имя ярлыка</string>
+    <string name="chamber_name_message">Установить имя для отображения на ярлыке рядом со значком.</string>
+    <string name="chamber_name_toast">Используется стандартное имя</string>
+
+    <!-- Dialog Cancel/OK -->
+    <string name="cancel">Отмена</string>
+    <string name="dlg_ok">Ок</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <!-- Active Display -->
+    <string name="active_display_privacy_content">Содержимое сообщения не отображается, потому что режим конфиденциальности включен</string>
+
+    <string name="pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pie_hour_format_12">hh:mm</string>
+    <string name="pie_hour_format_24">HH:mm</string>
+
+    <!-- Content description for the add quick settings tile button. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_desc_add_quick_settings">Добавить Быстрые настройки</string>
+
+    <!-- Smart PullDown Warning -->
+    <string name="smart_pulldown_disabled">\"Умные\" уведомления отключены</string>
+
+    <!-- Blacklisted app for floating mode -->
+    <string name="floating_mode_blacklisted_app">Текущее приложение занесено в чёрный список, так как оно не может работать должным образом в \"Плавающем режиме\"</string>
+
+    <!-- First time run hover -->
+    <string name="hover_cling_text">Hover теперь включен.\n\nПри поступлении нового уведомления, всплывающее окно позволяет ответить на него, не выходя из текущего приложения.</string>
+
+    <!-- Title shown when app provides no interface -->
+    <string name="status_bar_floating_no_interface">Приложение не предоставляет интерфейс</string>
+
+</resources>
