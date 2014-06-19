@@ -316,17 +316,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         for (final ButtonConfig config : powerMenuConfig) {
             // power off
             if (config.getClickAction().equals(PolicyConstants.ACTION_POWER_OFF)) {
-                int quickbootAvailable = 1;
-                final PackageManager pm = mContext.getPackageManager();
-                try {
-                    pm.getPackageInfo("com.qapp.quickboot", PackageManager.GET_META_DATA);
-                } catch (NameNotFoundException e) {
-                    quickbootAvailable = 0;
-                }
-
-                final boolean quickbootEnabled = Settings.Global.getInt(
-                        mContext.getContentResolver(), Settings.Global.ENABLE_QUICKBOOT,
-                        quickbootAvailable) == 1;
 
                 mItems.add(
                     new SinglePressAction(PolicyHelper.getPowerMenuIconImage(mContext,
@@ -334,8 +323,21 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             config.getClickActionDescription()) {
 
                         public void onPress() {
+                            // Check quickboot status
+                            boolean quickbootAvailable = false;
+                            final PackageManager pm = mContext.getPackageManager();
+                            try {
+                                pm.getPackageInfo("com.qapp.quickboot", PackageManager.GET_META_DATA);
+                                quickbootAvailable = true;
+                            } catch (NameNotFoundException e) {
+                                // Ignore
+                            }
+                            final boolean quickbootEnabled = Settings.Global.getInt(
+                                    mContext.getContentResolver(),
+                                    Settings.Global.ENABLE_QUICKBOOT, 1) == 1;
+
                             // goto quickboot mode
-                            if (quickbootEnabled) {
+                            if (quickbootAvailable && quickbootEnabled) {
                                 startQuickBoot();
                                 return;
                             }
