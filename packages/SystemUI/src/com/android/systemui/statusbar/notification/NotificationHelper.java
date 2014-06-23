@@ -16,10 +16,13 @@
 
 package com.android.systemui.statusbar.notification;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -47,6 +50,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.provider.Settings;
 
 import com.android.internal.widget.SizeAdaptiveLayout;
 import com.android.systemui.R;
@@ -73,6 +77,7 @@ public class NotificationHelper {
     private Peek mPeek;
     private PeekAppReceiver mPeekAppReceiver;
     private TelephonyManager mTelephonyManager;
+    private ActivityManager mActivityManager;
 
     public boolean mRingingOrConnected = false;
     public boolean mPeekAppOverlayShowing = false;
@@ -84,6 +89,9 @@ public class NotificationHelper {
         mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
         mTelephonyManager.listen(new CallStateListener(), PhoneStateListener.LISTEN_CALL_STATE);
 
+        // we need to know which is the foreground app
+        mActivityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+
         // create peek app receiver if null
         if (mPeekAppReceiver == null) {
             mPeekAppReceiver = new PeekAppReceiver();
@@ -94,6 +102,12 @@ public class NotificationHelper {
             mPeekAppFilter.addAction(PEEK_HIDING_BROADCAST);
             mContext.registerReceiver(mPeekAppReceiver, mPeekAppFilter);
         }
+    }
+
+    public String getForegroundPackageName() {
+        List<RunningTaskInfo> taskInfo = mActivityManager.getRunningTasks(1);
+        ComponentName componentInfo = taskInfo.get(0).topActivity;
+        return componentInfo.getPackageName();
     }
 
     public Peek getPeek() {
@@ -227,6 +241,23 @@ public class NotificationHelper {
         }
     }
 
+    public NotificationClicker getNotificationClickListener(Entry entry, boolean floating) {
+        NotificationClicker intent = null;
+        final PendingIntent contentIntent = entry.notification.getNotification().contentIntent;
+        if (contentIntent != null) {
+            intent = mStatusBar.makeClicker(contentIntent,
+                    entry.notification.getPackageName(), entry.notification.getTag(),
+                    entry.notification.getId());
+            boolean makeFloating = floating
+                    // if the notification is from the foreground app, don't open in floating mode
+                    && !entry.notification.getPackageName().equals(getForegroundPackageName())
+                    && openInFloatingMode();
+
+            intent.makeFloating(makeFloating);
+        }
+        return intent;
+    }
+
     public boolean isRingingOrConnected() {
         return mRingingOrConnected;
     }
@@ -236,5 +267,10 @@ public class NotificationHelper {
         return state == TelephonyManager.SIM_STATE_PIN_REQUIRED
                 | state == TelephonyManager.SIM_STATE_PUK_REQUIRED
                 | state == TelephonyManager.SIM_STATE_NETWORK_LOCKED;
+    }
+
+    public boolean openInFloatingMode() {
+        return Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.HEADS_UP_FLOATING_WINDOW, true);
     }
 }
