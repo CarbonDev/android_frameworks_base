@@ -143,6 +143,7 @@
   <!-- UI theme mode -->
   <java-symbol type="integer" name="config_uiThemeMode" />
   <java-symbol type="string" name="theme_auto_switch_mode_error" />
+  <java-symbol type="drawable" name="dialog_full_holo_dark" />
 
   <!-- Pie controls -->
   <java-symbol type="string" name="global_actions_pie_mode_on_status" />
