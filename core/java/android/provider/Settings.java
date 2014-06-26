@@ -3475,6 +3475,11 @@ public final class Settings {
         public static final String LOCKSCREEN_NOTIFICATIONS_COLOR = "lockscreen_notifications_color";
 
         /**
+         * @hide
+         */
+        public static final String PROXIMITY_ON_WAKE = "proximity_on_wake";
+
+        /**
          * Enable looking up of phone numbers of nearby places
          *
          * @hide
