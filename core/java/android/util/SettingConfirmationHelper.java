@@ -29,6 +29,10 @@ import android.provider.Settings;
 
 import com.android.internal.R;
 
+/**
+ * Hide from public API
+ * @hide
+ */
 public class SettingConfirmationHelper {
 
     private static final int NOT_SET = 0;
@@ -36,10 +40,16 @@ public class SettingConfirmationHelper {
     private static final int DISABLED = 2;
     private static final int ASK_LATER = 3;
 
+    /**
+     * @hide
+     */
     public static interface OnSelectListener {
         void onSelect(boolean enabled);
     }
 
+    /**
+     * @hide
+     */
     public static void showConfirmationDialogForSetting(final Context mContext, String title, String msg, Drawable hint,
                                                         final String setting, final OnSelectListener mListener) {
         int mCurrentStatus = Settings.System.getInt(mContext.getContentResolver(), setting, NOT_SET);
