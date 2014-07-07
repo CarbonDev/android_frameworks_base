@@ -5954,7 +5954,7 @@ public class Activity extends ContextThemeWrapper
             mWindow.mIsFloatingWindow = true;
             if (!isAlreadyAttachToWindow) {
                 isAlreadyAttachToWindow = true;
-                mWindow.setCloseOnTouchOutsideIfNotSet(true);
+                mWindow.setCloseOnTouchOutsideIfNotSet(false);
                 mWindow.setGravity(Gravity.CENTER);
                 // Scale it
                 scaleFloatingWindow();
