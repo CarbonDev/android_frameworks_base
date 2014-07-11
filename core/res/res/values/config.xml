@@ -658,6 +658,8 @@
     -->
     <integer name="config_longPressOnHomeBehavior">1</integer>
 
+    <integer name="config_longPressOnMenuBehavior">2</integer>
+
     <!-- Control the behavior when the user double-taps the home button.
             0 - Nothing
             1 - Recent apps view in SystemUI
@@ -1532,5 +1534,13 @@
            1. Lenient threshold
     -->
     <integer name="config_LTE_RSRP_threshold_type">0</integer>
+
+    <!-- The list absolute paths of jar/apk files containing the device specific handlers,
+         delimited by File.pathSeparator, which defaults to ":" on Android -->
+    <string name="config_deviceKeyHandlerLib" translatable="false">/system/app/ConfigPanel.apk</string>
+
+    <!-- Full qualified name of the class that implements
+         com.android.internal.os.DeviceKeyHandler interface. -->
+    <string name="config_deviceKeyHandlerClass" translatable="false">com.cyanogenmod.settings.device.KeyHandler</string>
 
 </resources>

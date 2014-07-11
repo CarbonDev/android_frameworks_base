@@ -103,6 +103,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.android.internal.os.DeviceKeyHandler;
 import com.android.internal.R;
 import com.android.internal.policy.PolicyManager;
 import com.android.internal.policy.impl.keyguard.KeyguardServiceDelegate;
@@ -116,10 +117,13 @@ import com.android.internal.util.slim.HwKeyHelper;
 import com.android.internal.util.slim.SlimActions;
 import com.android.internal.widget.PointerLocationView;
 
+import dalvik.system.DexClassLoader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.util.HashSet;
 
 import static android.view.WindowManager.LayoutParams.*;
@@ -214,6 +218,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         sApplicationLaunchKeyCategories.append(
                 KeyEvent.KEYCODE_CALCULATOR, Intent.CATEGORY_APP_CALCULATOR);
     }
+
+    private DeviceKeyHandler mDeviceKeyHandler;
 
     /**
      * Lock protecting internal state.  Must not call out into window
@@ -364,7 +370,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 showGlobalActionsDialog();
             }
             if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
-                mWindowManagerFuncs.rebootTile(); 
+                mWindowManagerFuncs.rebootTile();
             }
 
         }
@@ -1413,6 +1419,30 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             screenTurnedOff(WindowManagerPolicy.OFF_BECAUSE_OF_USER);
         }
 
+        String deviceKeyHandlerLib = mContext.getResources().getString(
+                com.android.internal.R.string.config_deviceKeyHandlerLib);
+
+        String deviceKeyHandlerClass = mContext.getResources().getString(
+                com.android.internal.R.string.config_deviceKeyHandlerClass);
+
+        if (!deviceKeyHandlerLib.isEmpty() && !deviceKeyHandlerClass.isEmpty()) {
+            DexClassLoader loader =  new DexClassLoader(deviceKeyHandlerLib,
+                    new ContextWrapper(mContext).getCacheDir().getAbsolutePath(),
+                    null,
+                    ClassLoader.getSystemClassLoader());
+            try {
+                Class<?> klass = loader.loadClass(deviceKeyHandlerClass);
+                Constructor<?> constructor = klass.getConstructor(Context.class);
+                mDeviceKeyHandler = (DeviceKeyHandler) constructor.newInstance(
+                        mContext);
+                if(DEBUG) Slog.d(TAG, "Device key handler loaded");
+            } catch (Exception e) {
+                Slog.w(TAG, "Could not instantiate device key handler "
+                        + deviceKeyHandlerClass + " from class "
+                        + deviceKeyHandlerLib, e);
+            }
+        }
+
         mPowerMenuReceiver = new PowerMenuReceiver(context);
         mPowerMenuReceiver.registerSelf();
 
@@ -1431,11 +1461,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final boolean noAssist = (mDeviceHardwareKeys & KEY_MASK_ASSIST) == 0;
         final boolean noAppSwitch = (mDeviceHardwareKeys & KEY_MASK_APP_SWITCH) == 0;
 
-	    // Setup hardware keys
-	    boolean keyRebindingDisabled = Settings.System.getIntForUser(
-	            mContext.getContentResolver(),
-	            Settings.System.HARDWARE_KEY_REBINDING, 0,
-	            UserHandle.USER_CURRENT) == 0;
+        // Setup hardware keys
+        boolean keyRebindingDisabled = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.HARDWARE_KEY_REBINDING, 0,
+                UserHandle.USER_CURRENT) == 0;
 
         // Home button
         mPressOnHomeBehavior =
@@ -1948,11 +1978,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
         }
     }
-    
+
     void readLidState() {
         mLidState = mWindowManagerFuncs.getLidState();
     }
-    
+
     private boolean isHidden(int accessibilityMode) {
         switch (accessibilityMode) {
             case 1:
@@ -2306,16 +2336,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     /**
      * Preflight adding a window to the system.
-     * 
+     *
      * Currently enforces that three window types are singletons:
      * <ul>
      * <li>STATUS_BAR_TYPE</li>
      * <li>KEYGUARD_TYPE</li>
      * </ul>
-     * 
+     *
      * @param win The window to be added
      * @param attrs Information about the window to be added
-     * 
+     *
      * @return If ok, WindowManagerImpl.ADD_OKAY.  If too many singletons,
      * WindowManagerImpl.ADD_MULTIPLE_SINGLETON
      */
@@ -2397,7 +2427,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     static final boolean PRINT_ANIM = false;
-    
+
     /** {@inheritDoc} */
     @Override
     public int selectAnimationLw(WindowState win, int transit) {
@@ -3302,7 +3332,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         Intent intent = new Intent(Intent.ACTION_SEARCH_LONG_PRESS);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
-            // TODO: This only stops the factory-installed search manager.  
+            // TODO: This only stops the factory-installed search manager.
             // Need to formalize an API to handle others
             SearchManager searchManager = getSearchManager();
             if (searchManager != null) {
@@ -4011,7 +4041,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             if ((fl & (FLAG_LAYOUT_IN_SCREEN | FLAG_LAYOUT_INSET_DECOR))
                     == (FLAG_LAYOUT_IN_SCREEN | FLAG_LAYOUT_INSET_DECOR)) {
-                if (DEBUG_LAYOUT) Slog.v(TAG, "layoutWindowLw(" + attrs.getTitle() 
+                if (DEBUG_LAYOUT) Slog.v(TAG, "layoutWindowLw(" + attrs.getTitle()
                             + "): IN_SCREEN, INSET_DECOR");
                 // This is the case for a normal activity window: we want it
                 // to cover all of the screen space, and it can take care of
@@ -4296,7 +4326,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         if (DEBUG_LAYOUT) Slog.v(TAG, "Compute frame " + attrs.getTitle()
                 + ": sim=#" + Integer.toHexString(sim)
-                + " attach=" + attached + " type=" + attrs.type 
+                + " attach=" + attached + " type=" + attrs.type
                 + String.format(" flags=0x%08x", fl)
                 + " pf=" + pf.toShortString() + " df=" + df.toShortString()
                 + " of=" + of.toShortString()
@@ -4382,7 +4412,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mForceStatusBarFromKeyguard = false;
         mForcingShowNavBar = false;
         mForcingShowNavBarLayer = -1;
-        
+
         mHideLockScreen = false;
         mAllowLockscreenWhenOn = false;
         mDismissKeyguard = DISMISS_KEYGUARD_NONE;
@@ -4969,6 +4999,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // key processing.
         if (mGlobalKeyManager.shouldHandleGlobalKey(keyCode, event)) {
             return result;
+        }
+
+        // Specific device key handling
+        if (mDeviceKeyHandler != null) {
+            try {
+                // The device only should consume known keys.
+                if (mDeviceKeyHandler.handleKeyEvent(event)) {
+                    return 0;
+                }
+            } catch (Exception e) {
+                Slog.w(TAG, "Could not dispatch event to device key handler", e);
+            }
         }
 
         // Handle special keys.
@@ -5588,7 +5630,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     public void dismissKeyguardLw() {
-        if (mKeyguardDelegate != null && mKeyguardDelegate.isShowing()) { 
+        if (mKeyguardDelegate != null && mKeyguardDelegate.isShowing()) {
             mHandler.post(new Runnable() {
                 public void run() {
                     if (mKeyguardDelegate.isDismissable()) {
