@@ -3085,12 +3085,6 @@ public final class Settings {
         public static final String NAV_BUTTONS = "nav_buttons";
 
         /**
-         * Display second in the Clock
-         * @hide
-         */
-        public static final String CLOCK_USE_SECOND = "clock_use_second";
-
-        /**
          * Configurable LTE or 4G icon - up to per user defined
          * @hide
          */
