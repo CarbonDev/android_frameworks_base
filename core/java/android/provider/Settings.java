@@ -2,7 +2,6 @@
  * Copyright (c) 2013 The Linux Foundation. All rights reserved.
  * Not a Contribution.
  * Copyright (C) 2006 The Android Open Source Project
- * This code has been modified. Portions copyright (C) 2014, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2694,12 +2693,6 @@ public final class Settings {
         public static final String LOCKSCREEN_MAXIMIZE_WIDGETS = "lockscreen_maximize_widgets";
 
         /**
-         * Whether a custom lockscreen wallpaper is enabled
-         * @hide
-         */
-        public static final String LOCKSCREEN_WALLPAPER = "lockscreen_wallpaper";
-
-        /**
          * Whether to use the carousel as widget container on portrait view
          * @hide
          */
@@ -4384,23 +4377,11 @@ public final class Settings {
         public static final String NOTIFICATION_SHORTCUTS_COLOR_MODE = "notification_shortcuts_color_mode";
 
         /**
-         * Allows to show the background activity back the lockscreen
-         * @hide
-         */
-        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
-
-        /**
          * Whether lockscreen rotation is enabled
          * 0 = off, 1 = on, 2 = portrait, 3 = landscape
          * @hide
          */
         public static final String LOCKSCREEN_ROTATION_ENABLED = "lockscreen_rotation_enabled";
-
-         /**
-         * Allows blurring the lockscreen background
-         * @hide
-         */
-        public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
 
         /**
          * Whether to show the network status in the status bar
