@@ -104,7 +104,7 @@ public class KeyguardSecurityModel {
         } else if (simState == IccCardConstants.State.PUK_REQUIRED
                 && mLockPatternUtils.isPukUnlockScreenEnable()) {
             mode = SecurityMode.SimPuk;
-        } else {
+        } else if (mLockPatternUtils.getActiveProfileLockMode() != Profile.LockMode.INSECURE) {
             if (forceShowInsecure) {
                 // Slider or sim locks are forced by user
                 return mode;
