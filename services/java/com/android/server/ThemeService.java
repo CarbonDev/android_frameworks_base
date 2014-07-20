@@ -454,7 +454,7 @@ public class ThemeService extends IThemeService.Stub {
         return true;
     }
 
-    private void updateLockscreen() {
+    private void updateLockscreen(String pkgName) {
         // TODO: implement actual behavior
         sleepQuiet(100);
     }
