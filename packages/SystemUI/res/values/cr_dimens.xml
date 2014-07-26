@@ -62,4 +62,6 @@
 
     <dimen name="wifi_combo_margin_end">-6dp</dimen>
 
+    <!-- Heads up -->
+    <dimen name="heads_up_bottom_gap">5dp</dimen>
 </resources>
