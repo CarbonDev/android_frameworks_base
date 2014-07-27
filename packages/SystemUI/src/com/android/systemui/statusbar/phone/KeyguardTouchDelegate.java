@@ -212,8 +212,4 @@ public class KeyguardTouchDelegate {
             Slog.w(TAG, "dismiss(): NO SERVICE!");
         }
     }
-
-    public boolean isServiceInitialized() {
-        return mService != null;
-    }
 }
