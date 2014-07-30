@@ -279,5 +279,5 @@
     <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
 
     <!-- Spam filter -->
-    <string name="status_bar_notification_spam_item_title">Block messages like these</string>
+    <string name="status_bar_notification_spam_item_title">Ignore messages like this</string>
 </resources>
