@@ -4576,6 +4576,13 @@ public final class Settings {
         public static final String TOAST_ANIMATION = "toast_animation";
 
         /**
+         * Heads up: Option to exclude from lockscreen, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_EXCLUDE_FROM_LOCK_SCREEN = "heads_up_exclude_from_lock_screen";
+
+        /**
          * ListView Animations
          * 0 == None
          * 1 == Wave (Left)

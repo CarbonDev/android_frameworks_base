@@ -1612,6 +1612,11 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     }
 
+    public boolean excludeHeadsUpFromLockScreen() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.HEADS_UP_EXCLUDE_FROM_LOCK_SCREEN, 0) != 0;
+    }
+
     protected boolean shouldInterrupt(StatusBarNotification sbn) {
         Notification notification = sbn.getNotification();
         mHeadsUpPackageName = sbn.getPackageName();
@@ -1639,14 +1644,14 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean interrupt = (isFullscreen || (isHighPriority && isNoisy) || isRequested)
                 && isAllowed
                 && mPowerManager.isScreenOn()
-                && (keyguardNotVisible || keyguardVisibleNotSecure);
+                && (keyguardNotVisible || (keyguardVisibleNotSecure && !excludeHeadsUpFromLockScreen()));
 
         // Possibly a heads up package set from the user.
         interrupt = interrupt
                 || (isHeadsUpPackage
                 && !isOngoing
                 && mPowerManager.isScreenOn()
-                && (keyguardNotVisible || keyguardVisibleNotSecure));
+                && (keyguardNotVisible || (keyguardVisibleNotSecure && !excludeHeadsUpFromLockScreen())));
 
         try {
             interrupt = interrupt && !mDreamManager.isDreaming();
