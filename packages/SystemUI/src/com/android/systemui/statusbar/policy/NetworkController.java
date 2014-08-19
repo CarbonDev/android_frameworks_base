@@ -19,10 +19,12 @@
 package com.android.systemui.statusbar.policy;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
@@ -151,6 +153,7 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
 
     // our ui
     protected Context mContext;
+    ContentResolver mCr;
     ArrayList<ImageView> mPhoneSignalIconViews = new ArrayList<ImageView>();
     ArrayList<ImageView> mDataDirectionIconViews = new ArrayList<ImageView>();
     ArrayList<ImageView> mDataDirectionOverlayIconViews = new ArrayList<ImageView>();
@@ -177,6 +180,8 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
     String mLastCombinedLabel = "";
 
     protected boolean mHasMobileDataFeature;
+    private boolean mUseSixBar;
+    private DirtyObserver mObserver = null;
 
     boolean mDataAndWifiStacked = false;
 
@@ -212,6 +217,7 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
      */
     public NetworkController(Context context) {
         mContext = context;
+        mCr = context.getContentResolver();
         final Resources res = context.getResources();
 
         ConnectivityManager cm = (ConnectivityManager)mContext.getSystemService(
@@ -267,11 +273,16 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
         // AIRPLANE_MODE_CHANGED is sent at boot; we've probably already missed it
         updateAirplaneMode();
 
+        // 6-bar data icons
+        updateSixBar();
+        mObserver = new DirtyObserver(new Handler());
+        mObserver.observe();
+
         mLastLocale = mContext.getResources().getConfiguration().locale;
     }
 
     public void unregisterController(Context context) {
-        context.unregisterReceiver(this); 
+        context.unregisterReceiver(this);
         if (mPhone != null) {
             mPhone.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
@@ -639,45 +650,65 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
         if (!hasService() &&
                 (mDataServiceState != ServiceState.STATE_IN_SERVICE)) {
             if (DEBUG) Log.d(TAG, " No service");
-            mPhoneSignalIconId = R.drawable.stat_sys_signal_null;
-            mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal;
-            mDataSignalIconId = R.drawable.stat_sys_signal_null;
+            if (mUseSixBar) {
+                mPhoneSignalIconId = R.drawable.stat_sys_signal_null_6bar;
+                mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal_6bar;
+                mDataSignalIconId = R.drawable.stat_sys_signal_null_6bar;
+            } else {
+                mPhoneSignalIconId = R.drawable.stat_sys_signal_null;
+                mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal;
+                mDataSignalIconId = R.drawable.stat_sys_signal_null;
+            }
         } else {
             if ((mSignalStrength == null) || (mServiceState == null)) {
                 if (DEBUG) {
                     Log.d(TAG, " Null object, mSignalStrength= " + mSignalStrength
                             + " mServiceState " + mServiceState);
                 }
-                mPhoneSignalIconId = R.drawable.stat_sys_signal_null;
-                mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal;
-                mDataSignalIconId = R.drawable.stat_sys_signal_null;
+                if (mUseSixBar) {
+                    mPhoneSignalIconId = R.drawable.stat_sys_signal_null_6bar;
+                    mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal_6bar;
+                    mDataSignalIconId = R.drawable.stat_sys_signal_null_6bar;
+                } else {
+                    mPhoneSignalIconId = R.drawable.stat_sys_signal_null;
+                    mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal;
+                    mDataSignalIconId = R.drawable.stat_sys_signal_null;
+                }
                 mContentDescriptionPhoneSignal = mContext.getString(
                         AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0]);
             } else {
                 int iconLevel;
                 int[] iconList;
                 if (isCdma() && mAlwaysShowCdmaRssi) {
-                    mLastSignalLevel = iconLevel = mSignalStrength.getCdmaLevel();
+                    mLastSignalLevel = iconLevel = (mUseSixBar) ?
+                            mSignalStrength.getSixBarCdmaLevel() : mSignalStrength.getCdmaLevel();
                     if(DEBUG) Log.d(TAG, "mAlwaysShowCdmaRssi=" + mAlwaysShowCdmaRssi
                             + " set to cdmaLevel=" + mSignalStrength.getCdmaLevel()
                             + " instead of level=" + mSignalStrength.getLevel());
                 } else {
-                    mLastSignalLevel = iconLevel = mSignalStrength.getLevel();
+                    mLastSignalLevel = iconLevel = (mUseSixBar) ?
+                            mSignalStrength.getSixBarLevel() : mSignalStrength.getLevel();
                 }
 
-                // Though mPhone is a Manager, this call is not an IPC
-                if ((isCdma() && isCdmaEri()) || mPhone.isNetworkRoaming()) {
-                    iconList = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH_ROAMING[mInetCondition];
+                if (mUseSixBar) {
+                    iconList = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH_6BAR[mInetCondition];
+                    mDataSignalIconId = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH_6BAR[mInetCondition][iconLevel];
+                    mQSPhoneSignalIconId =
+                            TelephonyIcons.QS_TELEPHONY_SIGNAL_STRENGTH_6BAR[mInetCondition][iconLevel];
                 } else {
-                    iconList = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH[mInetCondition];
-                }
-
-                mPhoneSignalIconId = iconList[iconLevel];
-                mQSPhoneSignalIconId =
+                    // Though mPhone is a Manager, this call is not an IPC
+                    if ((isCdma() && isCdmaEri()) || mPhone.isNetworkRoaming()) {
+                        iconList = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH_ROAMING[mInetCondition];
+                    } else {
+                        iconList = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH[mInetCondition];
+                    }
+                    mDataSignalIconId = TelephonyIcons.DATA_SIGNAL_STRENGTH[mInetCondition][iconLevel];
+                    mQSPhoneSignalIconId =
                         TelephonyIcons.QS_TELEPHONY_SIGNAL_STRENGTH[mInetCondition][iconLevel];
+                }
+                mPhoneSignalIconId = iconList[iconLevel];
                 mContentDescriptionPhoneSignal = mContext.getString(
                         AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[iconLevel]);
-                mDataSignalIconId = TelephonyIcons.DATA_SIGNAL_STRENGTH[mInetCondition][iconLevel];
             }
         }
     }
@@ -1846,5 +1877,29 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
 
     public void setListener(UpdateUIListener listener) {
         mUpdateUIListener = listener;
+    }
+
+    private class DirtyObserver extends ContentObserver {
+        public DirtyObserver(Handler handler) {
+            super(handler);
+        }
+
+        public void observe() {
+            mCr.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_6BAR_SIGNAL), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSixBar();
+            updateTelephonySignalStrength();
+            refreshViews();
+        }
+    }
+
+    private void updateSixBar() {
+        boolean sixBarEnabled = (Settings.System.getInt(mCr,
+            Settings.System.STATUSBAR_6BAR_SIGNAL, 0) == 1);
+        mUseSixBar = sixBarEnabled;
     }
 }
