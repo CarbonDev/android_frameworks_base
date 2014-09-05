@@ -1091,11 +1091,12 @@ public class KeyguardViewMediator {
                             mLockPatternUtils.getCurrentUser());
                     KeyguardHostView.shakeSecureNow();
                     adjustStatusBarLocked();
+                }
             } else if (WindowManagerPolicy.ACTION_LID_STATE_CHANGED.equals(intent.getAction())) {
                 final int state = intent.getIntExtra(WindowManagerPolicy.EXTRA_LID_STATE,
                         WindowManagerPolicy.WindowManagerFuncs.LID_ABSENT);
                 synchronized (KeyguardViewMediator.this) {
-                    if(state != mLidState) {
+                    if (state != mLidState) {
                         mLidState = state;
                         mUpdateMonitor.dispatchLidStateChange(state);
                     }
