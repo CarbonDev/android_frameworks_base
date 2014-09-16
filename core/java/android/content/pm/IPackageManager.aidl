@@ -429,4 +429,6 @@ interface IPackageManager {
     /** Themes */
     void updateIconMapping(String pkgName);
     ComposedIconInfo getComposedIconInfo();
+    int processThemeResources(String themePkgName);
+
 }
