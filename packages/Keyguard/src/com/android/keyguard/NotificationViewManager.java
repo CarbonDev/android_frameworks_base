@@ -231,7 +231,7 @@ public class NotificationViewManager {
     }
 
     private void registerProximityListener() {
-        if (ProximityListener == null && (config.pocketMode || config.wakeOnNotification)) {
+        if (ProximityListener == null && config.pocketMode) {
             SensorManager sensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
             ProximityListener = new ProximityListener();
             ProximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
