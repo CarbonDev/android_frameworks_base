@@ -61,4 +61,11 @@
 
     <!-- Heads up -->
     <dimen name="heads_up_bottom_gap">5dp</dimen>
+
+    <!-- Network traffic monitor single-line text size -->
+    <dimen name="net_traffic_single_text_size">12dp</dimen>
+
+    <!-- Network traffic monitor multi-line text size -->
+    <dimen name="net_traffic_multi_text_size">9dp</dimen>
+
 </resources>
