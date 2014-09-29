@@ -39,9 +39,6 @@
     <!-- AM/PM size in active display -->
     <dimen name="ad_ampm_font_size">32dp</dimen>
 
-    <!-- Network stats text size -->
-    <dimen name="network_stats_text_size">8dp</dimen>
-
     <dimen name="notification_large_icon_width">64dp</dimen>
     <dimen name="notification_large_icon_height">64dp</dimen>
     <dimen name="notification_subtext_size">12dp</dimen>
