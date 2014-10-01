@@ -431,4 +431,6 @@ interface IPackageManager {
     ComposedIconInfo getComposedIconInfo();
     int processThemeResources(String themePkgName);
 
+    void addPreLaunchCheckPackage(String packageName);
+    void removePreLaunchCheckPackage(String packageName);
 }
