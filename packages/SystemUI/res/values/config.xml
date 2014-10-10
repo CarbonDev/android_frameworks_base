@@ -72,7 +72,7 @@
     <!-- decay duration (from size_max -> size), in ms -->
     <integer name="navigation_bar_deadzone_hold">333</integer>
     <integer name="navigation_bar_deadzone_decay">333</integer>
-    
+
     <bool name="config_dead_zone_flash">false</bool>
 
     <!-- Min alpha % that recent items will fade to while being dismissed -->
@@ -115,5 +115,9 @@
         Must be minimum 1 and maximum 10 (See @EdgeServiceConstants.java).
         Default for pie is high sensivity -->
     <integer name="pie_gesture_sensivity">8</integer>
+
+    <!-- number of saved networks | can be increased with an overlay for wifi only devices -->
+    <integer name="wifi_notifications_remembered_connections">8</integer>
+
 </resources>
 
