@@ -275,9 +275,6 @@
     <string name="accessibility_ime_navigation_left">Cursor left</string>
     <string name="accessibility_ime_navigation_right">Cursor right</string>
 
-    <!-- Title shown when app provides no interface -->
-    <string name="status_bar_floating_no_interface">App provides no interface</string>
-
     <!-- Heads up -->
     <string name="status_bar_notification_heads_up_enable_title">Enable heads up</string>
     <string name="status_bar_notification_heads_up_disable_title">Disable heads up</string>
@@ -285,4 +282,5 @@
 
     <!-- Spam filter -->
     <string name="status_bar_notification_spam_item_title">Ignore messages like this</string>
+
 </resources>
