@@ -280,6 +280,18 @@
     <string name="accessibility_ime_navigation_left">Cursor left</string>
     <string name="accessibility_ime_navigation_right">Cursor right</string>
 
+    <!-- Swipe recents for floating window confirmation dialog -->
+    <string name="recents_swipe_floating_title">Swipe recents to float</string>
+    <string name="recents_swipe_floating_message_portrait">Would you like to swipe left to open apps in floating window?</string>
+    <string name="recents_swipe_floating_message_landscape">Would you like to swipe down to open apps in floating window?</string>
+
+    <!-- Swipe notification for floating window confirmation dialog -->
+    <string name="status_bar_notification_swipe_floating_title">Swipe notification to float</string>
+    <string name="status_bar_notification_swipe_floating_message">Would you like to swipe left to open apps in floating window?</string>
+
+    <string name="recents_swipe_floating" translatable="false">@string/recents_swipe_floating_title</string>
+    <string name="status_bar_notification_swipe_floating" translatable="false">@string/status_bar_notification_swipe_floating_title</string>
+
     <!-- Title shown when app provides no interface -->
     <string name="status_bar_floating_no_interface">App provides no interface</string>
 
