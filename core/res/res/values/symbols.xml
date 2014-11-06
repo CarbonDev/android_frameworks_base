@@ -1992,4 +1992,7 @@
   <!-- for wifi auto connection -->
   <java-symbol type="bool" name="wifi_autocon" />
 
+  <!-- Strings for MultiSim -->
+  <java-symbol type="string" name="multi_sim_entry_format" />
+  <java-symbol type="string" name="multi_sim_entry_format_no_carrier" />
 </resources>
